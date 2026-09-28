@@ -1,0 +1,44 @@
+<aside class="sidebar" aria-label="Navegación principal">
+  <div class="sidebar-top">
+    <!-- JouleTracker Brand Logo -->
+    <div class="sidebar-header">
+      <a routerLink="/inicio" class="logo-link" aria-label="JouleTracker Home">
+        <img src="../../../../../../public/logoJouletracker.png" alt="JouleTracker Logo" class="logo-image" />
+      </a>
+    </div>
+
+    <!-- Navigation List with Angular Material -->
+    <nav class="sidebar-nav">
+      <mat-nav-list class="nav-list">
+        @for (item of navItems(); track item.link) {
+          <a mat-list-item
+             [routerLink]="item.link"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: item.link === '/inicio' }"
+             class="nav-item">
+            <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
+            <span matListItemTitle class="nav-label">{{ item.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
+    </nav>
+  </div>
+
+  <!-- User Profile Section at Bottom -->
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-info-wrapper">
+        <div class="user-avatar">
+          <mat-icon class="avatar-icon">person_outline</mat-icon>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ user().name }}</span>
+          <span class="user-email">{{ user().email }}</span>
+        </div>
+      </div>
+      <button mat-icon-button class="action-btn" aria-label="Perfil de usuario">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </div>
+</aside>
