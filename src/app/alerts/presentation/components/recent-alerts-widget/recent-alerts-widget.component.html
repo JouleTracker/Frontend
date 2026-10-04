@@ -1,0 +1,26 @@
+<div class="alerts-widget card-container">
+  <div class="widget-header">
+    <h3 class="widget-title">Alertas recientes</h3>
+    <a routerLink="/alertas" class="view-all-link">Ver todas</a>
+  </div>
+
+  <div class="alerts-list">
+    @for (alert of store.alerts(); track alert.id) {
+      <div class="alert-item" [ngClass]="alert.severity">
+        <div class="alert-icon-wrapper">
+          <mat-icon class="alert-icon">
+            {{ alert.severity === 'warning' ? 'warning_amber' : 'info_outline' }}
+          </mat-icon>
+        </div>
+        <div class="alert-content">
+          <div class="alert-top">
+            <span class="alert-title">{{ alert.title }}</span>
+            <span class="alert-time">{{ alert.timeAgo }}</span>
+          </div>
+          <p class="alert-desc">{{ alert.description }}</p>
+        </div>
+        <mat-icon class="chevron-icon">chevron_right</mat-icon>
+      </div>
+    }
+  </div>
+</div>

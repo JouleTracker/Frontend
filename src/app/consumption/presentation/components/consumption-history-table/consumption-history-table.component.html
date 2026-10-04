@@ -1,0 +1,34 @@
+<div class="table-card">
+  <div class="card-header">
+    <h3 class="card-title">Historial de consumo</h3>
+    <a routerLink="/reportes" class="view-all-link">Ver todo</a>
+  </div>
+
+  <div class="table-container">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Consumo</th>
+          <th>Costo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of items; track item.id) {
+          <tr>
+            <td class="date-cell">{{ item.date }}</td>
+            <td class="val-cell">{{ item.consumption }}</td>
+            <td class="val-cell">{{ item.cost }}</td>
+            <td class="status-cell">
+              <span class="status-badge" [class.normal]="item.status === 'Normal'" [class.high]="item.status === 'Alto'">
+                <span class="status-dot"></span>
+                {{ item.status }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="stat-card">
+  <div class="stat-icon-wrapper" [ngClass]="iconTheme">
+    <mat-icon class="stat-icon">{{ icon }}</mat-icon>
+  </div>
+  <div class="stat-info">
+    <span class="stat-label">{{ label }}</span>
+    <div class="stat-value-row">
+      <span class="stat-value">{{ value }}</span>
+      <span *ngIf="unit" class="stat-unit">{{ unit }}</span>
+    </div>
+    <div class="stat-subtext-row">
+      <span *ngIf="diff !== undefined && diff !== null" class="stat-diff" [class.negative]="diff < 0" [class.positive]="diff > 0">
+        {{ diff < 0 ? '↓' : '↑' }} {{ Math.abs(diff) }}%
+      </span>
+      <span class="stat-subtext">{{ subtext }}</span>
+    </div>
+  </div>
+</div>

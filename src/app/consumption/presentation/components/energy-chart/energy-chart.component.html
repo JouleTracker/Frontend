@@ -1,0 +1,47 @@
+<div class="chart-card">
+  <div class="chart-header">
+    <div class="header-left">
+      <h3 class="chart-title">Consumo de energía</h3>
+      <span class="chart-unit">kWh</span>
+    </div>
+    <div class="period-selector">
+      <button
+        type="button"
+        class="period-btn"
+        [class.active]="selectedPeriod === 'dia'"
+        (click)="selectPeriod('dia')">
+        Día
+      </button>
+      <button
+        type="button"
+        class="period-btn"
+        [class.active]="selectedPeriod === 'semana'"
+        (click)="selectPeriod('semana')">
+        Semana
+      </button>
+      <button
+        type="button"
+        class="period-btn"
+        [class.active]="selectedPeriod === 'mes'"
+        (click)="selectPeriod('mes')">
+        Mes
+      </button>
+      <button
+        type="button"
+        class="period-btn"
+        [class.active]="selectedPeriod === 'ano'"
+        (click)="selectPeriod('ano')">
+        Año
+      </button>
+    </div>
+  </div>
+
+  <div class="chart-canvas-container">
+    <canvas
+      baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="barChartType">
+    </canvas>
+  </div>
+</div>

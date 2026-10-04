@@ -1,0 +1,104 @@
+.table-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.view-all-link {
+  font-size: 0.875rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.table-container {
+  flex: 1;
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+}
+
+.history-table th {
+  text-align: left;
+  color: #64748b;
+  font-weight: 500;
+  padding: 6px 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.history-table td {
+  padding: 8px 8px;
+  color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.date-cell {
+  color: #475569;
+  font-weight: 500;
+}
+
+.val-cell {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-badge.normal {
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.status-badge.normal .status-dot {
+  background-color: #22c55e;
+}
+
+.status-badge.high {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.status-badge.high .status-dot {
+  background-color: #ef4444;
+}

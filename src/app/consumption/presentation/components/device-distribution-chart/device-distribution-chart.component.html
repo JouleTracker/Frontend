@@ -1,0 +1,28 @@
+<div class="chart-card">
+  <h3 class="chart-title">Distribución por dispositivos</h3>
+
+  <div class="chart-body">
+    <div class="donut-wrapper">
+      <canvas
+        baseChart
+        [data]="doughnutChartData"
+        [options]="doughnutChartOptions"
+        [type]="doughnutChartType">
+      </canvas>
+      <div class="center-label">
+        <span class="center-value">{{ totalKwh || '82.4' }} kwh</span>
+        <span class="center-sub">Total</span>
+      </div>
+    </div>
+
+    <div class="legend-list">
+      @for (item of items; track item.id) {
+        <div class="legend-item">
+          <span class="dot" [style.background-color]="item.color"></span>
+          <span class="name">{{ item.name }}</span>
+          <span class="pct">{{ item.percentage }}%</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>
