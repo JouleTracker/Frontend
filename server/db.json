@@ -1,0 +1,190 @@
+{
+  "consumption-summaries": [
+    {
+      "id": 1,
+      "totalConsumption": 82.4,
+      "totalConsumptionDiff": -12,
+      "totalConsumptionDiffLabel": "vs semana anterior",
+      "periodConsumption": 82.4,
+      "periodConsumptionDiff": -12,
+      "currentPower": 1.24,
+      "activeDevicesCount": 4,
+      "baselineMonthlyKwh": 196.8,
+      "savedKwhWeekly": 9.71,
+      "savedKwhMonthly": 114.4,
+      "estimatedCostDiff": -8,
+      "updatedAt": "2026-10-04T15:00:00.000Z"
+    }
+  ],
+  "energy-readings": [
+    {
+      "id": 1,
+      "period": "semana",
+      "labels": ["Lun 01", "Mar 02", "Mié 03", "Jue 04", "Vie 05", "Sáb 07", "Dom 08", "Lun 09", "Mar 10", "Mié 11", "Jue 12", "Vie 13"],
+      "values": [39, 65, 52, 84, 90, 12, 10, 26, 76, 71, 88, 92]
+    },
+    {
+      "id": 2,
+      "period": "dia",
+      "labels": ["00:00", "03:00", "06:00", "10:00", "13:00", "16:00", "18:00", "21:00", "23:00"],
+      "values": [0.8, 0.6, 1.2, 2.1, 1.9, 2.9, 3.8, 2.4, 1.3]
+    },
+    {
+      "id": 3,
+      "period": "mes",
+      "labels": ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
+      "values": [78, 85, 92, 82]
+    },
+    {
+      "id": 4,
+      "period": "ano",
+      "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+      "values": [290, 275, 310, 295, 320, 280, 290, 315, 285, 295, 310, 340]
+    }
+  ],
+  "device-distributions": [
+    {
+      "id": 1,
+      "name": "Aire acondicionado",
+      "percentage": 32,
+      "kwh": 26.37,
+      "color": "#165b16"
+    },
+    {
+      "id": 2,
+      "name": "Refrigeradora",
+      "percentage": 24,
+      "kwh": 19.78,
+      "color": "#d1d5db"
+    },
+    {
+      "id": 3,
+      "name": "Iluminación",
+      "percentage": 18,
+      "kwh": 14.83,
+      "color": "#d900df"
+    },
+    {
+      "id": 4,
+      "name": "Electrodomésticos",
+      "percentage": 14,
+      "kwh": 11.54,
+      "color": "#bfdbfe"
+    },
+    {
+      "id": 5,
+      "name": "Otros",
+      "percentage": 12,
+      "kwh": 9.89,
+      "color": "#eab308"
+    }
+  ],
+  "comparative-consumptions": [
+    {
+      "id": 1,
+      "month": "Ene",
+      "currentPeriod": 55,
+      "previousPeriod": 45
+    },
+    {
+      "id": 2,
+      "month": "Feb",
+      "currentPeriod": 140,
+      "previousPeriod": 70
+    },
+    {
+      "id": 3,
+      "month": "Mar",
+      "currentPeriod": 145,
+      "previousPeriod": 135
+    },
+    {
+      "id": 4,
+      "month": "Abr",
+      "currentPeriod": 140,
+      "previousPeriod": 60
+    },
+    {
+      "id": 5,
+      "month": "May",
+      "currentPeriod": 65,
+      "previousPeriod": 80
+    }
+  ],
+  "consumption-histories": [
+    {
+      "id": 1,
+      "date": "08/09/2026",
+      "consumption": "82.4kWh",
+      "cost": "S/ 57.68",
+      "status": "Normal"
+    },
+    {
+      "id": 2,
+      "date": "04/09/2026",
+      "consumption": "91.2kWh",
+      "cost": "S/ 63.84",
+      "status": "Alto"
+    },
+    {
+      "id": 3,
+      "date": "01/09/2026",
+      "consumption": "78.5kWh",
+      "cost": "S/ 54.95",
+      "status": "Normal"
+    },
+    {
+      "id": 4,
+      "date": "24/08/2026",
+      "consumption": "69.1kWh",
+      "cost": "S/ 48.37",
+      "status": "Normal"
+    }
+  ],
+  "alerts": [
+    {
+      "id": 1,
+      "title": "Consumo inusual detectado",
+      "description": "Tu consumo aumentó un 30% entre 6 p.m. y 8 p.m.",
+      "timeAgo": "Hace 2 horas",
+      "severity": "warning",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 2,
+      "title": "Dispositivos desconectados",
+      "description": "El sensor de la cocina está sin conexión.",
+      "timeAgo": "Hace 1 día",
+      "severity": "info",
+      "actionUrl": "/dispositivos"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": 1,
+      "title": "Optimiza el uso del aire acondicionado",
+      "description": "Podrías ahorrar hasta un 15% ajustando la temperatura a 24°C.",
+      "icon": "eco",
+      "category": "climatizacion",
+      "potentialSaving": "15%",
+      "actionUrl": "/recomendaciones"
+    },
+    {
+      "id": 2,
+      "title": "Cambia a iluminación LED",
+      "description": "Podrías reducir tu consumo en un 10%",
+      "icon": "lightbulb",
+      "category": "iluminacion",
+      "potentialSaving": "10%",
+      "actionUrl": "/recomendaciones"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Alex Rivera",
+      "email": "alex.rivera@gmail.com",
+      "role": "homeowner"
+    }
+  ]
+}
