@@ -1,0 +1,118 @@
+<div class="consumption-page">
+  <!-- Header Banner with House & Solar Panels Illustration -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">Consumo eléctrico</h1>
+      <p class="page-subtitle">Consulta y analiza tu consumo de energía en detalle.</p>
+    </div>
+    <div class="header-illustration" aria-hidden="true">
+      <svg viewBox="0 0 240 100" width="220" height="90" preserveAspectRatio="xMidYMid meet">
+        <!-- Background Hill & Trees -->
+        <ellipse cx="120" cy="95" rx="110" ry="25" fill="#bbf7d0" opacity="0.6"/>
+        <circle cx="50" cy="65" r="16" fill="#86efac"/>
+        <circle cx="70" cy="55" r="20" fill="#4ade80"/>
+        <circle cx="195" cy="55" r="18" fill="#4ade80"/>
+        <circle cx="215" cy="65" r="15" fill="#86efac"/>
+        <!-- House Body -->
+        <rect x="90" y="45" width="70" height="42" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" rx="2"/>
+        <!-- House Roof with Solar Panels -->
+        <polygon points="82,45 125,18 168,45" fill="#64748b"/>
+        <!-- Solar Panels on roof -->
+        <polygon points="98,42 124,24 136,32 110,42" fill="#1e3a8a"/>
+        <line x1="104" y1="37" x2="130" y2="28" stroke="#60a5fa" stroke-width="1"/>
+        <line x1="117" y1="42" x2="124" y2="24" stroke="#60a5fa" stroke-width="1"/>
+        <!-- Door & Windows -->
+        <rect x="100" y="58" width="14" height="29" fill="#94a3b8" rx="1"/>
+        <rect x="126" y="56" width="22" height="16" fill="#bae6fd" stroke="#38bdf8" stroke-width="1" rx="1"/>
+        <line x1="137" y1="56" x2="137" y2="72" stroke="#38bdf8" stroke-width="1"/>
+        <line x1="126" y1="64" x2="148" y2="64" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- 1. Top Stat Cards Row (Calculados reactivamente desde el dominio) -->
+  <section class="metrics-row">
+    <app-metric-card
+      icon="bolt"
+      iconTheme="theme-flash"
+      label="Consumo actual"
+      [value]="store.currentPower()"
+      unit="kw"
+      subtext="En tiempo real">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="bar_chart"
+      iconTheme="theme-green"
+      label="Consumo del período"
+      [value]="store.periodConsumption()"
+      unit="kwh"
+      [diff]="store.summary()?.periodConsumptionDiff ?? -12"
+      subtext="vs semana anterior">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="payments"
+      iconTheme="theme-money"
+      label="Costo estimado"
+      [value]="store.formattedPeriodCost()"
+      subtext="Con tus hábitos eficientes">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="savings"
+      iconTheme="theme-savings"
+      label="Ahorro estimado"
+      [value]="store.formattedEstimatedSavings()"
+      subtext="Con tus hábitos eficientes">
+    </app-metric-card>
+  </section>
+
+  <!-- 2. Charts Row: Energy Bar Chart & Device Distribution Doughnut -->
+  <section class="charts-middle-row">
+    <div class="col-main-chart">
+      <app-energy-chart
+        [reading]="store.energyReading()"
+        [selectedPeriod]="store.selectedPeriod()"
+        (periodChange)="store.setPeriod($event)">
+      </app-energy-chart>
+    </div>
+    <div class="col-donut-chart">
+      <app-device-distribution-chart
+        [items]="store.deviceDistributions()"
+        [totalKwh]="store.periodConsumption()">
+      </app-device-distribution-chart>
+    </div>
+  </section>
+
+  <!-- 3. Bottom Charts Row: Hourly Curve, Monthly Comparison & History Table -->
+  <section class="charts-lower-row">
+    <div class="col-third">
+      <app-hourly-chart
+        title="Consumo durante el día"
+        [showRealtimeHeader]="false"
+        [reading]="store.hourlyReading()">
+      </app-hourly-chart>
+    </div>
+    <div class="col-third">
+      <app-comparison-chart
+        [items]="store.comparativeConsumptions()">
+      </app-comparison-chart>
+    </div>
+    <div class="col-third">
+      <app-consumption-history-table
+        [items]="store.consumptionHistories()">
+      </app-consumption-history-table>
+    </div>
+  </section>
+
+  <!-- 4. Bottom Widgets Row: Recent Alerts & Recommendations -->
+  <section class="widgets-row">
+    <div class="col-half">
+      <app-recent-alerts-widget></app-recent-alerts-widget>
+    </div>
+    <div class="col-half">
+      <app-recommendations-widget></app-recommendations-widget>
+    </div>
+  </section>
+</div>

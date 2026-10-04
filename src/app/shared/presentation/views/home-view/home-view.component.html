@@ -1,0 +1,95 @@
+<div class="home-page">
+  <!-- Greeting Header -->
+  <header class="home-header">
+    <h1 class="greeting-title">¡Hola, Alex!</h1>
+    <p class="greeting-subtitle">Aquí tienes un resumen de tu consumo eléctrico.</p>
+  </header>
+
+  <!-- 1. Top Stat Cards Row (Calculados reactivamente desde el dominio) -->
+  <section class="metrics-row">
+    <app-metric-card
+      icon="bolt"
+      iconTheme="theme-flash"
+      label="Consumo total"
+      [value]="store.totalConsumption()"
+      unit="kWh"
+      [diff]="store.summary()?.totalConsumptionDiff ?? -12"
+      subtext="vs semana anterior">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="payments"
+      iconTheme="theme-money"
+      label="Costo estimado"
+      [value]="store.formattedEstimatedCost()"
+      [diff]="store.summary()?.totalConsumptionDiff ? -8 : undefined"
+      subtext="vs semana anterior">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="savings"
+      iconTheme="theme-savings"
+      label="Ahorro estimado"
+      [value]="store.formattedEstimatedSavings()"
+      subtext="Con tus hábitos eficientes">
+    </app-metric-card>
+
+    <app-metric-card
+      icon="devices"
+      iconTheme="theme-devices"
+      label="Dispositivos activos"
+      [value]="store.summary()?.activeDevicesCount ?? 4"
+      subtext="En línea">
+    </app-metric-card>
+  </section>
+
+  <!-- 2. Charts Row: Energy Bar Chart & Device Distribution Doughnut -->
+  <section class="charts-middle-row">
+    <div class="col-main-chart">
+      <app-energy-chart
+        [reading]="store.energyReading()"
+        [selectedPeriod]="store.selectedPeriod()"
+        (periodChange)="store.setPeriod($event)">
+      </app-energy-chart>
+    </div>
+    <div class="col-donut-chart">
+      <app-device-distribution-chart
+        [items]="store.deviceDistributions()"
+        [totalKwh]="store.totalConsumption()">
+      </app-device-distribution-chart>
+    </div>
+  </section>
+
+  <!-- 3. Lower Row: Realtime Area Chart, Monthly Comparison & Avoided Emissions -->
+  <section class="charts-lower-row">
+    <div class="col-third">
+      <app-hourly-chart
+        title="Consumo en tiempo real"
+        [showRealtimeHeader]="true"
+        [realtimeKw]="store.currentPower()"
+        [reading]="store.hourlyReading()">
+      </app-hourly-chart>
+    </div>
+    <div class="col-third">
+      <app-comparison-chart
+        [items]="store.comparativeConsumptions()">
+      </app-comparison-chart>
+    </div>
+    <div class="col-third">
+      <app-avoided-emissions-card
+        [kg]="store.avoidedEmissionsKg()"
+        [equivalence]="store.avoidedEmissionsEquivalence()">
+      </app-avoided-emissions-card>
+    </div>
+  </section>
+
+  <!-- 4. Bottom Widgets Row: Recent Alerts & Recommendations -->
+  <section class="widgets-row">
+    <div class="col-half">
+      <app-recent-alerts-widget></app-recent-alerts-widget>
+    </div>
+    <div class="col-half">
+      <app-recommendations-widget></app-recommendations-widget>
+    </div>
+  </section>
+</div>

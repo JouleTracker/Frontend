@@ -1,0 +1,75 @@
+.consumption-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 10px 4px 40px 4px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.page-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px 0;
+}
+
+.page-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.header-illustration {
+  display: flex;
+  align-items: center;
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.charts-middle-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  min-height: 330px;
+}
+
+.charts-lower-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  min-height: 250px;
+}
+
+.widgets-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 1200px) {
+  .metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .charts-middle-row {
+    grid-template-columns: 1fr;
+  }
+  .charts-lower-row {
+    grid-template-columns: 1fr;
+  }
+  .widgets-row {
+    grid-template-columns: 1fr;
+  }
+}
