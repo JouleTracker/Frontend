@@ -12,6 +12,7 @@ export interface Device {
   lastActivity: string;
 }
 
+
 export interface DeviceSummary {
   id: number;
   connectedDevices: number;
