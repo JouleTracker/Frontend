@@ -5,8 +5,8 @@ import { Device, DeviceSummary } from '../../../domain/model/device.model';
 import { DeviceService } from '../../../infrastructure/services/device.service';
 
 /**
- * @description Componente de Presentación para el Bounded Context de Dispositivos.
- * Se encarga de la interacción del usuario, filtrado, ordenamiento y renderizado de la UI.
+ * Devices page.
+ * Shows the summary cards and the device table, with search, category tabs and sorting.
  */
 @Component({
   selector: 'app-devices-view',
@@ -16,12 +16,12 @@ import { DeviceService } from '../../../infrastructure/services/device.service';
   styleUrls: ['./devices-view.component.css'],
 })
 export class DevicesViewComponent implements OnInit {
-  // --- Propiedades de Estado de la Vista ---
-  devices: Device[] = [];
-  filteredDevices: Device[] = [];
+  // --- View State ---
+  devices: Device[] = []; // Original list from the service (never modified)
+  filteredDevices: Device[] = []; // List shown in the table after filters
   summary: DeviceSummary | null = null;
 
-  // --- Filtros y Criterios de Búsqueda ---
+  // --- Filters and Search Criteria ---
   searchTerm: string = '';
   selectedCategory: string = 'Todos';
   selectedSort: string = 'consumo-desc';
@@ -36,7 +36,7 @@ export class DevicesViewComponent implements OnInit {
   }
 
   /**
-   * Carga la lista principal de dispositivos desde la capa de Infraestructura
+   * Loads the devices and applies the filters so the table is filled on start.
    */
   private loadDevices(): void {
     this.deviceService.getDevices().subscribe({
@@ -49,7 +49,7 @@ export class DevicesViewComponent implements OnInit {
   }
 
   /**
-   * Carga las métricas resumidas superiores
+   * Loads the data for the top cards (uses the first summary returned).
    */
   private loadSummary(): void {
     this.deviceService.getDeviceSummaries().subscribe({
@@ -63,12 +63,12 @@ export class DevicesViewComponent implements OnInit {
   }
 
   /**
-   * Aplica los filtros de búsqueda por texto, categoría y ordenamiento
+   * Applies the current filters and sorting to the device list.
    */
   applyFilters(): void {
     let result = [...this.devices];
 
-    // 1. Filtrado por término de búsqueda (Nombre o Ubicación)
+    // 1. Search by name or location
     if (this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(
@@ -76,14 +76,14 @@ export class DevicesViewComponent implements OnInit {
       );
     }
 
-    // 2. Filtrado por categoría
+    // 2. Category ('Todos' skips this filter)
     if (this.selectedCategory !== 'Todos') {
       result = result.filter(
         (d) => d.category.toLowerCase() === this.selectedCategory.toLowerCase(),
       );
     }
 
-    // 3. Ordenamiento
+    // 3. Sorting
     if (this.selectedSort === 'consumo-desc') {
       result.sort((a, b) => b.currentPowerKw - a.currentPowerKw);
     } else if (this.selectedSort === 'consumo-asc') {
@@ -96,7 +96,7 @@ export class DevicesViewComponent implements OnInit {
   }
 
   /**
-   * Cambia la pestaña de categoría seleccionada
+   * Changes the active category tab and refreshes the table.
    */
   selectCategory(category: string): void {
     this.selectedCategory = category;
@@ -104,7 +104,7 @@ export class DevicesViewComponent implements OnInit {
   }
 
   /**
-   * Retorna las clases CSS dinámicas según el estado del dispositivo
+   * Returns the CSS class of the status badge (green, red or yellow dot).
    */
   getStatusClass(status: string): string {
     switch (status) {

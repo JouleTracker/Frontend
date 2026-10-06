@@ -1,17 +1,14 @@
-<!-- ==========================================
-     BOUNDED CONTEXT: DISPOSITIVOS (PRESENTACIÓN)
-     ========================================== -->
 <div class="devices-container">
 
-  <!-- ENCABEZADO Y BUSCADOR PRINCIPAL -->
+  <!-- HEADER SECTION WITH TITLE AND MAIN SEARCH/ADD ACTIONS -->
   <header class="header-section">
     <div class="title-group">
       <h1>Dispositivos</h1>
-      <p class="subtitle">Gestiona y monirorea los dispositivos conectados a tu red eléctrica</p>
+      <p class="subtitle">Gestiona y monitorea los dispositivos conectados a tu red eléctrica</p>
     </div>
 
     <div class="header-actions">
-      <!-- Buscador -->
+      <!-- Search Input -->
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input
@@ -19,67 +16,90 @@
           placeholder="Buscar dispositivo..."
           [(ngModel)]="searchTerm"
           (input)="applyFilters()"
+          aria-label="Search devices"
         />
       </div>
 
-      <!-- Botón Agregar Dispositivo -->
+      <!-- Add Device CTA Button -->
       <button class="btn-primary">
-        <span>+</span> Agregar dispositivo
+        <span class="btn-icon">+</span> Agregar dispositivo
       </button>
     </div>
   </header>
 
-  <!-- TARJETAS DE MÉTRICAS Y RESUMEN SUPERIOR -->
+  <!-- TOP SUMMARY METRIC CARDS (SPACED LOWER ACCORDING TO MOCKUP) -->
   <section class="summary-cards">
 
-    <!-- Tarjeta 1: Dispositivos Conectados -->
-    <div class="metric-card">
-      <div class="card-icon icon-bg-gray">🔌</div>
+    <!-- Card 1: Connected Devices -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-gray">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22v-5"/>
+          <path d="M9 8V2"/>
+          <path d="M15 8V2"/>
+          <path d="M18 8v5a6 6 0 0 1-12 0V8z"/>
+        </svg>
+      </div>
       <div class="card-content">
         <span class="card-label">Dispositivos conectados</span>
         <div class="card-value">{{ summary?.connectedDevices || 8 }}</div>
         <span class="card-subtext">{{ summary?.waitingDevices || 4 }} en espera</span>
       </div>
-    </div>
+    </article>
 
-    <!-- Tarjeta 2: Consumo Total Actual -->
-    <div class="metric-card">
-      <div class="card-icon icon-bg-green">⚡</div>
-      <div class="card-content card-content-right">
+    <!-- Card 2: Current Total Power -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <div class="card-content">
         <div class="card-value">{{ summary?.totalPowerKw || 1.2 }}kw</div>
         <span class="card-label">Consumo total actual</span>
         <span class="card-subtext trend-down">↓ {{ summary?.powerDiffVsYesterdayLabel || '12% vs ayer' }}</span>
       </div>
-    </div>
+    </article>
 
-    <!-- Tarjeta 3: Costo Estimado -->
-    <div class="metric-card">
-      <div class="card-icon icon-bg-green">💵</div>
-      <div class="card-content card-content-right">
+    <!-- Card 3: Estimated Monthly Cost -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="2"/>
+          <circle cx="12" cy="12" r="2"/>
+          <path d="M6 12h.01M18 12h.01"/>
+        </svg>
+      </div>
+      <div class="card-content">
         <div class="card-value">S/{{ (summary?.estimatedCostSoles || 35.20) | number:'1.2-2' }}</div>
         <span class="card-label">Costo estimado(mes)</span>
         <span class="card-subtext trend-down">↓ {{ summary?.costDiffVsMonthLabel || '8% vs mes anterior' }}</span>
       </div>
-    </div>
+    </article>
 
-    <!-- Tarjeta 4: CO2 Evitado -->
-    <div class="metric-card">
-      <div class="card-icon icon-bg-green">🌱</div>
-      <div class="card-content card-content-right">
+    <!-- Card 4: Monthly CO2 Avoided -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 4.4-3.6 8-8 8z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+      </div>
+      <div class="card-content">
         <div class="card-value">{{ summary?.co2AvoidedKg || 28.6 }} kg</div>
         <span class="card-label">CO₂ evitado (mes)</span>
         <span class="card-subtext">Equivale a 1 árbol</span>
       </div>
-    </div>
+    </article>
 
   </section>
 
-  <!-- TABLA Y FILTROS DE DISPOSITIVOS -->
+  <!-- MAIN CARD CONTAINING TABLE & FILTERS -->
   <section class="main-card">
 
-    <!-- Barra de Filtros (Pestañas y Ordenar Por) -->
+    <!-- Filter tabs and order selector -->
     <div class="table-toolbar">
-      <nav class="category-tabs">
+      <nav class="category-tabs" aria-label="Device Categories">
         <button
           *ngFor="let cat of categories"
           [class.active]="selectedCategory === cat"
@@ -89,8 +109,8 @@
       </nav>
 
       <div class="sort-selector">
-        <label for="sort">Ordenar por</label>
-        <select id="sort" [(ngModel)]="selectedSort" (change)="applyFilters()">
+        <label for="sortSelect">Ordenar por</label>
+        <select id="sortSelect" [(ngModel)]="selectedSort" (change)="applyFilters()">
           <option value="consumo-desc">Consumo (mayor a menor)</option>
           <option value="consumo-asc">Consumo (menor a mayor)</option>
           <option value="nombre">Nombre</option>
@@ -98,7 +118,7 @@
       </div>
     </div>
 
-    <!-- Tabla de Dispositivos -->
+    <!-- Data Table -->
     <div class="table-responsive">
       <table class="devices-table">
         <thead>
@@ -114,41 +134,27 @@
         </thead>
         <tbody>
         <tr *ngFor="let device of filteredDevices">
-          <!-- Nombre y Ubicación -->
           <td>
             <div class="device-name-cell">
               <strong>{{ device.name }}</strong>
               <span class="location-tag">{{ device.location }}</span>
             </div>
           </td>
-
-          <!-- Estado -->
           <td>
               <span class="status-badge" [ngClass]="getStatusClass(device.status)">
                 <span class="status-dot"></span>
                 {{ device.status }}
               </span>
           </td>
-
-          <!-- Consumo Actual -->
           <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
-
-          <!-- Consumo Hoy -->
           <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
-
-          <!-- Costo Hoy -->
           <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
-
-          <!-- Última Actividad -->
           <td class="text-muted">{{ device.lastActivity }}</td>
-
-          <!-- Acciones -->
           <td class="action-cell">
-            <button class="btn-more" title="Opciones">⋮</button>
+            <button class="btn-more" title="Opciones" aria-label="More options">⋮</button>
           </td>
         </tr>
 
-        <!-- Estado Vacío -->
         <tr *ngIf="filteredDevices.length === 0">
           <td colspan="7" class="empty-message">
             No se encontraron dispositivos que coincidan con los criterios.
@@ -160,40 +166,59 @@
 
   </section>
 
-  <!-- TARJETAS DE ACCIÓN Y SUGERENCIAS INFERIORES -->
+  <!-- LOWER BANNERS SECTION -->
   <section class="action-banners">
-    <div class="banner-card">
-      <div class="banner-header">
-        <div class="banner-icon-circle">+</div>
-        <div class="banner-text">
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+        </div>
+        <div class="banner-info">
           <h3>Añade nuevos dispositivos</h3>
           <p>Conecta más dispositivos para obtener un análisis completo de tu consumo</p>
         </div>
       </div>
-      <button class="btn-banner">Agregar dispositivo</button>
-    </div>
+      <button class="btn-banner btn-dark">Agregar dispositivo</button>
+    </article>
 
-    <div class="banner-card">
-      <div class="banner-header">
-        <div class="banner-icon-circle icon-outline">⚙️</div>
-        <div class="banner-text">
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="banner-info">
           <h3>Configura tus dispositivos</h3>
-          <p>Personaliza nombres, categorías y umbrales de consumo</p>
+          <p>Personaliza nombres, categorías y umbrales de consumo.</p>
         </div>
       </div>
-      <button class="btn-banner btn-secondary">Ir a configuración</button>
-    </div>
+      <button class="btn-banner btn-light">Ir a configuración</button>
+    </article>
 
-    <div class="banner-card">
-      <div class="banner-header">
-        <div class="banner-icon-circle icon-outline">📊</div>
-        <div class="banner-text">
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <div class="banner-info">
           <h3>Identifica grandes consumos</h3>
-          <p>Detecta qué dispositivos consumen más energía y optimiza su uso</p>
+          <p>Detecta qué dispositivos consumen más energía y optimiza su uso.</p>
         </div>
       </div>
-      <button class="btn-banner btn-secondary">Ver recomendaciones</button>
-    </div>
+      <button class="btn-banner btn-light">Ver recomendaciones</button>
+    </article>
+
   </section>
 
 </div>

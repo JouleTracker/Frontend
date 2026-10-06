@@ -1,5 +1,7 @@
+/** Device operational status */
 export type DeviceStatus = 'En línea' | 'Apagado' | 'En espera';
 
+/** Monitored device domain entity */
 export interface Device {
   id: string;
   name: string;
@@ -12,7 +14,7 @@ export interface Device {
   lastActivity: string;
 }
 
-
+/** Aggregated system metrics */
 export interface DeviceSummary {
   id: number;
   connectedDevices: number;
