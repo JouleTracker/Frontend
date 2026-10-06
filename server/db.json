@@ -20,7 +20,20 @@
     {
       "id": 1,
       "period": "semana",
-      "labels": ["Lun 01", "Mar 02", "Mié 03", "Jue 04", "Vie 05", "Sáb 07", "Dom 08", "Lun 09", "Mar 10", "Mié 11", "Jue 12", "Vie 13"],
+      "labels": [
+        "Lun 01",
+        "Mar 02",
+        "Mié 03",
+        "Jue 04",
+        "Vie 05",
+        "Sáb 07",
+        "Dom 08",
+        "Lun 09",
+        "Mar 10",
+        "Mié 11",
+        "Jue 12",
+        "Vie 13"
+      ],
       "values": [39, 65, 52, 84, 90, 12, 10, 26, 76, 71, 88, 92]
     },
     {
@@ -38,7 +51,20 @@
     {
       "id": 4,
       "period": "ano",
-      "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+      "labels": [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Oct",
+        "Nov",
+        "Dic"
+      ],
       "values": [290, 275, 310, 295, 320, 280, 290, 315, 285, 295, 310, 340]
     }
   ],
@@ -186,5 +212,121 @@
       "email": "alex.rivera@gmail.com",
       "role": "homeowner"
     }
+  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  "devices": [
+    {
+      "id": "1",
+      "name": "Aire acondicionado",
+      "location": "Sala",
+      "category": "Hogar",
+      "status": "En línea",
+      "currentPowerKw": 0.48,
+      "todayKwh": 5.2,
+      "todayCostSoles": 2.24,
+      "lastActivity": "Hace 5 min"
+    },
+    {
+      "id": "2",
+      "name": "Refrigeradora",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "En línea",
+      "currentPowerKw": 0.32,
+      "todayKwh": 3.8,
+      "todayCostSoles": 1.64,
+      "lastActivity": "Hace 5 min"
+    },
+    {
+      "id": "3",
+      "name": "Lavadora",
+      "location": "Lavandería",
+      "category": "Hogar",
+      "status": "Apagado",
+      "currentPowerKw": 0.0,
+      "todayKwh": 0.0,
+      "todayCostSoles": 0.0,
+      "lastActivity": "Hace 5 min"
+    },
+    {
+      "id": "4",
+      "name": "Televisor",
+      "location": "Sala",
+      "category": "Entretenimiento",
+      "status": "En línea",
+      "currentPowerKw": 0.18,
+      "todayKwh": 2.1,
+      "todayCostSoles": 0.9,
+      "lastActivity": "Hace 10 min"
+    },
+    {
+      "id": "5",
+      "name": "Microondas",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "En espera",
+      "currentPowerKw": 0.0,
+      "todayKwh": 0.0,
+      "todayCostSoles": 0.0,
+      "lastActivity": "Hace 3 h"
+    },
+    {
+      "id": "6",
+      "name": "Computadora",
+      "location": "Oficina",
+      "category": "Oficina",
+      "status": "En línea",
+      "currentPowerKw": 0.12,
+      "todayKwh": 1.4,
+      "todayCostSoles": 0.6,
+      "lastActivity": "Hace 12 min"
+    }
+  ],
+  "device-summaries": [
+    {
+      "id": 1,
+      "connectedDevices": 8,
+      "waitingDevices": 4,
+      "totalPowerKw": 1.2,
+      "powerDiffVsYesterdayLabel": "12% vs ayer",
+      "estimatedCostSoles": 35.2,
+      "costDiffVsMonthLabel": "8% vs mes anterior",
+      "co2AvoidedKg": 28.6
+    }
   ]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
