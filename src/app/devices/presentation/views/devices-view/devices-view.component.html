@@ -10,35 +10,30 @@
     <div class="header-actions">
       <!-- Search Input -->
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <mat-icon class="search-icon icon-dark-single">search</mat-icon>
         <input
           type="text"
           placeholder="Buscar dispositivo..."
           [(ngModel)]="searchTerm"
           (input)="applyFilters()"
-          aria-label="Search devices"
+          aria-label="Buscar dispositivos"
         />
       </div>
 
       <!-- Add Device CTA Button -->
-      <button class="btn-primary">
-        <span class="btn-icon">+</span> Agregar dispositivo
+      <button type="button" class="btn-primary">
+        <mat-icon class="btn-icon icon-dark-single">add</mat-icon> Agregar dispositivo
       </button>
     </div>
   </header>
 
-  <!-- TOP SUMMARY METRIC CARDS (SPACED LOWER ACCORDING TO MOCKUP) -->
-  <section class="summary-cards">
+  <!-- TOP SUMMARY METRIC CARDS -->
+  <section class="summary-cards" aria-label="Resumen de dispositivos">
 
     <!-- Card 1: Connected Devices -->
     <article class="metric-card">
       <div class="card-icon icon-bg-gray">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22v-5"/>
-          <path d="M9 8V2"/>
-          <path d="M15 8V2"/>
-          <path d="M18 8v5a6 6 0 0 1-12 0V8z"/>
-        </svg>
+        <mat-icon class="icon-dark-single">power</mat-icon>
       </div>
       <div class="card-content">
         <span class="card-label">Dispositivos conectados</span>
@@ -50,12 +45,10 @@
     <!-- Card 2: Current Total Power -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
+        <mat-icon class="icon-dark-single">bolt</mat-icon>
       </div>
       <div class="card-content">
-        <div class="card-value">{{ summary?.totalPowerKw || 1.2 }}kw</div>
+        <div class="card-value">{{ summary?.totalPowerKw || 1.2 }}kW</div>
         <span class="card-label">Consumo total actual</span>
         <span class="card-subtext trend-down">↓ {{ summary?.powerDiffVsYesterdayLabel || '12% vs ayer' }}</span>
       </div>
@@ -64,11 +57,7 @@
     <!-- Card 3: Estimated Monthly Cost -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="6" width="20" height="12" rx="2"/>
-          <circle cx="12" cy="12" r="2"/>
-          <path d="M6 12h.01M18 12h.01"/>
-        </svg>
+        <mat-icon class="icon-dark-single">payments</mat-icon>
       </div>
       <div class="card-content">
         <div class="card-value">S/{{ (summary?.estimatedCostSoles || 35.20) | number:'1.2-2' }}</div>
@@ -80,10 +69,7 @@
     <!-- Card 4: Monthly CO2 Avoided -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 4.4-3.6 8-8 8z"/>
-          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-        </svg>
+        <mat-icon class="icon-dark-single">eco</mat-icon>
       </div>
       <div class="card-content">
         <div class="card-value">{{ summary?.co2AvoidedKg || 28.6 }} kg</div>
@@ -99,13 +85,15 @@
 
     <!-- Filter tabs and order selector -->
     <div class="table-toolbar">
-      <nav class="category-tabs" aria-label="Device Categories">
-        <button
-          *ngFor="let cat of categories"
-          [class.active]="selectedCategory === cat"
-          (click)="selectCategory(cat)">
-          {{ cat }}
-        </button>
+      <nav class="category-tabs" aria-label="Categorías de dispositivos">
+        @for (cat of categories; track cat) {
+          <button
+            type="button"
+            [class.active]="selectedCategory === cat"
+            (click)="selectCategory(cat)">
+            {{ cat }}
+          </button>
+        }
       </nav>
 
       <div class="sort-selector">
@@ -129,37 +117,39 @@
           <th>Consumo hoy</th>
           <th>Costo hoy</th>
           <th>Última actividad</th>
-          <th>Acciones</th>
+          <th class="text-right">Acciones</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let device of filteredDevices">
-          <td>
-            <div class="device-name-cell">
-              <strong>{{ device.name }}</strong>
-              <span class="location-tag">{{ device.location }}</span>
-            </div>
-          </td>
-          <td>
-              <span class="status-badge" [ngClass]="getStatusClass(device.status)">
-                <span class="status-dot"></span>
-                {{ device.status }}
-              </span>
-          </td>
-          <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
-          <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
-          <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
-          <td class="text-muted">{{ device.lastActivity }}</td>
-          <td class="action-cell">
-            <button class="btn-more" title="Opciones" aria-label="More options">⋮</button>
-          </td>
-        </tr>
-
-        <tr *ngIf="filteredDevices.length === 0">
-          <td colspan="7" class="empty-message">
-            No se encontraron dispositivos que coincidan con los criterios.
-          </td>
-        </tr>
+          @for (device of filteredDevices; track device.id || device.name) {
+            <tr>
+              <td>
+                <div class="device-name-cell">
+                  <strong>{{ device.name }}</strong>
+                  <span class="location-tag">{{ device.location }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(device.status)">
+                  <span class="status-dot"></span>
+                  {{ device.status }}
+                </span>
+              </td>
+              <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
+              <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
+              <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
+              <td class="text-muted">{{ device.lastActivity }}</td>
+              <td class="action-cell text-right">
+                <button type="button" class="btn-more" title="Opciones" aria-label="Más opciones">⋮</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-message">
+                No se encontraron dispositivos que coincidan con los criterios.
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
@@ -172,51 +162,40 @@
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/>
-            <line x1="12" y1="8" x2="12" y2="16"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
+          <mat-icon class="icon-dark-single">add_circle_outline</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Añade nuevos dispositivos</h3>
           <p>Conecta más dispositivos para obtener un análisis completo de tu consumo</p>
         </div>
       </div>
-      <button class="btn-banner btn-dark">Agregar dispositivo</button>
+      <button type="button" class="btn-banner btn-dark">Agregar dispositivo</button>
     </article>
 
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
+          <mat-icon class="icon-dark-single">settings</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Configura tus dispositivos</h3>
           <p>Personaliza nombres, categorías y umbrales de consumo.</p>
         </div>
       </div>
-      <button class="btn-banner btn-light">Ir a configuración</button>
+      <button type="button" class="btn-banner btn-light" (click)="goToSettings()">Ir a configuración</button>
     </article>
 
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
+          <mat-icon class="icon-dark-single">insights</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Identifica grandes consumos</h3>
           <p>Detecta qué dispositivos consumen más energía y optimiza su uso.</p>
         </div>
       </div>
-      <button class="btn-banner btn-light">Ver recomendaciones</button>
+      <button type="button" class="btn-banner btn-light">Ver recomendaciones</button>
     </article>
 
   </section>

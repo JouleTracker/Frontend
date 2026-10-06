@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { Device, DeviceSummary } from '../../../domain/model/device.model';
 import { DeviceService } from '../../../infrastructure/services/device.service';
 
@@ -11,11 +13,13 @@ import { DeviceService } from '../../../infrastructure/services/device.service';
 @Component({
   selector: 'app-devices-view',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './devices-view.component.html',
   styleUrls: ['./devices-view.component.css'],
 })
 export class DevicesViewComponent implements OnInit {
+  private router = inject(Router);
+
   // --- View State ---
   devices: Device[] = []; // Original list from the service (never modified)
   filteredDevices: Device[] = []; // List shown in the table after filters
@@ -33,6 +37,13 @@ export class DevicesViewComponent implements OnInit {
   ngOnInit(): void {
     this.loadDevices();
     this.loadSummary();
+  }
+
+  /**
+   * Navigates user to the application settings view.
+   */
+  goToSettings(): void {
+    this.router.navigate(['/settings']);
   }
 
   /**

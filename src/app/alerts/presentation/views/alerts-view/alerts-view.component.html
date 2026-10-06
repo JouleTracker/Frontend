@@ -1,34 +1,174 @@
-<main class="alerts-page">
-  <header class="page-header">
-    <div>
-      <h1>Alertas</h1>
-      <p>Revisa las notificaciones y el estado de tus dispositivos.</p>
-    </div>
+<!-- Main container for alerts management -->
+<main class="alerts-container">
+
+  <!-- Header section -->
+  <header class="header-section">
+    <h1>Alertas</h1>
+    <p class="subtitle">Mantente informado sobre tu consumo y recibe notificaciones en tiempo real</p>
   </header>
 
-  @if (store.loading()) {
-    <p class="message" role="status">Cargando alertas...</p>
-  } @else if (store.error() && store.alerts().length === 0) {
-    <p class="message error-message" role="alert">{{ store.error() }}</p>
-  } @else if (store.alerts().length === 0) {
-    <p class="message">No tienes alertas por el momento.</p>
-  } @else {
-    <section class="alerts-list" aria-label="Lista de alertas">
-      @for (alert of store.alerts(); track alert.id) {
-        <a class="alert-card" [class]="alert.severity" [routerLink]="alert.actionUrl">
-          <mat-icon class="alert-icon">
-            {{ alert.severity === 'warning' ? 'warning_amber' : alert.severity === 'error' ? 'error_outline' : 'info_outline' }}
-          </mat-icon>
-          <div class="alert-content">
-            <div class="alert-heading">
-              <h2>{{ alert.title }}</h2>
-              <time>{{ alert.timeAgo }}</time>
-            </div>
-            <p>{{ alert.description }}</p>
-          </div>
-          <mat-icon class="chevron-icon">chevron_right</mat-icon>
-        </a>
-      }
-    </section>
-  }
+  <!-- Top summary metrics cards -->
+  <section class="summary-cards" aria-label="Resumen de alertas">
+    <article class="metric-card">
+      <div class="icon-box icon-red">
+        <mat-icon class="icon-dark-single">notifications</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">3</span>
+        <span class="metric-label">Alertas activas</span>
+        <span class="metric-sub">Requieren tu atención</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-green">
+        <mat-icon class="icon-dark-single">check_circle_outline</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">5</span>
+        <span class="metric-label">Alertas resueltas</span>
+        <span class="metric-sub">Últimos 30 días</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-dark">
+        <mat-icon class="icon-dark-single">reorder</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">12</span>
+        <span class="metric-label">Total de alertas</span>
+        <span class="metric-sub">Este mes</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-arrow">
+        <mat-icon class="icon-dark-single">arrow_downward</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">↓ 25%</span>
+        <span class="metric-label">Reducción de alertas</span>
+        <span class="metric-sub">vs mes anterior</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Main table container -->
+  <section class="main-card">
+    <div class="table-header">
+      <!-- Interactive Navigation Tabs -->
+      <nav class="tabs-nav" aria-label="Filtro de categorías">
+        @for (category of categories; track category) {
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="selectedCategory() === category"
+            (click)="selectCategory(category)">
+            {{ category }}
+          </button>
+        }
+      </nav>
+
+      <div class="filter-dropdown">
+        <select aria-label="Ordenar alertas">
+          <option value="recent">Más recientes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Async loading states -->
+    @if (store.loading()) {
+      <p class="message" role="status">Cargando alertas...</p>
+    } @else if (store.error() && store.alerts().length === 0) {
+      <p class="message error-message" role="alert">{{ store.error() }}</p>
+    } @else if (store.alerts().length === 0) {
+      <p class="message">No tienes alertas por el momento.</p>
+    } @else {
+      <!-- Alerts datatable -->
+      <div class="table-container">
+        <table class="alerts-table">
+          <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Mensaje</th>
+            <th>Dispositivo</th>
+            <th>Fecha y hora</th>
+            <th>Estado</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (alert of store.alerts(); track alert.id) {
+              <tr>
+                <td>
+                  <div class="device-cell">
+                    <strong>{{ alert.title }}</strong>
+                    <span>{{ alert.description }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="dot" [ngClass]="alert.severity === 'warning' ? 'dot-amber' : alert.severity === 'error' ? 'dot-red' : 'dot-green'"></span>
+                  {{ alert.severity === 'warning' ? 'En espera' : alert.severity === 'error' ? 'Apagado' : 'En línea' }}
+                </td>
+                <td>0.48 kW</td>
+                <td class="text-muted"><time>{{ alert.timeAgo }}</time></td>
+                <td>
+                  <span class="pill" [ngClass]="alert.severity === 'error' ? 'pill-red' : alert.severity === 'warning' ? 'pill-green' : 'pill-gray'">
+                    {{ alert.severity === 'error' ? 'Activa' : alert.severity === 'warning' ? 'Leída' : 'Resuelta' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button class="btn-dots" aria-label="Más opciones">⋮</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <!-- Bottom action banners -->
+  <section class="banner-cards">
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon class="icon-dark-single">notifications_active</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Personaliza tus alertas</h3>
+          <p>Elige qué tipos de notificaciones quieres recibir y por qué medios.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action" (click)="goToSettings()">Ir a configuración</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon class="icon-dark-single">mail_outline</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Recibe notificaciones</h3>
+          <p>Activa las notificaciones push, correo electrónico o SMS.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action" (click)="goToSettings()">Configurar notificaciones</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon class="icon-dark-single">bar_chart</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Mantén el control</h3>
+          <p>Las alertas te ayudan a detectar anomalías y ahorrar en tu consumo.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action">Conoce más</button>
+    </article>
+  </section>
+
 </main>
