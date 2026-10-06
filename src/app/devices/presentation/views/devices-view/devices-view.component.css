@@ -1,965 +1,269 @@
-/* =========================================================================
-   STYLE SHEET: DEVICES VIEW (CLEAN INFORMATIVE DASHBOARD + REAL RESPONSIVE)
-   - Responsive to the REAL width of the dashboard area (sidebar excluded)
-     using container queries, not the screen width
-   - Tiers: 4K TV / TV & large monitors / laptops / small laptops & tablets /
-            tablets portrait / phones (table becomes cards) / small phones
-   - No entrance animations, neutral background, subtle hovers only
-   ========================================================================= */
-
-/* -------------------------------------------------------------------------
-   0. COMPONENT HOST = SIZE CONTAINER
-   The host measures the space that is really available next to the sidebar.
-   Also prevents the content from pushing the page wider than the screen.
-   ------------------------------------------------------------------------- */
-:host {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  container-type: inline-size;
-  container-name: devices;
-  background-color: #f8fafc;
-}
-
-/* -------------------------------------------------------------------------
-   1. DESIGN TOKENS (DEFAULT = LAPTOP / DESKTOP)
-   Every size lives in a token so each tier only overrides the tokens.
-   ------------------------------------------------------------------------- */
 .devices-container {
-  /* Colors */
-  --green-900: #0f3823;
-  --green-950: #082717;
-  --green-700: #059669;
-  --green-300: #86efac;
-  --green-200: #a7f3d0;
-  --green-100: #c7f2d6;
-  --slate-900: #0f172a;
-  --slate-600: #475569;
-  --slate-500: #64748b;
-  --slate-400: #94a3b8;
-  --border: #e2e8f0;
-
-  /* Layout */
-  --page-pad-x: 48px;
-  --page-pad-top: 40px;
-  --max-width: 1500px;
-  --header-gap: 56px;
-  --section-gap: 44px;
-  --grid-gap: 22px;
-  --card-pad: 26px;
-  --main-pad: 32px;
-
-  /* Typography */
-  --fs-title: 38px;
-  --fs-sub: 14px;
-  --fs-label: 12px;
-  --fs-small: 11px;
-  --fs-value: 26px;
-  --fs-table: 13px;
-  --fs-tab: 14px;
-  --fs-btn: 13px;
-  --fs-input: 13px;
-  --fs-banner-title: 15px;
-  --fs-banner-text: 12px;
-
-  /* Icons */
-  --icon-card: 52px;
-  --icon-banner: 60px;
-}
-
-/* Soft pulse used for the "online" status dot */
-@keyframes pulseDot {
-  0%   { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
-  70%  { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
-/* -------------------------------------------------------------------------
-   2. MAIN CONTAINER - Original neutral background
-   ------------------------------------------------------------------------- */
-.devices-container {
-  /* Content stays centered with a max width on very wide areas */
-  padding-top: var(--page-pad-top);
-  padding-bottom: calc(var(--page-pad-top) + 16px);
-  padding-left: max(var(--page-pad-x), calc((100% - var(--max-width)) / 2));
-  padding-right: max(var(--page-pad-x), calc((100% - var(--max-width)) / 2));
-  background-color: #f8fafc; /* Color neutro original */
+  padding: 32px 40px;
+  background-color: #eef3f0;
   min-height: 100vh;
-  min-height: 100dvh; /* Correct height on mobile browsers with dynamic toolbars */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #1e293b;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  overflow-x: hidden; /* Avoids accidental horizontal page scroll */
-}
-
-.devices-container *,
-.devices-container *::before,
-.devices-container *::after {
   box-sizing: border-box;
 }
 
-/* -------------------------------------------------------------------------
-   3. HEADER SECTION & ACTIONS
-   ------------------------------------------------------------------------- */
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--header-gap); /* Big gap: pushes the metric cards lower */
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
 }
-
-.title-group {
-  min-width: 0; /* Lets long text wrap inside flex */
-}
-
 .title-group h1 {
-  font-size: var(--fs-title);
+  font-size: 32px;
   font-weight: 800;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.8px;
-  color: #0d1e2d;
-  line-height: 1.15;
+  color: #111827;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
 }
-
-.subtitle {
+.title-group .subtitle {
+  font-size: 13px;
+  color: #4b5563;
   margin: 0;
-  color: var(--slate-500);
-  font-size: var(--fs-sub);
-  line-height: 1.5;
 }
 
 .header-actions {
   display: flex;
-  gap: 12px;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .search-box {
-  position: relative;
   display: flex;
   align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  font-size: var(--fs-input);
-  color: var(--slate-400);
-  pointer-events: none;
-}
-
-.search-box input {
-  padding: 0.8em 1em 0.8em 2.8em;
-  border: 1px solid #dbe2e8;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: var(--fs-input);
-  outline: none;
-  background-color: #ffffff;
-  width: 17em;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 7px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-
-.search-box input:focus {
-  border-color: #34d399;
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+.search-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #6b7280;
+}
+.search-box input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 180px;
+  background: transparent;
+  color: #111827;
 }
 
 .btn-primary {
-  background-color: var(--green-900);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #193826;
   color: #ffffff;
   border: none;
-  padding: 0.8em 1.5em;
   border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
   font-weight: 600;
-  font-size: var(--fs-btn);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(15, 56, 35, 0.2);
-  transition: background-color 0.2s;
 }
+.btn-primary:hover { background-color: #11281b; }
+.btn-icon { font-size: 18px; width: 18px; height: 18px; }
 
-.btn-primary:hover {
-  background-color: var(--green-950);
-}
-
-.btn-icon {
-  font-size: 1.25em;
-  line-height: 1;
-}
-
-/* -------------------------------------------------------------------------
-   4. TOP METRIC CARDS (LOWER + SUBTLE HOVER)
-   ------------------------------------------------------------------------- */
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--grid-gap);
-  margin-top: 0;
-  margin-bottom: var(--section-gap); /* Space before the main table card */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .metric-card {
-  background-color: #ffffff;
-  padding: var(--card-pad);
-  border-radius: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   gap: 16px;
-  min-width: 0;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.metric-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
 }
 
 .card-icon {
-  width: var(--icon-card);
-  height: var(--icon-card);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
+.card-icon mat-icon { font-size: 24px; width: 24px; height: 24px; color: #193826; }
+.icon-bg-gray { background-color: #dbe4df; }
+.icon-bg-green { background-color: #c7e5cf; }
 
-/* Inline SVG icons scale together with the icon circle */
-.card-icon svg {
-  width: calc(var(--icon-card) * 0.42);
-  height: calc(var(--icon-card) * 0.42);
-}
+.card-content { display: flex; flex-direction: column; }
+.card-label { font-size: 12px; color: #4b5563; font-weight: 500; }
+.card-value { font-size: 24px; font-weight: 800; color: #111827; line-height: 1.2; }
+.card-subtext { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.trend-down { color: #10b981; font-weight: 600; }
 
-.icon-bg-gray {
-  background-color: var(--border);
-}
-
-.icon-bg-green {
-  background-color: var(--green-100);
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.card-label {
-  font-size: var(--fs-label);
-  color: var(--slate-500);
-  font-weight: 500;
-}
-
-.card-value {
-  font-size: var(--fs-value);
-  font-weight: 800;
-  color: var(--slate-900);
-  line-height: 1.1;
-  margin: 3px 0;
-  letter-spacing: -0.3px;
-  overflow-wrap: anywhere;
-}
-
-.card-subtext {
-  font-size: var(--fs-small);
-  color: var(--slate-400);
-}
-
-.trend-down {
-  color: var(--green-700);
-  font-weight: 600;
-}
-
-/* -------------------------------------------------------------------------
-   5. TABLE CARD & TOOLBAR (TALLER)
-   ------------------------------------------------------------------------- */
 .main-card {
-  background-color: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  padding: var(--main-pad);
-  min-height: 460px; /* Taller card even with few rows */
-  margin-bottom: var(--section-gap);
-  border: 1px solid var(--border);
-  min-width: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
 }
 
 .table-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
-  gap: 16px;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
+  gap: 12px;
 }
 
-/* Tabs scroll horizontally when they do not fit (hidden scrollbar) */
-.category-tabs {
-  display: flex;
-  gap: 26px;
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.category-tabs::-webkit-scrollbar {
-  display: none;
-}
-
+.category-tabs { display: flex; gap: 20px; }
 .category-tabs button {
   background: none;
   border: none;
-  padding: 8px 0;
-  font-size: var(--fs-tab);
-  color: var(--slate-500);
-  cursor: pointer;
+  font-size: 13px;
   font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s;
+  color: #6b7280;
+  padding: 6px 2px;
+  cursor: pointer;
 }
-
-.category-tabs button:hover {
-  color: var(--slate-900);
-}
-
-.category-tabs button.active {
-  color: var(--slate-900);
-  font-weight: 700;
-  border-bottom: 2.5px solid var(--slate-900);
-}
+.category-tabs button:hover { color: #111827; }
+.category-tabs button.active { color: #111827; font-weight: 700; border-bottom: 2px solid #111827; }
 
 .sort-selector {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: var(--fs-btn);
-  color: var(--slate-500);
+  font-size: 12px;
+  color: #6b7280;
 }
-
 .sort-selector select {
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 0.65em 1em;
-  font-size: var(--fs-label);
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #111827;
   outline: none;
-  color: #334155;
-  background-color: #ffffff;
   cursor: pointer;
 }
 
-/* The table scrolls inside its own box, never the whole page */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.devices-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: var(--fs-table);
-  min-width: 680px;
-}
-
-.devices-table th {
-  background-color: #f8fafc;
-  color: var(--slate-600);
+.table-responsive { overflow-x: auto; }
+.devices-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.devices-table thead th {
+  background: #f4f5f6;
+  color: #374151;
+  font-size: 12px;
   font-weight: 600;
-  padding: 1.1em 1.4em;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
+  padding: 12px 16px;
+  text-align: left;
 }
+.devices-table tbody tr { border-bottom: 1px solid #f3f4f6; }
+.devices-table tbody tr:hover { background-color: #fafbfc; }
+.devices-table tbody td { padding: 14px 16px; color: #374151; vertical-align: middle; }
 
-.devices-table td {
-  padding: 1.4em; /* Taller rows */
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-/* Simple row highlight on hover */
-.devices-table tbody tr:hover td {
-  background-color: #f8fafc;
-}
-
-.device-name-cell strong {
-  display: block;
-  color: var(--slate-900);
-}
-
-.location-tag {
-  font-size: var(--fs-small);
-  color: var(--slate-400);
-}
+.device-name-cell strong { display: block; font-size: 13px; color: #111827; }
+.location-tag { font-size: 11px; color: #6b7280; }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--fs-table);
+  font-size: 12px;
   font-weight: 500;
-  white-space: nowrap;
 }
-
-.status-dot {
-  width: 0.62em;
-  height: 0.62em;
-  border-radius: 50%;
-}
-
-.status-online .status-dot  { background-color: #10b981; animation: pulseDot 1.8s infinite; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-online { color: #10b981; }
+.status-online .status-dot { background-color: #10b981; }
+.status-offline { color: #ef4444; }
 .status-offline .status-dot { background-color: #ef4444; }
+.status-standby { color: #f59e0b; }
 .status-standby .status-dot { background-color: #f59e0b; }
 
-.text-muted {
-  color: var(--slate-500);
-  white-space: nowrap;
-}
-
-.action-cell { text-align: center; }
-
+.text-muted { color: #6b7280; }
+.text-right { text-align: right; }
 .btn-more {
   background: none;
   border: none;
-  font-size: calc(var(--fs-table) * 1.4);
-  color: var(--slate-500);
+  font-size: 18px;
+  color: #9ca3af;
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 4px;
 }
+.btn-more:hover { color: #111827; }
 
-.btn-more:hover { background-color: #f1f5f9; }
-
-.empty-message {
+.state-message, .empty-message {
   text-align: center;
-  color: var(--slate-400);
-  padding: 90px 24px; /* Roomy empty state so the card keeps its height */
+  padding: 32px 16px;
+  color: #6b7280;
+  font-size: 13px;
 }
+.state-message.error { color: #ef4444; }
 
-/* -------------------------------------------------------------------------
-   6. LOWER ACTION BANNERS
-   ------------------------------------------------------------------------- */
 .action-banners {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--grid-gap);
-  margin-top: 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 .banner-card {
-  background-color: #ffffff;
-  border-radius: 22px;
-  padding: var(--card-pad);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-width: 0;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.banner-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
-}
-
-.banner-body {
-  display: flex;
-  align-items: flex-start;
   gap: 16px;
-  margin-bottom: 26px;
 }
-
+.banner-body { display: flex; gap: 14px; align-items: flex-start; }
 .banner-icon-box {
-  width: var(--icon-banner);
-  height: var(--icon-banner);
-  background-color: var(--green-200);
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #c7e5cf;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #064e3b;
   flex-shrink: 0;
+  color: #193826;
 }
-
-.banner-icon-box svg {
-  width: calc(var(--icon-banner) * 0.47);
-  height: calc(var(--icon-banner) * 0.47);
-}
-
-.banner-info {
-  min-width: 0;
-}
-
-.banner-info h3 {
-  font-size: var(--fs-banner-title);
-  font-weight: 700;
-  color: #000000;
-  margin: 0 0 6px 0;
-  line-height: 1.2;
-}
-
-.banner-info p {
-  font-size: var(--fs-banner-text);
-  color: #4b5563;
-  margin: 0;
-  line-height: 1.45;
-}
+.banner-icon-box mat-icon { font-size: 24px; width: 24px; height: 24px; }
+.banner-info h3 { font-size: 14px; font-weight: 700; color: #111827; margin: 0 0 4px; }
+.banner-info p { font-size: 11px; color: #6b7280; margin: 0; line-height: 1.4; }
 
 .btn-banner {
-  width: 100%;
-  padding: 0.85em 1.2em;
-  border-radius: 8px;
-  font-size: var(--fs-btn);
-  font-weight: 600;
   border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  text-align: center;
+}
+.btn-dark { background-color: #193826; color: #ffffff; }
+.btn-light { background-color: #c4decb; color: #193826; }
+
+@media (max-width: 1100px) {
+  .summary-cards { grid-template-columns: repeat(2, 1fr); }
+  .action-banners { grid-template-columns: 1fr; }
 }
 
-.btn-dark {
-  background-color: var(--green-900);
-  color: #ffffff;
-}
-
-.btn-dark:hover { background-color: var(--green-950); }
-
-.btn-light {
-  background-color: var(--green-200);
-  color: #064e3b;
-}
-
-.btn-light:hover { background-color: var(--green-300); }
-
-/* =========================================================================
-   7. RESPONSIVE - GROWING TIERS (TV / LARGE MONITORS)
-   Based on the real width of the dashboard area (sidebar excluded).
-   ========================================================================= */
-
-/* ---- Full HD TV, large monitors (area >= 1500px) ---- */
-@container devices (min-width: 1500px) {
-  .devices-container {
-    --page-pad-x: 56px;
-    --page-pad-top: 48px;
-    --max-width: 1700px;
-    --header-gap: 64px;
-    --section-gap: 50px;
-    --grid-gap: 26px;
-    --card-pad: 30px;
-    --main-pad: 38px;
-    --fs-title: 42px;
-    --fs-sub: 15px;
-    --fs-label: 13px;
-    --fs-small: 12px;
-    --fs-value: 30px;
-    --fs-table: 14px;
-    --fs-tab: 15px;
-    --fs-btn: 14px;
-    --fs-input: 14px;
-    --fs-banner-title: 17px;
-    --fs-banner-text: 13px;
-    --icon-card: 58px;
-    --icon-banner: 66px;
-  }
-  .main-card { min-height: 520px; }
-}
-
-/* ---- QHD monitors, 4K TVs at 100% scale (area >= 1900px) ---- */
-@container devices (min-width: 1900px) {
-  .devices-container {
-    --page-pad-x: 72px;
-    --page-pad-top: 60px;
-    --max-width: 2100px;
-    --header-gap: 80px;
-    --section-gap: 60px;
-    --grid-gap: 32px;
-    --card-pad: 38px;
-    --main-pad: 48px;
-    --fs-title: 50px;
-    --fs-sub: 17px;
-    --fs-label: 15px;
-    --fs-small: 14px;
-    --fs-value: 36px;
-    --fs-table: 16px;
-    --fs-tab: 17px;
-    --fs-btn: 16px;
-    --fs-input: 16px;
-    --fs-banner-title: 20px;
-    --fs-banner-text: 15px;
-    --icon-card: 68px;
-    --icon-banner: 78px;
-  }
-  .main-card { min-height: 620px; }
-}
-
-/* ---- 4K / 8K screens without scaling (area >= 2800px) ---- */
-@container devices (min-width: 2800px) {
-  .devices-container {
-    --page-pad-x: 110px;
-    --page-pad-top: 90px;
-    --max-width: 3000px;
-    --header-gap: 120px;
-    --section-gap: 90px;
-    --grid-gap: 48px;
-    --card-pad: 56px;
-    --main-pad: 72px;
-    --fs-title: 68px;
-    --fs-sub: 22px;
-    --fs-label: 20px;
-    --fs-small: 18px;
-    --fs-value: 48px;
-    --fs-table: 21px;
-    --fs-tab: 22px;
-    --fs-btn: 21px;
-    --fs-input: 21px;
-    --fs-banner-title: 26px;
-    --fs-banner-text: 20px;
-    --icon-card: 90px;
-    --icon-banner: 100px;
-  }
-  .main-card { min-height: 800px; }
-}
-
-/* =========================================================================
-   8. RESPONSIVE - SHRINKING TIERS (LAPTOPS -> PHONES)
-   ========================================================================= */
-
-/* ---- Small laptops, tablets landscape (area <= 1179px) ---- */
-@container devices (max-width: 1179px) {
-  .devices-container {
-    --page-pad-x: 32px;
-    --page-pad-top: 32px;
-    --header-gap: 44px;
-    --section-gap: 32px;
-    --grid-gap: 18px;
-    --card-pad: 22px;
-    --main-pad: 26px;
-    --fs-title: 34px;
-  }
-  /* Metric cards: 2 columns */
-  .summary-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .main-card { min-height: 400px; }
-}
-
-/* ---- Banners: 2 columns, the third one takes the full row (area <= 999px) ---- */
-@container devices (max-width: 999px) {
-  .action-banners {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .banner-card:last-child {
-    grid-column: 1 / -1;
-  }
-}
-
-/* ---- Tablets portrait (area 720px - 899px): hide the least important column ---- */
-@container devices (min-width: 720px) and (max-width: 899px) {
-  .devices-table {
-    min-width: 600px;
-  }
-  .devices-table th:nth-child(6),
-  .devices-table td:nth-child(6) {
-    display: none;
-  }
-}
-
-/* ---- Tablets portrait and below (area <= 899px) ---- */
-@container devices (max-width: 899px) {
-  .devices-container {
-    --page-pad-x: 24px;
-    --page-pad-top: 28px;
-    --fs-title: 32px;
-  }
-  .main-card { min-height: 360px; }
-}
-
-/* ---- PHONES (area <= 719px): header stacks, table becomes cards ---- */
-@container devices (max-width: 719px) {
-  .devices-container {
-    --page-pad-x: 16px;
-    --page-pad-top: 20px;
-    --header-gap: 28px;
-    --section-gap: 24px;
-    --grid-gap: 14px;
-    --card-pad: 18px;
-    --main-pad: 16px;
-    --fs-title: 28px;
-    --fs-input: 16px; /* 16px avoids the automatic zoom on iOS inputs */
-    --icon-card: 46px;
-    --icon-banner: 52px;
-  }
-
-  /* Header: title on top, search + button below */
-  .header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-  .header-actions {
-    width: 100%;
-    flex-wrap: nowrap;
-  }
-  .search-box {
-    flex: 1;
-    min-width: 0;
-  }
-  .search-box input {
-    width: 100%;
-  }
-
-  .main-card,
-  .metric-card,
-  .banner-card {
-    border-radius: 18px;
-  }
-  .main-card { min-height: 0; }
-
-  /* Toolbar: tabs on top, sort selector below */
-  .table-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    margin-bottom: 18px;
-    gap: 12px;
-  }
-  .sort-selector {
-    justify-content: space-between;
-  }
-  .sort-selector select {
-    flex: 1;
-    max-width: 300px;
-  }
-
-  /* Banners: 1 column */
-  .action-banners {
-    grid-template-columns: 1fr;
-  }
-  .banner-card:last-child {
-    grid-column: auto;
-  }
-  .banner-body {
-    margin-bottom: 20px;
-  }
-
-  /* ---------- TABLE -> DEVICE CARDS (no horizontal scroll) ---------- */
-  .table-responsive {
-    overflow: visible;
-  }
-  .devices-table,
-  .devices-table tbody {
-    display: block;
-    width: 100%;
-    min-width: 0;
-  }
-
-  /* Header row hidden visually but kept for screen readers */
-  .devices-table thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-
-  /* Each row is a small card with a 2-column grid */
-  .devices-table tbody tr {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 16px;
-    row-gap: 14px;
-    padding: 16px;
-    margin-bottom: 12px;
-    background-color: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-  }
-  .devices-table tbody tr:last-child {
-    margin-bottom: 0;
-  }
-  .devices-table tbody tr:hover {
-    background-color: #f8fafc;
-  }
-  .devices-table tbody tr:hover td {
-    background-color: transparent;
-  }
-
-  .devices-table td {
-    display: block;
-    padding: 0;
-    border-bottom: none;
-  }
-
-  /* Row 1: device name (left) + options button (right) */
-  .devices-table td:nth-child(1) { grid-column: 1; grid-row: 1; }
-  .devices-table td:nth-child(7) { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; }
-
-  /* Row 2: status badge */
-  .devices-table td:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
-
-  /* Rows 3-4: metrics with their own small label (labels added with CSS) */
-  .devices-table td:nth-child(3)::before { content: "Consumo actual"; }
-  .devices-table td:nth-child(4)::before { content: "Consumo hoy"; }
-  .devices-table td:nth-child(5)::before { content: "Costo hoy"; }
-  .devices-table td:nth-child(6)::before { content: "Última actividad"; }
-
-  .devices-table td:nth-child(3)::before,
-  .devices-table td:nth-child(4)::before,
-  .devices-table td:nth-child(5)::before,
-  .devices-table td:nth-child(6)::before {
-    display: block;
-    font-size: var(--fs-small);
-    font-weight: 500;
-    color: var(--slate-400);
-    margin-bottom: 2px;
-  }
-
-  /* The hidden column of the tablet tier must be visible again in cards */
-  .devices-table td:nth-child(6) {
-    display: block;
-  }
-  .text-muted {
-    white-space: normal;
-  }
-
-  /* Empty state keeps the full width of the card */
-  .devices-table td.empty-message {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    padding: 48px 16px;
-  }
-  .devices-table tbody tr:has(.empty-message) {
-    border: none;
-    padding: 0;
-    background: none;
-  }
-}
-
-/* ---- Small phones (area <= 559px): metric cards in 1 column ---- */
-@container devices (max-width: 559px) {
-  .summary-cards {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ---- Very small phones (area <= 479px): header actions stack ---- */
-@container devices (max-width: 479px) {
-  .header-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .btn-primary {
-    width: 100%;
-  }
-  .sort-selector {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-  }
-  .sort-selector select {
-    max-width: none;
-    width: 100%;
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-  .banner-body {
-    gap: 12px;
-  }
-}
-
-/* ---- Tiny phones (area <= 379px) ---- */
-@container devices (max-width: 379px) {
-  .devices-container {
-    --page-pad-x: 12px;
-    --card-pad: 14px;
-    --main-pad: 12px;
-    --fs-title: 25px;
-    --fs-value: 22px;
-    --icon-card: 42px;
-    --icon-banner: 46px;
-  }
-  .devices-table tbody tr {
-    padding: 14px 12px;
-    column-gap: 12px;
-  }
-}
-
-/* =========================================================================
-   9. SPECIAL DEVICES & ACCESSIBILITY
-   ========================================================================= */
-
-/* ---- Landscape phones (short screens) ---- */
-@media (max-height: 480px) and (orientation: landscape) {
-  .devices-container {
-    --header-gap: 20px;
-    --page-pad-top: 16px;
-  }
-  .main-card {
-    min-height: 0;
-  }
-}
-
-/* ---- Touch screens: no sticky hover lift, bigger tap targets ---- */
-@media (hover: none) and (pointer: coarse) {
-  .metric-card:hover,
-  .banner-card:hover {
-    transform: none;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-  }
-  .btn-banner,
-  .btn-primary {
-    min-height: 44px;
-  }
-  .btn-more {
-    min-width: 44px;
-    min-height: 44px;
-  }
-  .category-tabs button {
-    padding: 12px 0;
-  }
-}
-
-/* ---- TV browsers / remote control: visible focus ring ---- */
-.devices-container button:focus-visible,
-.devices-container input:focus-visible,
-.devices-container select:focus-visible {
-  outline: 3px solid #34d399;
-  outline-offset: 2px;
-}
-
-/* ---- Users who prefer reduced motion ---- */
-@media (prefers-reduced-motion: reduce) {
-  .devices-container *,
-  .devices-container *::before,
-  .devices-container *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* ---- Safe areas for phones with notch ---- */
-@supports (padding: max(0px)) {
-  @media (max-width: 1024px) {
-    .devices-container {
-      padding-left: max(var(--page-pad-x), env(safe-area-inset-left));
-      padding-right: max(var(--page-pad-x), env(safe-area-inset-right));
-      padding-bottom: max(calc(var(--page-pad-top) + 16px), env(safe-area-inset-bottom));
-    }
-  }
+@media (max-width: 768px) {
+  .devices-container { padding: 20px 16px; }
+  .summary-cards { grid-template-columns: 1fr; }
+  .header-section { flex-direction: column; align-items: flex-start; }
+  .header-actions { width: 100%; flex-direction: column; }
+  .search-box, .search-box input, .btn-primary { width: 100%; }
 }

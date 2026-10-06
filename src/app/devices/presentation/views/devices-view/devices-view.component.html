@@ -10,19 +10,19 @@
     <div class="header-actions">
       <!-- Search Input -->
       <div class="search-box">
-        <mat-icon class="search-icon icon-dark-single">search</mat-icon>
+        <mat-icon class="search-icon">search</mat-icon>
         <input
           type="text"
           placeholder="Buscar dispositivo..."
-          [(ngModel)]="searchTerm"
-          (input)="applyFilters()"
+          [ngModel]="store.searchTerm()"
+          (ngModelChange)="onSearch($event)"
           aria-label="Buscar dispositivos"
         />
       </div>
 
       <!-- Add Device CTA Button -->
       <button type="button" class="btn-primary">
-        <mat-icon class="btn-icon icon-dark-single">add</mat-icon> Agregar dispositivo
+        <mat-icon class="btn-icon">add</mat-icon> Agregar dispositivo
       </button>
     </div>
   </header>
@@ -33,48 +33,48 @@
     <!-- Card 1: Connected Devices -->
     <article class="metric-card">
       <div class="card-icon icon-bg-gray">
-        <mat-icon class="icon-dark-single">power</mat-icon>
+        <mat-icon>weekend</mat-icon>
       </div>
       <div class="card-content">
         <span class="card-label">Dispositivos conectados</span>
-        <div class="card-value">{{ summary?.connectedDevices || 8 }}</div>
-        <span class="card-subtext">{{ summary?.waitingDevices || 4 }} en espera</span>
+        <div class="card-value">{{ store.connectedDevices() }}</div>
+        <span class="card-subtext">{{ store.waitingDevices() }} en espera</span>
       </div>
     </article>
 
     <!-- Card 2: Current Total Power -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <mat-icon class="icon-dark-single">bolt</mat-icon>
+        <mat-icon>bolt</mat-icon>
       </div>
       <div class="card-content">
-        <div class="card-value">{{ summary?.totalPowerKw || 1.2 }}kW</div>
+        <div class="card-value">{{ store.totalPowerKw() }}kW</div>
         <span class="card-label">Consumo total actual</span>
-        <span class="card-subtext trend-down">↓ {{ summary?.powerDiffVsYesterdayLabel || '12% vs ayer' }}</span>
+        <span class="card-subtext trend-down">↓ {{ store.powerDiffVsYesterdayLabel() }}</span>
       </div>
     </article>
 
     <!-- Card 3: Estimated Monthly Cost -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <mat-icon class="icon-dark-single">payments</mat-icon>
+        <mat-icon>payments</mat-icon>
       </div>
       <div class="card-content">
-        <div class="card-value">S/{{ (summary?.estimatedCostSoles || 35.20) | number:'1.2-2' }}</div>
+        <div class="card-value">S/{{ store.estimatedCostSoles() | number:'1.2-2' }}</div>
         <span class="card-label">Costo estimado(mes)</span>
-        <span class="card-subtext trend-down">↓ {{ summary?.costDiffVsMonthLabel || '8% vs mes anterior' }}</span>
+        <span class="card-subtext trend-down">↓ {{ store.costDiffVsMonthLabel() }}</span>
       </div>
     </article>
 
     <!-- Card 4: Monthly CO2 Avoided -->
     <article class="metric-card">
       <div class="card-icon icon-bg-green">
-        <mat-icon class="icon-dark-single">eco</mat-icon>
+        <mat-icon>eco</mat-icon>
       </div>
       <div class="card-content">
-        <div class="card-value">{{ summary?.co2AvoidedKg || 28.6 }} kg</div>
+        <div class="card-value">{{ store.co2AvoidedKg() | number:'1.1-1' }} kg</div>
         <span class="card-label">CO₂ evitado (mes)</span>
-        <span class="card-subtext">Equivale a 1 árbol</span>
+        <span class="card-subtext">{{ store.treeEquivalence() }}</span>
       </div>
     </article>
 
@@ -89,7 +89,7 @@
         @for (cat of categories; track cat) {
           <button
             type="button"
-            [class.active]="selectedCategory === cat"
+            [class.active]="store.selectedCategory() === cat"
             (click)="selectCategory(cat)">
             {{ cat }}
           </button>
@@ -98,7 +98,7 @@
 
       <div class="sort-selector">
         <label for="sortSelect">Ordenar por</label>
-        <select id="sortSelect" [(ngModel)]="selectedSort" (change)="applyFilters()">
+        <select id="sortSelect" [ngModel]="store.selectedSort()" (ngModelChange)="onSortChange($event)">
           <option value="consumo-desc">Consumo (mayor a menor)</option>
           <option value="consumo-asc">Consumo (menor a mayor)</option>
           <option value="nombre">Nombre</option>
@@ -108,50 +108,56 @@
 
     <!-- Data Table -->
     <div class="table-responsive">
-      <table class="devices-table">
-        <thead>
-        <tr>
-          <th>Dispositivos</th>
-          <th>Estado</th>
-          <th>Consumo actual</th>
-          <th>Consumo hoy</th>
-          <th>Costo hoy</th>
-          <th>Última actividad</th>
-          <th class="text-right">Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-          @for (device of filteredDevices; track device.id || device.name) {
+      @if (store.loading()) {
+        <p class="state-message">Cargando dispositivos...</p>
+      } @else if (store.error() && store.devices().length === 0) {
+        <p class="state-message error">{{ store.error() }}</p>
+      } @else {
+        <table class="devices-table">
+          <thead>
             <tr>
-              <td>
-                <div class="device-name-cell">
-                  <strong>{{ device.name }}</strong>
-                  <span class="location-tag">{{ device.location }}</span>
-                </div>
-              </td>
-              <td>
-                <span class="status-badge" [ngClass]="getStatusClass(device.status)">
-                  <span class="status-dot"></span>
-                  {{ device.status }}
-                </span>
-              </td>
-              <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
-              <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
-              <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
-              <td class="text-muted">{{ device.lastActivity }}</td>
-              <td class="action-cell text-right">
-                <button type="button" class="btn-more" title="Opciones" aria-label="Más opciones">⋮</button>
-              </td>
+              <th>Dispositivos</th>
+              <th>Estado</th>
+              <th>Consumo actual</th>
+              <th>Consumo hoy</th>
+              <th>Costo hoy</th>
+              <th>Última actividad</th>
+              <th class="text-right">Acciones</th>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="7" class="empty-message">
-                No se encontraron dispositivos que coincidan con los criterios.
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (device of store.filteredDevices(); track device.id) {
+              <tr>
+                <td>
+                  <div class="device-name-cell">
+                    <strong>{{ device.name }}</strong>
+                    <span class="location-tag">{{ device.location }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(device.status)">
+                    <span class="status-dot"></span>
+                    {{ device.status }}
+                  </span>
+                </td>
+                <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
+                <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
+                <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
+                <td class="text-muted">{{ device.lastActivity }}</td>
+                <td class="action-cell text-right">
+                  <button type="button" class="btn-more" title="Opciones" aria-label="Más opciones">⋮</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-message">
+                  No se encontraron dispositivos que coincidan con los criterios.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </div>
 
   </section>
@@ -162,7 +168,7 @@
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <mat-icon class="icon-dark-single">add_circle_outline</mat-icon>
+          <mat-icon>add_circle_outline</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Añade nuevos dispositivos</h3>
@@ -175,7 +181,7 @@
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <mat-icon class="icon-dark-single">settings</mat-icon>
+          <mat-icon>settings</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Configura tus dispositivos</h3>
@@ -188,14 +194,14 @@
     <article class="banner-card">
       <div class="banner-body">
         <div class="banner-icon-box">
-          <mat-icon class="icon-dark-single">insights</mat-icon>
+          <mat-icon>insights</mat-icon>
         </div>
         <div class="banner-info">
           <h3>Identifica grandes consumos</h3>
           <p>Detecta qué dispositivos consumen más energía y optimiza su uso.</p>
         </div>
       </div>
-      <button type="button" class="btn-banner btn-light">Ver recomendaciones</button>
+      <button type="button" class="btn-banner btn-light" (click)="goToRecommendations()">Ver recomendaciones</button>
     </article>
 
   </section>
