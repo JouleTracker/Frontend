@@ -6,17 +6,11 @@ const homeView = () =>
 const consumptionRoutes = () =>
   import('./consumption/presentation/consumption.routes').then((m) => m.consumptionRoutes);
 
-/** Loads the device management view only when its route is opened. */
-const devicesView = () =>
-  import('./devices/presentation/views/devices-view/devices-view.component').then(
-    (m) => m.DevicesViewComponent,
-  );
+const devicesRoutes = () =>
+  import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
 
-/** Loads the full alerts view only when its route is opened. */
-const alertsView = () =>
-  import('./alerts/presentation/views/alerts-view/alerts-view.component').then(
-    (m) => m.AlertsViewComponent,
-  );
+const alertsRoutes = () =>
+  import('./alerts/presentation/alerts.routes').then((m) => m.alertsRoutes);
 
 const blankPage = () =>
   import('./shared/presentation/views/blank-page/blank-page').then((m) => m.BlankPage);
@@ -31,8 +25,8 @@ const baseTitle = 'JouleTracker';
 export const routes: Routes = [
   { path: 'inicio', loadComponent: homeView, title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes },
-  { path: 'dispositivos', loadComponent: devicesView, title: `${baseTitle} - Dispositivos` },
-  { path: 'alertas', loadComponent: alertsView, title: `${baseTitle} - Alertas` },
+  { path: 'dispositivos', loadChildren: devicesRoutes },
+  { path: 'alertas', loadChildren: alertsRoutes },
   { path: 'reportes', loadComponent: blankPage, title: `${baseTitle} - Reportes` },
   { path: 'recomendaciones', loadComponent: blankPage, title: `${baseTitle} - Recomendaciones` },
   { path: 'configuracion', loadComponent: blankPage, title: `${baseTitle} - Configuración` },
