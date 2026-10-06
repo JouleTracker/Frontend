@@ -7,7 +7,8 @@ import { Device, DeviceSummary } from '../../domain/model/device.model';
   providedIn: 'root',
 })
 export class DeviceService {
-  private apiUrl = 'http://localhost:3000'; // Ajusta al puerto de tu server.js
+  // Ajustado a la misma URL/puerto que usa el resto del proyecto
+  private apiUrl = 'http://localhost:8080/api/v1';
 
   constructor(private http: HttpClient) {}
 

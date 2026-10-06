@@ -1,0 +1,34 @@
+<main class="alerts-page">
+  <header class="page-header">
+    <div>
+      <h1>Alertas</h1>
+      <p>Revisa las notificaciones y el estado de tus dispositivos.</p>
+    </div>
+  </header>
+
+  @if (store.loading()) {
+    <p class="message" role="status">Cargando alertas...</p>
+  } @else if (store.error() && store.alerts().length === 0) {
+    <p class="message error-message" role="alert">{{ store.error() }}</p>
+  } @else if (store.alerts().length === 0) {
+    <p class="message">No tienes alertas por el momento.</p>
+  } @else {
+    <section class="alerts-list" aria-label="Lista de alertas">
+      @for (alert of store.alerts(); track alert.id) {
+        <a class="alert-card" [class]="alert.severity" [routerLink]="alert.actionUrl">
+          <mat-icon class="alert-icon">
+            {{ alert.severity === 'warning' ? 'warning_amber' : alert.severity === 'error' ? 'error_outline' : 'info_outline' }}
+          </mat-icon>
+          <div class="alert-content">
+            <div class="alert-heading">
+              <h2>{{ alert.title }}</h2>
+              <time>{{ alert.timeAgo }}</time>
+            </div>
+            <p>{{ alert.description }}</p>
+          </div>
+          <mat-icon class="chevron-icon">chevron_right</mat-icon>
+        </a>
+      }
+    </section>
+  }
+</main>

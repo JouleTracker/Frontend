@@ -1,0 +1,125 @@
+.alerts-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: #f4f6f8;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 4px;
+  color: #111827;
+  font-size: 28px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.alerts-list {
+  display: grid;
+  gap: 12px;
+}
+
+.alert-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.alert-card.warning {
+  border-left: 4px solid #ef4444;
+}
+
+.alert-card.error {
+  border-left: 4px solid #b91c1c;
+}
+
+.alert-card.info {
+  border-left: 4px solid #64748b;
+}
+
+.alert-icon {
+  flex: 0 0 auto;
+  color: #64748b;
+}
+
+.warning .alert-icon,
+.error .alert-icon {
+  color: #dc2626;
+}
+
+.alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.alert-heading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.alert-heading time {
+  flex: 0 0 auto;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.alert-content p {
+  margin: 6px 0 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.chevron-icon {
+  flex: 0 0 auto;
+  color: #94a3b8;
+}
+
+.message {
+  padding: 24px;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+}
+
+.error-message {
+  color: #b91c1c;
+}
+
+@media (max-width: 600px) {
+  .alerts-page {
+    padding: 16px;
+  }
+
+  .alert-card {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .alert-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
