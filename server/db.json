@@ -170,19 +170,139 @@
   "alerts": [
     {
       "id": 1,
-      "title": "Consumo inusual detectado",
-      "description": "Tu consumo aumentó un 30% entre 6 p.m. y 8 p.m.",
+      "category": "Consumo alto",
+      "deviceId": 4,
+      "deviceName": "Televisor 2",
+      "location": "Habitación 2",
+      "thresholdPowerKw": 0.25,
+      "currentPowerKw": 0.48,
+      "timestamp": "Hoy, 19:24",
       "timeAgo": "Hace 2 horas",
-      "severity": "warning",
+      "status": "Activa",
+      "severity": "error",
+      "title": "Consumo alto detectado",
+      "description": "Televisor 2 superó su límite de consumo (0.25 kW)",
       "actionUrl": "/alertas"
     },
     {
       "id": 2,
-      "title": "Dispositivos desconectados",
-      "description": "El sensor de la cocina está sin conexión.",
-      "timeAgo": "Hace 1 día",
-      "severity": "info",
+      "category": "Consumo alto",
+      "deviceId": 2,
+      "deviceName": "Refrigeradora",
+      "location": "Cocina",
+      "thresholdPowerKw": 0.25,
+      "currentPowerKw": 0.32,
+      "timestamp": "Hoy, 14:10",
+      "timeAgo": "Hace 4 horas",
+      "status": "Activa",
+      "severity": "error",
+      "title": "Consumo alto detectado",
+      "description": "Refrigeradora superó su límite de consumo (0.25 kW)",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 3,
+      "category": "Dispositivo desconectado",
+      "deviceId": 3,
+      "deviceName": "Lavadora",
+      "location": "Lavandería",
+      "currentPowerKw": 0.00,
+      "timestamp": "Ayer, 22:15",
+      "timeAgo": "Ayer, 22:15",
+      "status": "Activa",
+      "severity": "error",
+      "title": "Dispositivo desconectado",
+      "description": "Se detectó Lavadora desconectada",
       "actionUrl": "/dispositivos"
+    },
+    {
+      "id": 4,
+      "category": "Consumo alto",
+      "deviceId": 4,
+      "deviceName": "Televisor",
+      "location": "Sala",
+      "thresholdPowerKw": 0.15,
+      "currentPowerKw": 0.18,
+      "timestamp": "03/09/2026, 10:23",
+      "timeAgo": "03/09/2026",
+      "status": "Leída",
+      "severity": "warning",
+      "title": "Consumo alto detectado",
+      "description": "Televisor superó su límite de consumo (0.15 kW)",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 5,
+      "category": "Mantenimiento",
+      "deviceId": 5,
+      "deviceName": "Microondas",
+      "location": "Cocina",
+      "maintenanceDueDate": "2026-09-15",
+      "currentPowerKw": 0.00,
+      "timestamp": "02/09/2026, 18:45",
+      "timeAgo": "02/09/2026",
+      "status": "Leída",
+      "severity": "warning",
+      "title": "Mantenimiento preventivo",
+      "description": "Fecha de mantenimiento (15/09/2026) vencida",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 6,
+      "category": "Consumo alto",
+      "deviceId": 6,
+      "deviceName": "Computadora",
+      "location": "Oficina",
+      "thresholdPowerKw": 0.10,
+      "currentPowerKw": 0.12,
+      "timestamp": "01/09/2026, 08:12",
+      "timeAgo": "01/09/2026",
+      "status": "Resuelta",
+      "severity": "info",
+      "title": "Consumo alto estabilizado",
+      "description": "Computadora superó su límite de consumo (0.10 kW)",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 7,
+      "category": "Mantenimiento",
+      "deviceId": 1,
+      "deviceName": "Aire acondicionado",
+      "location": "Sala",
+      "maintenanceDueDate": "2026-08-25",
+      "currentPowerKw": 0.48,
+      "timestamp": "28/08/2026, 11:00",
+      "timeAgo": "28/08/2026",
+      "status": "Resuelta",
+      "severity": "info",
+      "title": "Mantenimiento preventivo",
+      "description": "Fecha de mantenimiento (25/08/2026) vencida",
+      "actionUrl": "/alertas"
+    },
+    {
+      "id": 8,
+      "category": "Dispositivo desconectado",
+      "deviceId": 8,
+      "deviceName": "Consola de juegos",
+      "location": "Sala",
+      "currentPowerKw": 0.00,
+      "timestamp": "25/08/2026, 16:20",
+      "timeAgo": "25/08/2026",
+      "status": "Resuelta",
+      "severity": "info",
+      "title": "Dispositivo desconectado",
+      "description": "Se detectó Consola de juegos desconectada",
+      "actionUrl": "/dispositivos"
+    }
+  ],
+  "alert-summaries": [
+    {
+      "id": 1,
+      "activeCount": 3,
+      "resolvedCount": 3,
+      "totalCount": 8,
+      "reductionPercentage": 25,
+      "reductionLabel": "vs mes anterior"
     }
   ],
   "recommendations": [
@@ -213,89 +333,102 @@
       "role": "homeowner"
     }
   ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   "devices": [
     {
-      "id": "1",
+      "id": 1,
       "name": "Aire acondicionado",
       "location": "Sala",
       "category": "Hogar",
       "status": "En línea",
       "currentPowerKw": 0.48,
+      "powerLimitKw": 0.40,
+      "maintenanceDueDate": "2026-08-25",
       "todayKwh": 5.2,
-      "todayCostSoles": 2.24,
       "lastActivity": "Hace 5 min"
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Refrigeradora",
       "location": "Cocina",
       "category": "Cocina",
       "status": "En línea",
       "currentPowerKw": 0.32,
+      "powerLimitKw": 0.25,
+      "maintenanceDueDate": "2026-11-10",
       "todayKwh": 3.8,
-      "todayCostSoles": 1.64,
       "lastActivity": "Hace 5 min"
     },
     {
-      "id": "3",
+      "id": 3,
       "name": "Lavadora",
       "location": "Lavandería",
       "category": "Hogar",
       "status": "Apagado",
       "currentPowerKw": 0.0,
+      "powerLimitKw": 0.50,
+      "maintenanceDueDate": "2026-12-05",
       "todayKwh": 0.0,
-      "todayCostSoles": 0.0,
       "lastActivity": "Hace 5 min"
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "Televisor",
       "location": "Sala",
       "category": "Entretenimiento",
       "status": "En línea",
       "currentPowerKw": 0.18,
+      "powerLimitKw": 0.15,
+      "maintenanceDueDate": "2026-10-20",
       "todayKwh": 2.1,
-      "todayCostSoles": 0.9,
       "lastActivity": "Hace 10 min"
     },
     {
-      "id": "5",
+      "id": 5,
       "name": "Microondas",
       "location": "Cocina",
       "category": "Cocina",
       "status": "En espera",
       "currentPowerKw": 0.0,
+      "powerLimitKw": 0.80,
+      "maintenanceDueDate": "2026-09-15",
       "todayKwh": 0.0,
-      "todayCostSoles": 0.0,
       "lastActivity": "Hace 3 h"
     },
     {
-      "id": "6",
+      "id": 6,
       "name": "Computadora",
       "location": "Oficina",
       "category": "Oficina",
       "status": "En línea",
       "currentPowerKw": 0.12,
+      "powerLimitKw": 0.10,
+      "maintenanceDueDate": "2026-11-12",
       "todayKwh": 1.4,
-      "todayCostSoles": 0.6,
       "lastActivity": "Hace 12 min"
+    },
+    {
+      "id": 7,
+      "name": "Lámpara de pie",
+      "location": "Sala",
+      "category": "Hogar",
+      "status": "En espera",
+      "currentPowerKw": 0.0,
+      "powerLimitKw": 0.05,
+      "maintenanceDueDate": "2026-11-30",
+      "todayKwh": 0.3,
+      "lastActivity": "Hace 1 h"
+    },
+    {
+      "id": 8,
+      "name": "Consola de juegos",
+      "location": "Sala",
+      "category": "Entretenimiento",
+      "status": "En espera",
+      "currentPowerKw": 0.0,
+      "powerLimitKw": 0.15,
+      "maintenanceDueDate": "2026-12-18",
+      "todayKwh": 0.8,
+      "lastActivity": "Hace 4 h"
     }
   ],
   "device-summaries": [
@@ -304,29 +437,11 @@
       "connectedDevices": 8,
       "waitingDevices": 4,
       "totalPowerKw": 1.2,
+      "powerDiffVsYesterday": -12,
       "powerDiffVsYesterdayLabel": "12% vs ayer",
-      "estimatedCostSoles": 35.2,
+      "costDiffVsMonth": -8,
       "costDiffVsMonthLabel": "8% vs mes anterior",
-      "co2AvoidedKg": 28.6
+      "savedKwhMonthly": 114.4
     }
   ]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

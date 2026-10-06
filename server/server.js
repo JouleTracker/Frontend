@@ -32,6 +32,9 @@ server.listen(PORT, () => {
   console.log(`   GET http://localhost:${PORT}/api/v1/comparative-consumptions`);
   console.log(`   GET http://localhost:${PORT}/api/v1/consumption-histories`);
   console.log(`   GET http://localhost:${PORT}/api/v1/alerts`);
+  console.log(`   GET http://localhost:${PORT}/api/v1/alert-summaries`);
+  console.log(`   GET http://localhost:${PORT}/api/v1/devices`);
+  console.log(`   GET http://localhost:${PORT}/api/v1/device-summaries`);
   console.log(`   GET http://localhost:${PORT}/api/v1/recommendations`);
   console.log(`   GET http://localhost:${PORT}/api/v1/users`);
   console.log(`======================================================\n`);

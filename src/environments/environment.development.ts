@@ -7,6 +7,9 @@ export const environment = {
   comparativeConsumptionsEndpointPath: '/comparative-consumptions',
   consumptionHistoriesEndpointPath: '/consumption-histories',
   alertsEndpointPath: '/alerts',
+  alertSummariesEndpointPath: '/alert-summaries',
+  devicesEndpointPath: '/devices',
+  deviceSummariesEndpointPath: '/device-summaries',
   recommendationsEndpointPath: '/recommendations',
   usersEndpointPath: '/users'
 };
