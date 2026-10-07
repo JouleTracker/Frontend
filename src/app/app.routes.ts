@@ -9,6 +9,9 @@ const consumptionRoutes = () =>
 const devicesRoutes = () =>
   import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
 
+const iotRoutes = () =>
+  import('./iot/presentation/iot.routes').then((m) => m.iotRoutes);
+
 const alertsRoutes = () =>
   import('./alerts/presentation/alerts.routes').then((m) => m.alertsRoutes);
 
@@ -26,6 +29,7 @@ export const routes: Routes = [
   { path: 'inicio', loadComponent: homeView, title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes },
   { path: 'dispositivos', loadChildren: devicesRoutes },
+  { path: 'sensores', loadChildren: iotRoutes },
   { path: 'alertas', loadChildren: alertsRoutes },
   { path: 'reportes', loadComponent: blankPage, title: `${baseTitle} - Reportes` },
   { path: 'recomendaciones', loadComponent: blankPage, title: `${baseTitle} - Recomendaciones` },

@@ -11,5 +11,8 @@ export const environment = {
   devicesEndpointPath: '/devices',
   deviceSummariesEndpointPath: '/device-summaries',
   recommendationsEndpointPath: '/recommendations',
-  usersEndpointPath: '/users'
+  usersEndpointPath: '/users',
+  sensorsEndpointPath: '/sensors',
+  applianceProfilesEndpointPath: '/appliance-profiles',
+  sensorSummariesEndpointPath: '/sensor-summaries'
 };
