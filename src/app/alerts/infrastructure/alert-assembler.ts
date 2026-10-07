@@ -11,6 +11,7 @@ export class AlertAssembler {
       deviceName: resource.deviceName || resource.device,
       location: resource.location,
       thresholdPowerKw: resource.thresholdPowerKw,
+      thresholdKwh: resource.thresholdKwh,
       currentPowerKw: resource.currentPowerKw ?? resource.powerKw,
       maintenanceDueDate: resource.maintenanceDueDate,
       timestamp: resource.timestamp,

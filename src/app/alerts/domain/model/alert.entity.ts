@@ -12,6 +12,7 @@ export interface AlertProps {
   location?: string;
   thresholdPowerKw?: number;
   currentPowerKw?: number;
+  thresholdKwh?: number;
   maintenanceDueDate?: string;
   timestamp?: string;
   timeAgo?: string;
@@ -58,6 +59,7 @@ export class Alert implements BaseEntity {
   readonly deviceName: string;
   readonly location: string;
   readonly thresholdPowerKw?: number;
+  readonly thresholdKwh?: number;
   readonly currentPowerKw: number;
   readonly maintenanceDueDate?: string;
   readonly timestamp: string;
@@ -77,6 +79,7 @@ export class Alert implements BaseEntity {
     this.deviceName = props.deviceName || props.device || 'Dispositivo';
     this.location = props.location || 'Hogar';
     this.thresholdPowerKw = props.thresholdPowerKw;
+    this.thresholdKwh = props.thresholdKwh;
     this.currentPowerKw = props.currentPowerKw ?? props.powerKw ?? 0;
     this.maintenanceDueDate = props.maintenanceDueDate;
     this.timestamp = props.timestamp || props.timeAgo || 'Reciente';
@@ -134,8 +137,10 @@ export class Alert implements BaseEntity {
   get dynamicMessage(): string {
     switch (this.category) {
       case 'Consumo alto': {
-        const limitStr = this.thresholdPowerKw != null ? `${this.thresholdPowerKw.toFixed(2)} kW` : 'su límite';
-        return `${this.deviceName} superó su límite de consumo (${limitStr})`;
+        if (this.thresholdKwh != null) {
+          return `${this.deviceName} superó su límite de consumo (${this.thresholdKwh.toFixed(2)} kWh)`;
+        }
+        return `${this.deviceName} superó su límite de consumo diario`;
       }
       case 'Dispositivo desconectado': {
         return `Se detectó ${this.deviceName} desconectado`;

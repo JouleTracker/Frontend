@@ -8,6 +8,7 @@ export interface AlertResource extends BaseResource {
   location?: string;
   thresholdPowerKw?: number;
   currentPowerKw?: number;
+  thresholdKwh?: number;
   maintenanceDueDate?: string;
   timestamp?: string;
   timeAgo?: string;
