@@ -21,7 +21,7 @@
       </div>
 
       <!-- Add Device CTA Button -->
-      <button type="button" class="btn-primary">
+      <button type="button" class="btn-primary" (click)="addDevice()">
         <mat-icon class="btn-icon">add</mat-icon> Agregar dispositivo
       </button>
     </div>
@@ -131,7 +131,18 @@
                 <td>
                   <div class="device-name-cell">
                     <strong>{{ device.name }}</strong>
-                    <span class="location-tag">{{ device.location }}</span>
+                    <div class="meta-tags">
+                      <span class="location-tag">{{ device.location }}</span>
+                      @if (getSensorForDevice(device.id); as sensor) {
+                        <span class="sensor-tag" title="Monitoreado por {{ sensor.name }} ({{ sensor.model }})">
+                          <mat-icon>sensors</mat-icon> {{ sensor.model }}
+                        </span>
+                      } @else {
+                        <span class="sensor-tag tag-unassigned" title="Sin sensor IoT asignado">
+                          <mat-icon>link_off</mat-icon> Sin sensor
+                        </span>
+                      }
+                    </div>
                   </div>
                 </td>
                 <td>
@@ -140,12 +151,29 @@
                     {{ device.status }}
                   </span>
                 </td>
-                <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
+                <td>{{ formatPower(device.currentPowerKw) }}</td>
                 <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
                 <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
                 <td class="text-muted">{{ device.lastActivity }}</td>
                 <td class="action-cell text-right">
-                  <button type="button" class="btn-more" title="Opciones" aria-label="Más opciones">⋮</button>
+                  <div class="actions-group">
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-edit"
+                      title="Editar dispositivo"
+                      aria-label="Editar dispositivo"
+                      (click)="editDevice(device.id)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-delete"
+                      title="Eliminar dispositivo"
+                      aria-label="Eliminar dispositivo"
+                      (click)="openDeleteModal(device)">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
                 </td>
               </tr>
             } @empty {
@@ -175,7 +203,7 @@
           <p>Conecta más dispositivos para obtener un análisis completo de tu consumo</p>
         </div>
       </div>
-      <button type="button" class="btn-banner btn-dark">Agregar dispositivo</button>
+      <button type="button" class="btn-banner btn-dark" (click)="addDevice()">Agregar dispositivo</button>
     </article>
 
     <article class="banner-card">
@@ -206,4 +234,57 @@
 
   </section>
 
+  <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN DE DISPOSITIVO -->
+  @if (showDeleteModal()) {
+    <div class="modal-backdrop" (click)="closeDeleteModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+        <div class="modal-header">
+          <div class="modal-icon-box icon-delete">
+            <mat-icon>delete_outline</mat-icon>
+          </div>
+          <div class="modal-title-group">
+            <h2>¿Eliminar este dispositivo?</h2>
+            <p class="modal-subtitle">
+              Dispositivo: <strong>{{ selectedDevice()?.name }}</strong> ({{ selectedDevice()?.location }})
+            </p>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <p class="modal-desc">
+            El aparato será retirado del inventario de dispositivos activos.
+            @if (selectedDevice() && getSensorForDevice(selectedDevice()!.id); as linkedSensor) {
+              <span>
+                El sensor vinculado <strong>"{{ linkedSensor.name }}"</strong> quedará liberado en estado
+                <strong>Disponible (Sin asignar)</strong> para asociarse a otro aparato.
+              </span>
+            }
+          </p>
+
+          <!-- Nota informativa clave sobre conservación de consumo histórico -->
+          <div class="info-alert-box">
+            <mat-icon class="alert-info-icon">info</mat-icon>
+            <div class="alert-text">
+              <strong>El consumo histórico acumulado se conserva</strong>
+              <p>Las mediciones pasadas en reportes, métricas y gráficas no se borrarán ni se restarán, manteniendo la exactitud de tus costos y estadísticas.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()" [disabled]="isProcessing()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-modal-danger" (click)="confirmDeleteDevice()" [disabled]="isProcessing()">
+            <mat-icon>delete</mat-icon>
+            <span>{{ isProcessing() ? 'Eliminando...' : 'Eliminar dispositivo' }}</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
 </div>
+

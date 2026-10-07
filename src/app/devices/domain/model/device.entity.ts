@@ -26,7 +26,7 @@ export class Device implements BaseEntity {
   readonly category: string;
   readonly status: DeviceStatus;
   readonly currentPowerKw: number;
-  readonly powerLimitKw: number;
+  readonly powerLimitKw?: number;
   readonly maintenanceDueDate?: string;
   readonly todayKwh: number;
   readonly lastActivity: string;
@@ -38,7 +38,7 @@ export class Device implements BaseEntity {
     this.category = props.category;
     this.status = props.status;
     this.currentPowerKw = props.currentPowerKw;
-    this.powerLimitKw = props.powerLimitKw ?? 0.30;
+    this.powerLimitKw = props.powerLimitKw;
     this.maintenanceDueDate = props.maintenanceDueDate;
     this.todayKwh = props.todayKwh;
     this.lastActivity = props.lastActivity;
@@ -49,5 +49,16 @@ export class Device implements BaseEntity {
    */
   get todayCostSoles(): number {
     return EnergyCalculationService.calculateCost(this.todayKwh);
+  }
+
+  /**
+   * Formato legible del consumo actual en kW.
+   * Si es un consumo residual de standby (menor a 0.05 kW pero mayor a 0),
+   * muestra hasta 3 decimales (ej. 0.003 kW, 0.012 kW) para visibilizar el consumo fantasma.
+   */
+  get formattedCurrentPower(): string {
+    if (this.currentPowerKw === 0) return '0.00 kW';
+    if (this.currentPowerKw < 0.05) return `${this.currentPowerKw.toFixed(3)} kW`;
+    return `${this.currentPowerKw.toFixed(2)} kW`;
   }
 }

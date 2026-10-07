@@ -32,6 +32,44 @@ export class DevicesApi extends BaseApi {
   }
 
   /**
+   * Obtiene un dispositivo específico por su ID.
+   */
+  getDeviceById(id: number): Observable<Device> {
+    return this.http.get<DeviceResource>(
+      `${this.baseUrl}${environment.devicesEndpointPath}/${id}`
+    ).pipe(
+      map(res => this.deviceAssembler.toEntity(res)),
+      catchError(err => throwError(() => new Error('Error al cargar dispositivo: ' + err.message)))
+    );
+  }
+
+  /**
+   * Registra un nuevo dispositivo en el sistema.
+   */
+  createDevice(device: Partial<DeviceResource>): Observable<Device> {
+    return this.http.post<DeviceResource>(
+      `${this.baseUrl}${environment.devicesEndpointPath}`,
+      device
+    ).pipe(
+      map(res => this.deviceAssembler.toEntity(res)),
+      catchError(err => throwError(() => new Error('Error al registrar dispositivo: ' + err.message)))
+    );
+  }
+
+  /**
+   * Actualiza parcialmente un dispositivo (ej. nombre, categoría).
+   */
+  updateDevice(id: number, partialDevice: Partial<DeviceResource>): Observable<Device> {
+    return this.http.patch<DeviceResource>(
+      `${this.baseUrl}${environment.devicesEndpointPath}/${id}`,
+      partialDevice
+    ).pipe(
+      map(res => this.deviceAssembler.toEntity(res)),
+      catchError(err => throwError(() => new Error('Error al actualizar dispositivo: ' + err.message)))
+    );
+  }
+
+  /**
    * Obtiene las métricas agregadas de los dispositivos.
    */
   getDeviceSummary(): Observable<DeviceSummary> {
@@ -45,4 +83,17 @@ export class DevicesApi extends BaseApi {
       catchError(err => throwError(() => new Error('Error al cargar resumen de dispositivos: ' + err.message)))
     );
   }
+
+  /**
+   * Elimina un dispositivo del sistema.
+   * Los registros de consumo histórico acumulado permanecen intactos.
+   */
+  deleteDevice(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}${environment.devicesEndpointPath}/${id}`
+    ).pipe(
+      catchError(err => throwError(() => new Error('Error al eliminar dispositivo: ' + err.message)))
+    );
+  }
 }
+

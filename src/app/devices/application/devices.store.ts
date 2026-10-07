@@ -1,7 +1,9 @@
 import { Injectable, computed, signal } from '@angular/core';
+import { Observable, tap, catchError } from 'rxjs';
 import { DevicesApi } from '../infrastructure/devices-api';
 import { Device } from '../domain/model/device.entity';
 import { DeviceSummary } from '../domain/model/device-summary.entity';
+import { DeviceResource } from '../infrastructure/devices-response';
 
 @Injectable({
   providedIn: 'root'
@@ -150,4 +152,60 @@ export class DevicesStore {
   setSort(sort: string): void {
     this.selectedSortSignal.set(sort);
   }
+
+  getDeviceById(id: number): Device | undefined {
+    return this.devicesSignal().find(d => d.id === id);
+  }
+
+  createDevice(newDevice: Partial<DeviceResource>): Observable<Device> {
+    this.loadingSignal.set(true);
+    return this.api.createDevice(newDevice).pipe(
+      tap(created => {
+        this.devicesSignal.update(list => [...list, created]);
+        this.loadingSignal.set(false);
+      }),
+      catchError(err => {
+        this.errorSignal.set(err.message);
+        this.loadingSignal.set(false);
+        throw err;
+      })
+    );
+  }
+
+  updateDevice(id: number, changes: { name?: string; location?: string; category?: string }): Observable<Device> {
+    this.loadingSignal.set(true);
+    return this.api.updateDevice(id, changes).pipe(
+      tap(updatedDevice => {
+        this.devicesSignal.update(list =>
+          list.map(d => (d.id === id ? updatedDevice : d))
+        );
+        this.loadingSignal.set(false);
+      }),
+      catchError(err => {
+        this.errorSignal.set(err.message);
+        this.loadingSignal.set(false);
+        throw err;
+      })
+    );
+  }
+
+  /**
+   * Elimina un dispositivo del sistema.
+   * La lista local se actualiza y el consumo histórico permanece intacto.
+   */
+  deleteDevice(id: number): Observable<void> {
+    this.loadingSignal.set(true);
+    return this.api.deleteDevice(id).pipe(
+      tap(() => {
+        this.devicesSignal.update(list => list.filter(d => d.id !== id));
+        this.loadingSignal.set(false);
+      }),
+      catchError(err => {
+        this.errorSignal.set(err.message);
+        this.loadingSignal.set(false);
+        throw err;
+      })
+    );
+  }
 }
+
