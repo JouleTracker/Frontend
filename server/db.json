@@ -7,7 +7,7 @@
       "totalConsumptionDiffLabel": "vs semana anterior",
       "periodConsumption": 82.4,
       "periodConsumptionDiff": -12,
-      "currentPower": 1.24,
+      "currentPower": 1.1,
       "activeDevicesCount": 4,
       "baselineMonthlyKwh": 196.8,
       "savedKwhWeekly": 9.71,
@@ -34,19 +34,62 @@
         "Jue 12",
         "Vie 13"
       ],
-      "values": [39, 65, 52, 84, 90, 12, 10, 26, 76, 71, 88, 92]
+      "values": [
+        39,
+        65,
+        52,
+        84,
+        90,
+        12,
+        10,
+        26,
+        76,
+        71,
+        88,
+        92
+      ]
     },
     {
       "id": 2,
       "period": "dia",
-      "labels": ["00:00", "03:00", "06:00", "10:00", "13:00", "16:00", "18:00", "21:00", "23:00"],
-      "values": [0.8, 0.6, 1.2, 2.1, 1.9, 2.9, 3.8, 2.4, 1.3]
+      "labels": [
+        "00:00",
+        "03:00",
+        "06:00",
+        "10:00",
+        "13:00",
+        "16:00",
+        "18:00",
+        "21:00",
+        "23:00"
+      ],
+      "values": [
+        0.8,
+        0.6,
+        1.2,
+        2.1,
+        1.9,
+        2.9,
+        3.8,
+        2.4,
+        1.3
+      ]
     },
     {
       "id": 3,
       "period": "mes",
-      "labels": ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
-      "values": [78, 85, 92, 82]
+      "labels": [
+        "Semana 1",
+        "Semana 2",
+        "Semana 3",
+        "Semana 4"
+      ],
+      "values": [
+        78,
+        85,
+        92,
+        82
+      ]
     },
     {
       "id": 4,
@@ -65,7 +108,20 @@
         "Nov",
         "Dic"
       ],
-      "values": [290, 275, 310, 295, 320, 280, 290, 315, 285, 295, 310, 340]
+      "values": [
+        290,
+        275,
+        310,
+        295,
+        320,
+        280,
+        290,
+        315,
+        285,
+        295,
+        310,
+        340
+      ]
     }
   ],
   "device-distributions": [
@@ -169,35 +225,18 @@
   ],
   "alerts": [
     {
-      "id": 1,
-      "category": "Consumo alto",
-      "deviceId": 4,
-      "deviceName": "Televisor 2",
-      "location": "Habitación 2",
-      "thresholdPowerKw": 0.25,
-      "currentPowerKw": 0.48,
-      "timestamp": "Hoy, 19:24",
-      "timeAgo": "Hace 2 horas",
-      "status": "Activa",
-      "severity": "error",
-      "title": "Consumo alto detectado",
-      "description": "Televisor 2 superó su límite de consumo (0.25 kW)",
-      "actionUrl": "/alertas"
-    },
-    {
       "id": 2,
       "category": "Consumo alto",
-      "deviceId": 2,
-      "deviceName": "Refrigeradora",
-      "location": "Cocina",
-      "thresholdPowerKw": 0.25,
-      "currentPowerKw": 0.32,
+      "deviceId": 1,
+      "deviceName": "Aire acondicionado",
+      "location": "Oficina",
+      "thresholdKwh": 3.5,
       "timestamp": "Hoy, 14:10",
       "timeAgo": "Hace 4 horas",
       "status": "Activa",
       "severity": "error",
       "title": "Consumo alto detectado",
-      "description": "Refrigeradora superó su límite de consumo (0.25 kW)",
+      "description": "Aire acondicionado superó su límite de consumo (3.50 kWh)",
       "actionUrl": "/alertas"
     },
     {
@@ -206,7 +245,7 @@
       "deviceId": 3,
       "deviceName": "Lavadora",
       "location": "Lavandería",
-      "currentPowerKw": 0.00,
+      "currentPowerKw": 0,
       "timestamp": "Ayer, 22:15",
       "timeAgo": "Ayer, 22:15",
       "status": "Activa",
@@ -221,14 +260,13 @@
       "deviceId": 4,
       "deviceName": "Televisor",
       "location": "Sala",
-      "thresholdPowerKw": 0.15,
-      "currentPowerKw": 0.18,
-      "timestamp": "03/09/2026, 10:23",
-      "timeAgo": "03/09/2026",
-      "status": "Leída",
-      "severity": "warning",
+      "thresholdKwh": 0.6,
+      "timestamp": "Hoy, 11:23",
+      "timeAgo": "Hoy, 11:23",
+      "status": "Activa",
+      "severity": "error",
       "title": "Consumo alto detectado",
-      "description": "Televisor superó su límite de consumo (0.15 kW)",
+      "description": "Televisor superó su límite de consumo (0.60 kWh)",
       "actionUrl": "/alertas"
     },
     {
@@ -238,7 +276,7 @@
       "deviceName": "Microondas",
       "location": "Cocina",
       "maintenanceDueDate": "2026-09-15",
-      "currentPowerKw": 0.00,
+      "currentPowerKw": 0,
       "timestamp": "02/09/2026, 18:45",
       "timeAgo": "02/09/2026",
       "status": "Leída",
@@ -253,14 +291,13 @@
       "deviceId": 6,
       "deviceName": "Computadora",
       "location": "Oficina",
-      "thresholdPowerKw": 0.10,
-      "currentPowerKw": 0.12,
-      "timestamp": "01/09/2026, 08:12",
-      "timeAgo": "01/09/2026",
-      "status": "Resuelta",
-      "severity": "info",
-      "title": "Consumo alto estabilizado",
-      "description": "Computadora superó su límite de consumo (0.10 kW)",
+      "thresholdKwh": 0.7,
+      "timestamp": "Hoy, 09:12",
+      "timeAgo": "Hoy, 09:12",
+      "status": "Activa",
+      "severity": "error",
+      "title": "Consumo alto detectado",
+      "description": "Computadora superó su límite de consumo (0.70 kWh)",
       "actionUrl": "/alertas"
     },
     {
@@ -285,7 +322,7 @@
       "deviceId": 8,
       "deviceName": "Consola de juegos",
       "location": "Sala",
-      "currentPowerKw": 0.00,
+      "currentPowerKw": 0,
       "timestamp": "25/08/2026, 16:20",
       "timeAgo": "25/08/2026",
       "status": "Resuelta",
@@ -298,9 +335,9 @@
   "alert-summaries": [
     {
       "id": 1,
-      "activeCount": 3,
-      "resolvedCount": 3,
-      "totalCount": 8,
+      "activeCount": 4,
+      "resolvedCount": 2,
+      "totalCount": 7,
       "reductionPercentage": 25,
       "reductionLabel": "vs mes anterior"
     }
@@ -336,14 +373,14 @@
   "devices": [
     {
       "id": 1,
-      "name": "Aire acondicionado",
-      "location": "Sala",
-      "category": "Hogar",
+      "name": "Aire acondicionado de Oficina",
+      "location": "Oficina de Trabajos 2",
+      "category": "Oficina",
       "status": "En línea",
       "currentPowerKw": 0.48,
-      "powerLimitKw": 0.40,
+      "powerLimitKw": 0.4,
       "maintenanceDueDate": "2026-08-25",
-      "todayKwh": 5.2,
+      "todayKwh": 3.8,
       "lastActivity": "Hace 5 min"
     },
     {
@@ -355,7 +392,7 @@
       "currentPowerKw": 0.32,
       "powerLimitKw": 0.25,
       "maintenanceDueDate": "2026-11-10",
-      "todayKwh": 3.8,
+      "todayKwh": 1.15,
       "lastActivity": "Hace 5 min"
     },
     {
@@ -364,10 +401,10 @@
       "location": "Lavandería",
       "category": "Hogar",
       "status": "Apagado",
-      "currentPowerKw": 0.0,
-      "powerLimitKw": 0.50,
+      "currentPowerKw": 0,
+      "powerLimitKw": 0.5,
       "maintenanceDueDate": "2026-12-05",
-      "todayKwh": 0.0,
+      "todayKwh": 0.2,
       "lastActivity": "Hace 5 min"
     },
     {
@@ -379,7 +416,7 @@
       "currentPowerKw": 0.18,
       "powerLimitKw": 0.15,
       "maintenanceDueDate": "2026-10-20",
-      "todayKwh": 2.1,
+      "todayKwh": 0.85,
       "lastActivity": "Hace 10 min"
     },
     {
@@ -388,10 +425,10 @@
       "location": "Cocina",
       "category": "Cocina",
       "status": "En espera",
-      "currentPowerKw": 0.0,
-      "powerLimitKw": 0.80,
+      "currentPowerKw": 0,
+      "powerLimitKw": 0.8,
       "maintenanceDueDate": "2026-09-15",
-      "todayKwh": 0.0,
+      "todayKwh": 0,
       "lastActivity": "Hace 3 h"
     },
     {
@@ -401,9 +438,9 @@
       "category": "Oficina",
       "status": "En línea",
       "currentPowerKw": 0.12,
-      "powerLimitKw": 0.10,
+      "powerLimitKw": 0.1,
       "maintenanceDueDate": "2026-11-12",
-      "todayKwh": 1.4,
+      "todayKwh": 0.95,
       "lastActivity": "Hace 12 min"
     },
     {
@@ -412,7 +449,7 @@
       "location": "Sala",
       "category": "Hogar",
       "status": "En espera",
-      "currentPowerKw": 0.0,
+      "currentPowerKw": 0,
       "powerLimitKw": 0.05,
       "maintenanceDueDate": "2026-11-30",
       "todayKwh": 0.3,
@@ -424,11 +461,44 @@
       "location": "Sala",
       "category": "Entretenimiento",
       "status": "En espera",
-      "currentPowerKw": 0.0,
+      "currentPowerKw": 0,
       "powerLimitKw": 0.15,
       "maintenanceDueDate": "2026-12-18",
-      "todayKwh": 0.8,
+      "todayKwh": 0.35,
       "lastActivity": "Hace 4 h"
+    },
+    {
+      "name": "Smart TV Google",
+      "location": "Cuarto de Invitados",
+      "category": "Cocina",
+      "status": "En línea",
+      "currentPowerKw": 0,
+      "powerLimitKw": 0.36,
+      "todayKwh": 0,
+      "lastActivity": "Recién registrado",
+      "id": 9
+    },
+    {
+      "name": "Cocina Eléctrica",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "En línea",
+      "currentPowerKw": 0,
+      "powerLimitKw": 0.46,
+      "todayKwh": 0,
+      "lastActivity": "Recién registrado",
+      "id": 10
+    },
+    {
+      "name": "Equipo de Sonido",
+      "location": "Sala Principal",
+      "category": "Entretenimiento",
+      "status": "Apagado",
+      "currentPowerKw": 0,
+      "powerLimitKw": 0.3,
+      "todayKwh": 0,
+      "lastActivity": "Recién registrado",
+      "id": 11
     }
   ],
   "device-summaries": [
@@ -436,12 +506,270 @@
       "id": 1,
       "connectedDevices": 8,
       "waitingDevices": 4,
-      "totalPowerKw": 1.2,
+      "totalPowerKw": 1.1,
       "powerDiffVsYesterday": -12,
       "powerDiffVsYesterdayLabel": "12% vs ayer",
       "costDiffVsMonth": -8,
       "costDiffVsMonthLabel": "8% vs mes anterior",
       "savedKwhMonthly": 114.4
+    }
+  ],
+  "appliance-profiles": [
+    {
+      "id": 1,
+      "name": "Televisor",
+      "recommendedDailyKwh": 0.6,
+      "typicalPowerWatts": "80 - 150 W",
+      "icon": "tv"
+    },
+    {
+      "id": 2,
+      "name": "Refrigeradora",
+      "recommendedDailyKwh": 1.2,
+      "typicalPowerWatts": "100 - 200 W",
+      "icon": "kitchen"
+    },
+    {
+      "id": 3,
+      "name": "Lavadora",
+      "recommendedDailyKwh": 1.5,
+      "typicalPowerWatts": "500 - 2000 W",
+      "icon": "local_laundry_service"
+    },
+    {
+      "id": 4,
+      "name": "Consola de videojuegos",
+      "recommendedDailyKwh": 0.8,
+      "typicalPowerWatts": "120 - 200 W",
+      "icon": "sports_esports"
+    },
+    {
+      "id": 5,
+      "name": "Aire acondicionado",
+      "recommendedDailyKwh": 3.5,
+      "typicalPowerWatts": "1000 - 2500 W",
+      "icon": "ac_unit"
+    },
+    {
+      "id": 6,
+      "name": "Computadora / Laptop",
+      "recommendedDailyKwh": 0.7,
+      "typicalPowerWatts": "60 - 180 W",
+      "icon": "computer"
+    },
+    {
+      "id": 7,
+      "name": "Microondas",
+      "recommendedDailyKwh": 0.5,
+      "typicalPowerWatts": "800 - 1200 W",
+      "icon": "microwave"
+    },
+    {
+      "id": 8,
+      "name": "Otros",
+      "recommendedDailyKwh": 1,
+      "typicalPowerWatts": "Variable",
+      "icon": "devices"
+    }
+  ],
+  "sensors": [
+    {
+      "id": 1,
+      "name": "Smart Plug Sala 1",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-001",
+      "status": "En línea",
+      "currentPowerKw": 0.18,
+      "todayKwh": 0.85,
+      "todayCostSoles": 0.60,
+      "assignedDeviceId": 4,
+      "assignedDeviceName": "Televisor",
+      "assignedDeviceCategory": "Entretenimiento",
+      "applianceProfileId": 1,
+      "applianceProfileName": "Televisor",
+      "recommendedDailyKwh": 0.6,
+      "lastSync": "Hace 2 min"
+    },
+    {
+      "id": 2,
+      "name": "Tomacorriente Cocina",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-002",
+      "status": "En línea",
+      "currentPowerKw": 0.32,
+      "todayKwh": 1.15,
+      "todayCostSoles": 0.81,
+      "assignedDeviceId": 2,
+      "assignedDeviceName": "Refrigeradora",
+      "assignedDeviceCategory": "Cocina",
+      "applianceProfileId": 2,
+      "applianceProfileName": "Refrigeradora",
+      "recommendedDailyKwh": 1.2,
+      "lastSync": "Hace 1 min"
+    },
+    {
+      "id": 3,
+      "name": "Medidor Lavandería",
+      "model": "Sonoff POW R3",
+      "serialNumber": "SN-IOT-003",
+      "status": "En línea",
+      "currentPowerKw": 0,
+      "todayKwh": 0.2,
+      "todayCostSoles": 0.14,
+      "assignedDeviceId": 3,
+      "assignedDeviceName": "Lavadora",
+      "assignedDeviceCategory": "Hogar",
+      "applianceProfileId": 3,
+      "applianceProfileName": "Lavadora",
+      "recommendedDailyKwh": 1.5,
+      "lastSync": "Hace 5 min"
+    },
+    {
+      "id": 4,
+      "name": "Smart Plug Oficina",
+      "model": "Tuya Smart Plug",
+      "serialNumber": "SN-IOT-004",
+      "status": "En línea",
+      "currentPowerKw": 0.12,
+      "todayKwh": 0.95,
+      "todayCostSoles": 0.67,
+      "assignedDeviceId": 6,
+      "assignedDeviceName": "Computadora",
+      "assignedDeviceCategory": "Oficina",
+      "applianceProfileId": 6,
+      "applianceProfileName": "Computadora / Laptop",
+      "recommendedDailyKwh": 0.7,
+      "lastSync": "Hace 3 min"
+    },
+    {
+      "id": 5,
+      "name": "Medidor Climatización Sala",
+      "model": "Shelly EM 50A",
+      "serialNumber": "SN-IOT-005",
+      "status": "En línea",
+      "currentPowerKw": 0.48,
+      "todayKwh": 3.8,
+      "todayCostSoles": 2.66,
+      "assignedDeviceId": 1,
+      "assignedDeviceName": "Aire acondicionado de Oficina",
+      "assignedDeviceCategory": "Oficina",
+      "applianceProfileId": 5,
+      "applianceProfileName": "Aire acondicionado",
+      "recommendedDailyKwh": 3.5,
+      "lastSync": "Hace 1 min"
+    },
+    {
+      "id": 6,
+      "name": "Enchufe Entretenimiento",
+      "model": "Sonoff S26R2",
+      "serialNumber": "SN-IOT-006",
+      "status": "En línea",
+      "currentPowerKw": 0.001,
+      "todayKwh": 0.35,
+      "todayCostSoles": 0.25,
+      "assignedDeviceId": 8,
+      "assignedDeviceName": "Consola de juegos",
+      "assignedDeviceCategory": "Entretenimiento",
+      "applianceProfileId": 4,
+      "applianceProfileName": "Consola de videojuegos",
+      "recommendedDailyKwh": 0.8,
+      "lastSync": "Hace 8 min"
+    },
+    {
+      "id": 7,
+      "name": "Smart Plug Auxiliar 1",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-007",
+      "status": "En línea",
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "assignedDeviceId": 5,
+      "assignedDeviceName": "Microondas",
+      "assignedDeviceCategory": "Cocina",
+      "applianceProfileId": 7,
+      "applianceProfileName": "Microondas",
+      "recommendedDailyKwh": 0.5,
+      "lastSync": "Hace 15 min"
+    },
+    {
+      "id": 8,
+      "name": "Medidor Reserva Taller",
+      "model": "Sonoff POW Elite",
+      "serialNumber": "SN-IOT-008",
+      "status": "Desconectado",
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "assignedDeviceId": null,
+      "assignedDeviceName": null,
+      "assignedDeviceCategory": null,
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": null,
+      "lastSync": "Ayer, 21:00"
+    },
+    {
+      "name": "Medidor de Prueba",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-634",
+      "status": "Desconectado",
+      "assignedDeviceId": null,
+      "assignedDeviceName": null,
+      "assignedDeviceCategory": null,
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": null,
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "lastSync": "Recién registrado",
+      "id": 9
+    },
+    {
+      "name": "Medidor de Prueba 3",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-253",
+      "status": "Desconectado",
+      "assignedDeviceId": null,
+      "assignedDeviceName": null,
+      "assignedDeviceCategory": null,
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": null,
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "lastSync": "Recién registrado",
+      "id": 10
+    },
+    {
+      "name": "Sensor de Prueba 6",
+      "model": "Medidor Riel DIN Zigbee",
+      "serialNumber": "SN-IOT-947",
+      "status": "Desconectado",
+      "assignedDeviceId": null,
+      "assignedDeviceName": null,
+      "assignedDeviceCategory": null,
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": null,
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "lastSync": "Recién registrado",
+      "id": 11
+    }
+  ],
+  "sensor-summaries": [
+    {
+      "id": 1,
+      "totalSensors": 8,
+      "activeSensors": 7,
+      "monitoredDevicesCount": 6,
+      "unassignedSensorsCount": 2,
+      "totalMonitoredPowerKw": 1.1,
+      "totalEnergyTodayKwh": 7.3
     }
   ]
 }
