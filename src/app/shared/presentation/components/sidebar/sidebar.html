@@ -45,9 +45,15 @@
           <span class="user-email">{{ user().email }}</span>
         </div>
       </div>
-      <button mat-icon-button class="action-btn" aria-label="Perfil de usuario">
-        <mat-icon>arrow_forward</mat-icon>
+      <button
+        mat-icon-button
+        class="logout-btn"
+        (click)="onLogout()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión">
+        <mat-icon class="logout-icon">logout</mat-icon>
       </button>
     </div>
   </div>
+
 </aside>

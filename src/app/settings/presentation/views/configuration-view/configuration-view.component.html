@@ -1,0 +1,251 @@
+<div class="layout-wrapper">
+  <!-- Sidebar persistente -->
+  <app-sidebar />
+
+  <!-- Contenido principal -->
+  <main class="content-container">
+    <header class="page-header">
+      <h1 class="page-title">Configuración</h1>
+      <p class="page-subtitle">Personaliza tu cuenta, tus preferencias y la configuración de tu hogar.</p>
+    </header>
+
+    <div class="cards-grid">
+      <!-- 1. Información personal -->
+      <section class="config-card">
+        <div class="card-header">
+          <div class="avatar-container">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=JouleUser" alt="Avatar" class="user-avatar" />
+            <button type="button" class="avatar-edit-badge" aria-label="Cambiar foto">
+              <mat-icon>photo_camera</mat-icon>
+            </button>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Información personal</h2>
+            <p class="card-subtitle">Administra tu información de perfil.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" formControlName="fullName" placeholder="Tu nombre" />
+          </div>
+
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" formControlName="phone" placeholder="Número de contacto" />
+          </div>
+
+          <div class="action-btn-row">
+            <button type="submit" class="btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 2. Cambiar contraseña -->
+      <section class="config-card">
+        <div class="card-header">
+          <div class="icon-badge">
+            <mat-icon>lock_outline</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Cambiar contraseña</h2>
+            <p class="card-subtitle">Mantén tu cuenta segura</p>
+          </div>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="card-form">
+          <div class="form-group">
+            <label>Contraseña actual</label>
+            <div class="input-with-icon">
+              <mat-icon class="leading-icon">lock</mat-icon>
+              <input [type]="showCurrentPass ? 'text' : 'password'" formControlName="currentPassword" placeholder="Ingresa tu contraseña actual" />
+              <button type="button" class="trailing-icon-btn" (click)="showCurrentPass = !showCurrentPass">
+                <mat-icon>{{ showCurrentPass ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Nueva contraseña</label>
+            <div class="input-with-icon">
+              <mat-icon class="leading-icon">lock</mat-icon>
+              <input [type]="showNewPass ? 'text' : 'password'" formControlName="newPassword" placeholder="Ingresa tu nueva contraseña" />
+              <button type="button" class="trailing-icon-btn" (click)="showNewPass = !showNewPass">
+                <mat-icon>{{ showNewPass ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar nueva contraseña</label>
+            <div class="input-with-icon">
+              <mat-icon class="leading-icon">lock</mat-icon>
+              <input [type]="showConfirmPass ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Confirma tu nueva contraseña" />
+              <button type="button" class="trailing-icon-btn" (click)="showConfirmPass = !showConfirmPass">
+                <mat-icon>{{ showConfirmPass ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="action-btn-row">
+            <button type="submit" class="btn-primary">Actualizar contraseña</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 3. Mi hogar -->
+      <section class="config-card">
+        <div class="card-header">
+          <div class="icon-badge">
+            <mat-icon>home</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Mi hogar</h2>
+            <p class="card-subtitle">Configura la información de tu hogar para obtener recomendaciones más precisas.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="homeForm" class="card-form">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Tipo de vivienda</label>
+              <select formControlName="homeType">
+                <option value="Casa">Casa</option>
+                <option value="Departamento">Departamento</option>
+                <option value="Oficina/Local">Oficina/Local</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Número de habitantes</label>
+              <div class="input-with-icon">
+                <mat-icon class="leading-icon">group</mat-icon>
+                <input type="number" formControlName="occupants" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Ubicación</label>
+              <input type="text" formControlName="location" placeholder="Ciudad o distrito" />
+            </div>
+
+            <div class="form-group">
+              <label>Tarifa eléctrica</label>
+              <input type="text" formControlName="tariff" placeholder="Ej. BT5B" />
+            </div>
+          </div>
+
+          <div class="link-action-row">
+            <a href="javascript:void(0)" class="link-action">Editar detalles de mi hogar</a>
+          </div>
+        </form>
+      </section>
+
+      <!-- 4. Preferencias de consumo -->
+      <section class="config-card">
+        <div class="card-header">
+          <div class="icon-badge">
+            <mat-icon>bar_chart</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Preferencias de consumo</h2>
+            <p class="card-subtitle">Personaliza cómo quieres ver tu información</p>
+          </div>
+        </div>
+
+        <form [formGroup]="preferencesForm" class="card-form preferences-list">
+          <div class="preference-item">
+            <span class="pref-label">Unidad de energía</span>
+            <select formControlName="energyUnit" class="pref-select">
+              <option value="kWh">kWh</option>
+              <option value="Wh">Wh</option>
+              <option value="MWh">MWh</option>
+            </select>
+          </div>
+
+          <div class="preference-item">
+            <span class="pref-label">Moneda</span>
+            <select formControlName="currency" class="pref-select">
+              <option value="Soles(S/)">Soles(S/)</option>
+              <option value="USD($)">Dólares ($)</option>
+              <option value="EUR(€)">Euros (€)</option>
+            </select>
+          </div>
+
+          <div class="preference-item">
+            <span class="pref-label">Formato de fecha</span>
+            <select formControlName="dateFormat" class="pref-select">
+              <option value="dd/mm/aaaa">dd/mm/aaaa</option>
+              <option value="mm/dd/aaaa">mm/dd/aaaa</option>
+              <option value="aaaa-mm-dd">aaaa-mm-dd</option>
+            </select>
+          </div>
+
+          <div class="preference-item">
+            <span class="pref-label">Formato de hora</span>
+            <select formControlName="timeFormat" class="pref-select">
+              <option value="24 horas">24 horas</option>
+              <option value="12 horas">12 horas (AM/PM)</option>
+            </select>
+          </div>
+        </form>
+      </section>
+
+      <!-- 5. Notificaciones (Centrada en la parte inferior) -->
+      <section class="config-card notification-card">
+        <div class="card-header">
+          <div class="icon-badge">
+            <mat-icon>notifications</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Notificaciones</h2>
+            <p class="card-subtitle">Elige qué notificaciones quieres recibir.</p>
+          </div>
+        </div>
+
+        <div class="notification-list">
+          <div class="notification-item">
+            <div class="notif-info">
+              <mat-icon class="notif-item-icon">bar_chart</mat-icon>
+              <div>
+                <strong class="notif-title">Alertas de consumo alto</strong>
+                <p class="notif-desc">Te avisamos cuando detectemos un consumo inusual.</p>
+              </div>
+            </div>
+            <mat-slide-toggle [(ngModel)]="highConsumptionAlerts" color="primary"></mat-slide-toggle>
+          </div>
+
+          <div class="notification-item">
+            <div class="notif-info">
+              <mat-icon class="notif-item-icon">build</mat-icon>
+              <div>
+                <strong class="notif-title">Recordatorios de mantenimiento</strong>
+                <p class="notif-desc">Recibe sugerencias para el cuidado de tus dispositivos.</p>
+              </div>
+            </div>
+            <mat-slide-toggle [(ngModel)]="maintenanceReminders" color="primary"></mat-slide-toggle>
+          </div>
+
+          <div class="notification-item">
+            <div class="notif-info">
+              <mat-icon class="notif-item-icon">eco</mat-icon>
+              <div>
+                <strong class="notif-title">Recomendaciones personalizadas</strong>
+                <p class="notif-desc">Consejos para ahorrar energía.</p>
+              </div>
+            </div>
+            <mat-slide-toggle [(ngModel)]="personalizedTips" color="primary"></mat-slide-toggle>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

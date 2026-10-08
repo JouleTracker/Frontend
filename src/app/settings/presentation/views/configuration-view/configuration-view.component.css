@@ -1,0 +1,351 @@
+:host {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  color: #1a1a1a;
+  background-color: #f7f9f7;
+  min-height: 100vh;
+}
+
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content-container {
+  flex: 1;
+  padding: 32px 48px;
+  overflow-y: auto;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #404040;
+  margin: 0;
+}
+
+/* Grid Layout */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+/* Base Card Style */
+.config-card {
+  background: #ffffff;
+  border: 1px solid #bed4c2;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease;
+}
+
+.config-card:hover {
+  box-shadow: 0 4px 12px rgba(33, 64, 41, 0.06);
+}
+
+/* Header de cada tarjeta */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #dcedd5;
+  color: #214029;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-badge mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.avatar-container {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #dcedd5;
+}
+
+.avatar-edit-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #214029;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.avatar-edit-badge mat-icon {
+  font-size: 13px;
+  width: 13px;
+  height: 13px;
+}
+
+.card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 2px 0;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: #404040;
+  margin: 0;
+}
+
+/* Forms & Inputs */
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #404040;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+input, select {
+  font-family: 'Roboto', sans-serif;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #bed4c2;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: #214029;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding-left: 36px;
+  padding-right: 36px;
+}
+
+.leading-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #404040;
+  pointer-events: none;
+}
+
+.trailing-icon-btn {
+  position: absolute;
+  right: 6px;
+  background: transparent;
+  border: none;
+  color: #404040;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.trailing-icon-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Botones principales (#214029) */
+.action-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  background-color: #214029;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.link-action-row {
+  margin-top: 4px;
+}
+
+.link-action {
+  font-size: 13px;
+  color: #214029;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Preferencias de consumo */
+.preferences-list {
+  gap: 12px;
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.pref-label {
+  font-size: 13px;
+  color: #404040;
+}
+
+.pref-select {
+  width: 160px;
+  height: 36px;
+}
+
+/* Tarjeta inferior centrada */
+.notification-card {
+  grid-column: 1 / -1;
+  max-width: 620px;
+  margin: 12px auto 0 auto;
+  width: 100%;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notif-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notif-item-icon {
+  color: #214029;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.notif-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.notif-desc {
+  font-size: 12px;
+  color: #404040;
+  margin: 2px 0 0 0;
+}
+
+/* Color verde JouleTracker en los switches */
+:host ::ng-deep .mat-mdc-slide-toggle.mat-primary {
+  --mdc-switch-selected-focus-state-layer-color: #214029;
+  --mdc-switch-selected-handle-color: #214029;
+  --mdc-switch-selected-hover-state-layer-color: #214029;
+  --mdc-switch-selected-pressed-state-layer-color: #214029;
+  --mdc-switch-selected-focus-handle-color: #214029;
+  --mdc-switch-selected-hover-handle-color: #214029;
+  --mdc-switch-selected-pressed-handle-color: #214029;
+  --mdc-switch-selected-focus-track-color: #bed4c2;
+  --mdc-switch-selected-hover-track-color: #bed4c2;
+  --mdc-switch-selected-pressed-track-color: #bed4c2;
+  --mdc-switch-selected-track-color: #bed4c2;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-container {
+    padding: 24px;
+  }
+
+  .notification-card {
+    max-width: 100%;
+  }
+}

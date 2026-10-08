@@ -229,3 +229,19 @@
   height: 20px;
   line-height: 20px;
 }
+
+.logout-btn {
+  color: #d32f2f;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.logout-btn:hover {
+  background-color: rgba(211, 47, 47, 0.08);
+}
+
+.logout-icon {
+  color: #d32f2f;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}

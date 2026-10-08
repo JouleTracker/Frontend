@@ -26,17 +26,16 @@ const verifyEmailView = () =>
     (m) => m.VerifyEmailViewComponent
   );
 
+// Vista de configuración (ajusta la ruta según la carpeta donde la guardaste)
+const configurationView = () =>
+  import('./settings/presentation/views/configuration-view/configuration-view.component').then(
+    (m) => m.ConfigurationViewComponent
+  );
+
 const baseTitle = 'JouleTracker';
 
-/**
- * Root routing configuration for JouleTracker.
- *
- * Implements Domain-Driven Design (DDD) with lazy-loaded bounded context routes.
- * All routes render inside the Layout component — the sidebar is automatically
- * hidden on auth pages via the Layout's isAuthPage signal.
- */
 export const routes: Routes = [
-  // ── Auth routes (sidebar hidden by Layout) ───────
+  // ── Auth routes ───────
   { path: 'login', loadComponent: loginView, canActivate: [guestGuard], title: `${baseTitle} - Iniciar sesión` },
   { path: 'registro', loadComponent: registerView, canActivate: [guestGuard], title: `${baseTitle} - Crear cuenta` },
   {
@@ -51,14 +50,15 @@ export const routes: Routes = [
     title: `${baseTitle} - Verificar correo`
   },
 
-  // ── App routes (protected, sidebar visible) ──────
+  // ── App routes ──────
   { path: 'inicio', loadComponent: homeView, canActivate: [authGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [authGuard] },
   { path: 'dispositivos', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Dispositivos` },
   { path: 'alertas', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Alertas` },
   { path: 'reportes', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Reportes` },
   { path: 'recomendaciones', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Recomendaciones` },
-  { path: 'configuracion', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Configuración` },
+  // AQUÍ: cambiar blankPage por configurationView
+  { path: 'configuracion', loadComponent: configurationView, canActivate: [authGuard], title: `${baseTitle} - Configuración` },
 
   // ── Fallback ─────────────────────────────────────
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },

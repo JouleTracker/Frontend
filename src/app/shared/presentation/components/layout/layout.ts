@@ -11,7 +11,7 @@ import { Sidebar } from '../sidebar/sidebar';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, Sidebar],
+  imports: [RouterOutlet],
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })

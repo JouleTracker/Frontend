@@ -5,21 +5,12 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { AuthService } from '../../../../auth/application/auth.service';
 
-/**
- * Interface representing a navigation link in the sidebar.
- */
 export interface NavItem {
   link: string;
   label: string;
   icon: string;
 }
 
-/**
- * Fixed left sidebar component for JouleTracker.
- *
- * Provides main application navigation, logo branding, and user account status
- * using Angular Material components and reactive signals.
- */
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -39,9 +30,6 @@ export interface NavItem {
 export class Sidebar {
   private readonly authService = inject(AuthService);
 
-  /**
-   * Navigation items for the sidebar.
-   */
   readonly navItems = signal<NavItem[]>([
     { link: '/inicio', label: 'Inicio', icon: 'home' },
     { link: '/consumo', label: 'Consumo', icon: 'bar_chart' },
@@ -52,10 +40,6 @@ export class Sidebar {
     { link: '/configuracion', label: 'Configuración', icon: 'settings' }
   ]);
 
-  /**
-   * User profile data displayed at the bottom of the sidebar,
-   * reactively resolved from the current authentication state.
-   */
   readonly user = computed(() => {
     const currentUser = this.authService.currentUser();
     return {
@@ -63,4 +47,8 @@ export class Sidebar {
       email: currentUser?.email || 'sin-correo@jouletracker.com'
     };
   });
+
+  onLogout(): void {
+    this.authService.logout();
+  }
 }
