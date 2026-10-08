@@ -1,0 +1,290 @@
+<div class="devices-container">
+
+  <!-- HEADER SECTION WITH TITLE AND MAIN SEARCH/ADD ACTIONS -->
+  <header class="header-section">
+    <div class="title-group">
+      <h1>Dispositivos</h1>
+      <p class="subtitle">Gestiona y monitorea los dispositivos conectados a tu red eléctrica</p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Search Input -->
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Buscar dispositivo..."
+          [ngModel]="store.searchTerm()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Buscar dispositivos"
+        />
+      </div>
+
+      <!-- Add Device CTA Button -->
+      <button type="button" class="btn-primary" (click)="addDevice()">
+        <mat-icon class="btn-icon">add</mat-icon> Agregar dispositivo
+      </button>
+    </div>
+  </header>
+
+  <!-- TOP SUMMARY METRIC CARDS -->
+  <section class="summary-cards" aria-label="Resumen de dispositivos">
+
+    <!-- Card 1: Connected Devices -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-gray">
+        <mat-icon>weekend</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">Dispositivos conectados</span>
+        <div class="card-value">{{ store.connectedDevices() }}</div>
+        <span class="card-subtext">{{ store.waitingDevices() }} en espera</span>
+      </div>
+    </article>
+
+    <!-- Card 2: Current Total Power -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>bolt</mat-icon>
+      </div>
+      <div class="card-content">
+        <div class="card-value">{{ store.totalPowerKw() }}kW</div>
+        <span class="card-label">Consumo total actual</span>
+        <span class="card-subtext trend-down">↓ {{ store.powerDiffVsYesterdayLabel() }}</span>
+      </div>
+    </article>
+
+    <!-- Card 3: Estimated Monthly Cost -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>payments</mat-icon>
+      </div>
+      <div class="card-content">
+        <div class="card-value">S/{{ store.estimatedCostSoles() | number:'1.2-2' }}</div>
+        <span class="card-label">Costo estimado(mes)</span>
+        <span class="card-subtext trend-down">↓ {{ store.costDiffVsMonthLabel() }}</span>
+      </div>
+    </article>
+
+    <!-- Card 4: Monthly CO2 Avoided -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>eco</mat-icon>
+      </div>
+      <div class="card-content">
+        <div class="card-value">{{ store.co2AvoidedKg() | number:'1.1-1' }} kg</div>
+        <span class="card-label">CO₂ evitado (mes)</span>
+        <span class="card-subtext">{{ store.treeEquivalence() }}</span>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- MAIN CARD CONTAINING TABLE & FILTERS -->
+  <section class="main-card">
+
+    <!-- Filter tabs and order selector -->
+    <div class="table-toolbar">
+      <nav class="category-tabs" aria-label="Categorías de dispositivos">
+        @for (cat of categories; track cat) {
+          <button
+            type="button"
+            [class.active]="store.selectedCategory() === cat"
+            (click)="selectCategory(cat)">
+            {{ cat }}
+          </button>
+        }
+      </nav>
+
+      <div class="sort-selector">
+        <label for="sortSelect">Ordenar por</label>
+        <select id="sortSelect" [ngModel]="store.selectedSort()" (ngModelChange)="onSortChange($event)">
+          <option value="consumo-desc">Consumo (mayor a menor)</option>
+          <option value="consumo-asc">Consumo (menor a mayor)</option>
+          <option value="nombre">Nombre</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      @if (store.loading()) {
+        <p class="state-message">Cargando dispositivos...</p>
+      } @else if (store.error() && store.devices().length === 0) {
+        <p class="state-message error">{{ store.error() }}</p>
+      } @else {
+        <table class="devices-table">
+          <thead>
+            <tr>
+              <th>Dispositivos</th>
+              <th>Estado</th>
+              <th>Consumo actual</th>
+              <th>Consumo hoy</th>
+              <th>Costo hoy</th>
+              <th>Última actividad</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (device of store.filteredDevices(); track device.id) {
+              <tr>
+                <td>
+                  <div class="device-name-cell">
+                    <strong>{{ device.name }}</strong>
+                    <div class="meta-tags">
+                      <span class="location-tag">{{ device.location }}</span>
+                      @if (getSensorForDevice(device.id); as sensor) {
+                        <span class="sensor-tag" title="Monitoreado por {{ sensor.name }} ({{ sensor.model }})">
+                          <mat-icon>sensors</mat-icon> {{ sensor.model }}
+                        </span>
+                      } @else {
+                        <span class="sensor-tag tag-unassigned" title="Sin sensor IoT asignado">
+                          <mat-icon>link_off</mat-icon> Sin sensor
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(device.status)">
+                    <span class="status-dot"></span>
+                    {{ device.status }}
+                  </span>
+                </td>
+                <td>{{ formatPower(device.currentPowerKw) }}</td>
+                <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
+                <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
+                <td class="text-muted">{{ device.lastActivity }}</td>
+                <td class="action-cell text-right">
+                  <div class="actions-group">
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-edit"
+                      title="Editar dispositivo"
+                      aria-label="Editar dispositivo"
+                      (click)="editDevice(device.id)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-delete"
+                      title="Eliminar dispositivo"
+                      aria-label="Eliminar dispositivo"
+                      (click)="openDeleteModal(device)">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-message">
+                  No se encontraron dispositivos que coincidan con los criterios.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+  </section>
+
+  <!-- LOWER BANNERS SECTION -->
+  <section class="action-banners">
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <mat-icon>add_circle_outline</mat-icon>
+        </div>
+        <div class="banner-info">
+          <h3>Añade nuevos dispositivos</h3>
+          <p>Conecta más dispositivos para obtener un análisis completo de tu consumo</p>
+        </div>
+      </div>
+      <button type="button" class="btn-banner btn-dark" (click)="addDevice()">Agregar dispositivo</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <mat-icon>settings</mat-icon>
+        </div>
+        <div class="banner-info">
+          <h3>Configura tus dispositivos</h3>
+          <p>Personaliza nombres, categorías y umbrales de consumo.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-banner btn-light" (click)="goToSettings()">Ir a configuración</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <mat-icon>insights</mat-icon>
+        </div>
+        <div class="banner-info">
+          <h3>Identifica grandes consumos</h3>
+          <p>Detecta qué dispositivos consumen más energía y optimiza su uso.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-banner btn-light" (click)="goToRecommendations()">Ver recomendaciones</button>
+    </article>
+
+  </section>
+
+  <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN DE DISPOSITIVO -->
+  @if (showDeleteModal()) {
+    <div class="modal-backdrop" (click)="closeDeleteModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+        <div class="modal-header">
+          <div class="modal-icon-box icon-delete">
+            <mat-icon>delete_outline</mat-icon>
+          </div>
+          <div class="modal-title-group">
+            <h2>¿Eliminar este dispositivo?</h2>
+            <p class="modal-subtitle">
+              Dispositivo: <strong>{{ selectedDevice()?.name }}</strong> ({{ selectedDevice()?.location }})
+            </p>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <p class="modal-desc">
+            El aparato será retirado del inventario de dispositivos activos.
+            @if (selectedDevice() && getSensorForDevice(selectedDevice()!.id); as linkedSensor) {
+              <span>
+                El sensor vinculado <strong>"{{ linkedSensor.name }}"</strong> quedará liberado en estado
+                <strong>Disponible (Sin asignar)</strong> para asociarse a otro aparato.
+              </span>
+            }
+          </p>
+
+          <!-- Nota informativa clave sobre conservación de consumo histórico -->
+          <div class="info-alert-box">
+            <mat-icon class="alert-info-icon">info</mat-icon>
+            <div class="alert-text">
+              <strong>El consumo histórico acumulado se conserva</strong>
+              <p>Las mediciones pasadas en reportes, métricas y gráficas no se borrarán ni se restarán, manteniendo la exactitud de tus costos y estadísticas.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()" [disabled]="isProcessing()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-modal-danger" (click)="confirmDeleteDevice()" [disabled]="isProcessing()">
+            <mat-icon>delete</mat-icon>
+            <span>{{ isProcessing() ? 'Eliminando...' : 'Eliminar dispositivo' }}</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>
+

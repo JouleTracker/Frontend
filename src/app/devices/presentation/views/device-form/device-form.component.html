@@ -1,0 +1,213 @@
+<div class="edit-page-container">
+
+  <!-- Breadcrumb / Back button -->
+  <nav class="breadcrumb-nav">
+    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver a dispositivos">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Volver a dispositivos</span>
+    </button>
+  </nav>
+
+  <div class="form-card">
+
+    <header class="form-header">
+      <div class="header-icon-box">
+        <mat-icon>{{ isEditMode ? 'edit_note' : 'add_circle_outline' }}</mat-icon>
+      </div>
+      <div class="header-text">
+        <h1>{{ isEditMode ? 'Editar Dispositivo' : 'Registrar Nuevo Dispositivo' }}</h1>
+        <p class="subtitle">
+          {{ isEditMode
+            ? 'Actualiza el nombre, ubicación, categoría y sensor asociado de este dispositivo'
+            : 'Añade un nuevo electrodoméstico o equipo a tu inventario de JouleTracker' }}
+        </p>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <mat-icon class="spin-icon">autorenew</mat-icon>
+        <p>Cargando información del dispositivo...</p>
+      </div>
+    } @else if (errorMessage() && !device() && isEditMode) {
+      <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" class="btn-secondary" (click)="onCancel()">Regresar</button>
+      </div>
+    } @else {
+
+      <!-- Context Info Banner (Edit mode) -->
+      @if (device(); as dev) {
+        <div class="device-summary-strip">
+          <div class="strip-item">
+            <span class="strip-label">ID Dispositivo</span>
+            <span class="strip-value">#{{ dev.id }}</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Estado</span>
+            <span class="strip-value status-badge">{{ dev.status }}</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Consumo actual</span>
+            <span class="strip-value">{{ dev.formattedCurrentPower }}</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Consumo hoy</span>
+            <span class="strip-value">{{ dev.todayKwh }} kWh</span>
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="device-edit-form">
+
+        @if (errorMessage()) {
+          <div class="error-banner form-error">
+            <mat-icon>error_outline</mat-icon>
+            <p>{{ errorMessage() }}</p>
+          </div>
+        }
+
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="deviceName" class="form-label">
+            Nombre del dispositivo <span class="required">*</span>
+          </label>
+          <input
+            id="deviceName"
+            type="text"
+            formControlName="name"
+            class="form-input"
+            [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
+            placeholder="Ej. Aire acondicionado, Refrigeradora, Smart TV 55"
+          />
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <span class="field-error">
+              El nombre del dispositivo es obligatorio (mínimo 2 caracteres).
+            </span>
+          }
+        </div>
+
+        <!-- Location Field -->
+        <div class="form-group">
+          <label for="deviceLocation" class="form-label">
+            Ubicación <span class="required">*</span>
+          </label>
+          <input
+            id="deviceLocation"
+            type="text"
+            formControlName="location"
+            class="form-input"
+            [class.input-error]="form.get('location')?.invalid && form.get('location')?.touched"
+            placeholder="Ej. Sala principal, Cocina, Habitación 2"
+          />
+          @if (form.get('location')?.invalid && form.get('location')?.touched) {
+            <span class="field-error">
+              La ubicación es obligatoria (mínimo 2 caracteres).
+            </span>
+          }
+        </div>
+
+        <!-- Category Field -->
+        <div class="form-group">
+          <label for="deviceCategory" class="form-label">
+            Categoría <span class="required">*</span>
+          </label>
+          <select
+            id="deviceCategory"
+            formControlName="category"
+            class="form-select"
+          >
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+          <span class="field-hint">
+            Permite clasificar el consumo de energía en los gráficos y reportes del hogar.
+          </span>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- IoT Sensor Assignment Section -->
+        <div class="assignment-header">
+          <h3>Conectividad IoT</h3>
+          <p>Vincula este aparato a un sensor inteligente para capturar su consumo en tiempo real.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="assignedSensor" class="form-label">
+            Sensor IoT asociado
+          </label>
+          <select
+            id="assignedSensor"
+            formControlName="assignedSensorId"
+            class="form-select"
+          >
+            <option [ngValue]="null">-- Ninguno (Registrar sin sensor por ahora) --</option>
+            @for (s of availableSensors(); track s.id) {
+              <option [ngValue]="s.id">
+                {{ s.name }} ({{ s.model }} • {{ s.serialNumber }})
+              </option>
+            }
+          </select>
+
+          @if (availableSensors().length === 0) {
+            <span class="notice-info">
+              <mat-icon>info</mat-icon>
+              Todos los sensores IoT están vinculados actualmente. Puedes registrar el aparato ahora y enlazar un sensor más adelante.
+            </span>
+          } @else {
+            <span class="field-hint">
+              Solo se listan los sensores disponibles sin electrodoméstico asignado.
+            </span>
+          }
+        </div>
+
+        <!-- Live Sensor Feedback -->
+        @if (selectedSensor(); as sensor) {
+          <div class="sensor-preview-card">
+            <div class="preview-icon">
+              <mat-icon>sensors</mat-icon>
+            </div>
+            <div class="preview-info">
+              <strong>Sensor vinculado: {{ sensor.name }}</strong>
+              <p>
+                Telemetría en vivo: {{ sensor.formattedCurrentPower }} | Hoy: {{ sensor.todayKwh }} kWh | Estado: {{ sensor.status }}
+              </p>
+            </div>
+          </div>
+        }
+
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="onCancel()"
+            [disabled]="submitting()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="form.invalid || submitting()"
+          >
+            @if (submitting()) {
+              <mat-icon class="spin-icon">autorenew</mat-icon>
+              <span>Guardando...</span>
+            } @else {
+              <mat-icon>check</mat-icon>
+              <span>{{ isEditMode ? 'Aceptar' : 'Registrar Dispositivo' }}</span>
+            }
+          </button>
+        </div>
+
+      </form>
+    }
+
+  </div>
+
+</div>

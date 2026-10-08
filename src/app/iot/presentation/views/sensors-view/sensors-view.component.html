@@ -1,0 +1,341 @@
+<div class="sensors-container">
+
+  <!-- HEADER SECTION WITH TITLE AND MAIN ACTIONS -->
+  <header class="header-section">
+    <div class="title-group">
+      <h1>Sensores IoT</h1>
+      <p class="subtitle">Monitorea los medidores de telemetría y gestiona la vinculación con tus electrodomésticos</p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Search Input -->
+      <div class="search-box">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Buscar sensor o dispositivo..."
+          [ngModel]="store.searchTerm()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Buscar sensores"
+        />
+      </div>
+
+      <!-- Add Sensor CTA Button -->
+      <button type="button" class="btn-primary" (click)="addSensor()">
+        <mat-icon class="btn-icon">add</mat-icon>
+        <span>Agregar sensor</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TOP SUMMARY METRIC CARDS -->
+  <section class="summary-cards" aria-label="Resumen de telemetría IoT">
+
+    <!-- Card 1: Total Sensors -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-gray">
+        <mat-icon>sensors</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">Total sensores</span>
+        <div class="card-value">{{ store.totalSensorsCount() }}</div>
+        <span class="card-subtext">{{ store.activeSensorsCount() }} en línea</span>
+      </div>
+    </article>
+
+    <!-- Card 2: Monitored Devices -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>power</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">Monitoreando</span>
+        <div class="card-value">{{ store.monitoredDevicesCount() }}</div>
+        <span class="card-subtext">Aparatos vinculados</span>
+      </div>
+    </article>
+
+    <!-- Card 3: Unassigned Sensors -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-amber">
+        <mat-icon>link_off</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">Disponibles</span>
+        <div class="card-value">{{ store.unassignedSensorsCount() }}</div>
+        <span class="card-subtext">Sin dispositivo asignado</span>
+      </div>
+    </article>
+
+    <!-- Card 4: Current Total Power Monitored -->
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>bolt</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">Potencia censada</span>
+        <div class="card-value">{{ store.totalMonitoredPowerKw() }} kW</div>
+        <span class="card-subtext">Hoy: {{ store.totalEnergyTodayKwh() }} kWh</span>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- MAIN CARD CONTAINING TABLE & FILTERS -->
+  <section class="main-card">
+
+    <!-- Filter tabs and order selector -->
+    <div class="table-toolbar">
+      <nav class="category-tabs" aria-label="Filtro de sensores">
+        @for (f of filters; track f) {
+          <button
+            type="button"
+            [class.active]="store.selectedFilter() === f"
+            (click)="selectFilter(f)">
+            {{ f }}
+          </button>
+        }
+      </nav>
+
+      <div class="sort-selector">
+        <label for="sensorSortSelect">Ordenar por</label>
+        <select id="sensorSortSelect" [ngModel]="store.selectedSort()" (ngModelChange)="onSortChange($event)">
+          <option value="potencia-desc">Potencia (mayor a menor)</option>
+          <option value="potencia-asc">Potencia (menor a mayor)</option>
+          <option value="energia-desc">Consumo acumulado hoy</option>
+          <option value="nombre">Nombre</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      @if (store.loading()) {
+        <p class="state-message">Cargando sensores IoT...</p>
+      } @else if (store.error() && store.sensors().length === 0) {
+        <p class="state-message error">{{ store.error() }}</p>
+      } @else {
+        <table class="sensors-table">
+          <thead>
+            <tr>
+              <th>Sensor / Modelo</th>
+              <th>Dispositivo Asignado</th>
+              <th>Estado IoT</th>
+              <th>Consumo actual</th>
+              <th>Consumo hoy</th>
+              <th>Límite Recomendado</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (sensor of store.filteredSensors(); track sensor.id) {
+              <tr>
+                <!-- Sensor Name and Specs (Serial number removed from view) -->
+                <td>
+                  <div class="sensor-name-cell">
+                    <strong>{{ sensor.name }}</strong>
+                    <span class="sensor-meta">
+                      {{ sensor.model }}
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Assigned Device -->
+                <td>
+                  @if (sensor.isAssigned) {
+                    <div class="assigned-device-cell">
+                      <mat-icon class="device-icon">{{ getApplianceIcon(sensor.assignedDeviceName) }}</mat-icon>
+                      <div class="device-info">
+                        <strong>{{ sensor.assignedDeviceName }}</strong>
+                        @if (sensor.assignedDeviceCategory) {
+                          <span class="category-pill">{{ sensor.assignedDeviceCategory }}</span>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <span class="badge-unassigned">
+                      <mat-icon>link_off</mat-icon>
+                      Sin asignar
+                    </span>
+                  }
+                </td>
+
+                <!-- Network Status -->
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(sensor.status)">
+                    <span class="status-dot"></span>
+                    {{ sensor.status }}
+                  </span>
+                </td>
+
+                <!-- Current Power (Non-bold normal font) -->
+                <td class="power-cell">
+                  <span>{{ formatPower(sensor.currentPowerKw) }}</span>
+                </td>
+
+                <!-- Today Energy -->
+                <td>
+                  <div class="today-kwh-cell">
+                    <span>{{ sensor.todayKwh | number:'1.2-2' }} kWh</span>
+                    @if (sensor.isOverRecommendedLimit) {
+                      <span class="alert-exceeded" title="Superó el consumo diario recomendado">
+                        Excedido
+                      </span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Recommended Limit -->
+                <td>
+                  @if (sensor.recommendedDailyKwh) {
+                    <div class="limit-cell">
+                      <strong>{{ sensor.recommendedDailyKwh | number:'1.2-2' }} kWh/día</strong>
+                      <span class="limit-profile">{{ sensor.applianceProfileName }}</span>
+                    </div>
+                  } @else {
+                    <span class="text-muted">--</span>
+                  }
+                </td>
+
+                <!-- Actions: Unlink, Edit, and Delete -->
+                <td class="action-cell text-right">
+                  <div class="actions-group">
+                    @if (sensor.isAssigned) {
+                      <button
+                        type="button"
+                        class="btn-action-icon btn-action-unlink"
+                        title="Desvincular del dispositivo (dejar disponible)"
+                        aria-label="Desvincular sensor"
+                        (click)="openUnlinkModal(sensor)">
+                        <mat-icon>link_off</mat-icon>
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-edit"
+                      title="Editar y configurar sensor"
+                      aria-label="Editar sensor"
+                      (click)="editSensor(sensor.id)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-action-icon btn-action-delete"
+                      title="Dar de baja / Eliminar sensor"
+                      aria-label="Eliminar sensor"
+                      (click)="openDeleteModal(sensor)">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-message">
+                  No se encontraron sensores que coincidan con los filtros actuales.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+  </section>
+
+  <!-- LOWER INFORMATIVE BANNERS SECTION -->
+  <section class="action-banners">
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <mat-icon>tune</mat-icon>
+        </div>
+        <div class="banner-info">
+          <h3>Perfiles de consumo recomendado</h3>
+          <p>Al asignar un electrodoméstico recurrente, el sensor calibra el umbral para detectar consumos altos reales.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-banner btn-dark" (click)="addSensor()">Vincular nuevo sensor</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-body">
+        <div class="banner-icon-box">
+          <mat-icon>sensors</mat-icon>
+        </div>
+        <div class="banner-info">
+          <h3>Medición en tiempo real</h3>
+          <p>Los sensores capturan micro-consumos en modo standby (vampiro) para alertar pérdidas de energía.</p>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- MODAL DE CONFIRMACIÓN (DESVINCULAR O DAR DE BAJA SENSOR) -->
+  @if (modalMode(); as mode) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+        <div class="modal-header">
+          <div class="modal-icon-box" [class.icon-unlink]="mode === 'unlink'" [class.icon-delete]="mode === 'delete'">
+            <mat-icon>{{ mode === 'unlink' ? 'link_off' : 'delete_outline' }}</mat-icon>
+          </div>
+          <div class="modal-title-group">
+            <h2>{{ mode === 'unlink' ? '¿Desvincular sensor?' : '¿Dar de baja este sensor?' }}</h2>
+            <p class="modal-subtitle">
+              Sensor: <strong>{{ selectedSensor()?.name }}</strong> ({{ selectedSensor()?.model }})
+            </p>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          @if (mode === 'unlink') {
+            <p class="modal-desc">
+              El sensor se desvinculará del electrodoméstico
+              <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong> y quedará en estado
+              <strong>Disponible (Sin asignar)</strong> listo para conectarse a otro aparato.
+            </p>
+          } @else {
+            <p class="modal-desc">
+              El sensor será retirado del listado operativo de monitoreo.
+              @if (selectedSensor()?.isAssigned) {
+                <span> Además, el electrodoméstico <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong> quedará liberado.</span>
+              }
+            </p>
+          }
+
+          <!-- Nota informativa clave sobre conservación de consumo histórico -->
+          <div class="info-alert-box">
+            <mat-icon class="alert-info-icon">info</mat-icon>
+            <div class="alert-text">
+              <strong>El consumo histórico no se verá afectado</strong>
+              <p>Las mediciones acumuladas hasta la fecha en reportes, gráficas y costos no se borrarán ni se restarán, garantizando la exactitud de tu historial eléctrico.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-cancel" (click)="closeModal()" [disabled]="isProcessing()">
+            Cancelar
+          </button>
+          @if (mode === 'unlink') {
+            <button type="button" class="btn-modal-warning" (click)="confirmUnlink()" [disabled]="isProcessing()">
+              <mat-icon>link_off</mat-icon>
+              <span>{{ isProcessing() ? 'Desvinculando...' : 'Desvincular' }}</span>
+            </button>
+          } @else {
+            <button type="button" class="btn-modal-danger" (click)="confirmDelete()" [disabled]="isProcessing()">
+              <mat-icon>delete</mat-icon>
+              <span>{{ isProcessing() ? 'Eliminando...' : 'Dar de baja' }}</span>
+            </button>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>
+

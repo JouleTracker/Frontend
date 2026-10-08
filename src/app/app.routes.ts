@@ -7,6 +7,15 @@ const homeView = () =>
 const consumptionRoutes = () =>
   import('./consumption/presentation/consumption.routes').then((m) => m.consumptionRoutes);
 
+const devicesRoutes = () =>
+  import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
+
+const iotRoutes = () =>
+  import('./iot/presentation/iot.routes').then((m) => m.iotRoutes);
+
+const alertsRoutes = () =>
+  import('./alerts/presentation/alerts.routes').then((m) => m.alertsRoutes);
+
 const blankPage = () =>
   import('./shared/presentation/views/blank-page/blank-page').then((m) => m.BlankPage);
 
@@ -34,6 +43,11 @@ const configurationView = () =>
 
 const baseTitle = 'JouleTracker';
 
+/**
+ * Root routing configuration for JouleTracker.
+ *
+ * Implements Domain-Driven Design (DDD) with lazy-loaded bounded context routes.
+ */
 export const routes: Routes = [
   // ── Auth routes ───────
   { path: 'login', loadComponent: loginView, canActivate: [guestGuard], title: `${baseTitle} - Iniciar sesión` },
@@ -57,7 +71,7 @@ export const routes: Routes = [
   { path: 'alertas', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Alertas` },
   { path: 'reportes', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Reportes` },
   { path: 'recomendaciones', loadComponent: blankPage, canActivate: [authGuard], title: `${baseTitle} - Recomendaciones` },
-  // AQUÍ: cambiar blankPage por configurationView
+  { path: 'sensores', loadChildren: iotRoutes },
   { path: 'configuracion', loadComponent: configurationView, canActivate: [authGuard], title: `${baseTitle} - Configuración` },
 
   // ── Fallback ─────────────────────────────────────

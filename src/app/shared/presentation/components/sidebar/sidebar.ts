@@ -34,6 +34,7 @@ export class Sidebar {
     { link: '/inicio', label: 'Inicio', icon: 'home' },
     { link: '/consumo', label: 'Consumo', icon: 'bar_chart' },
     { link: '/dispositivos', label: 'Dispositivos', icon: 'devices' },
+    { link: '/sensores', label: 'Sensores', icon: 'sensors' },
     { link: '/alertas', label: 'Alertas', icon: 'notifications_none' },
     { link: '/reportes', label: 'Reportes', icon: 'chat_bubble_outline' },
     { link: '/recomendaciones', label: 'Recomendaciones', icon: 'favorite_border' },

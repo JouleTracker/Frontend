@@ -1,0 +1,214 @@
+<div class="edit-page-container">
+
+  <!-- Breadcrumb / Back button -->
+  <nav class="breadcrumb-nav">
+    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver a sensores">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Volver a sensores</span>
+    </button>
+  </nav>
+
+  <div class="form-card">
+
+    <header class="form-header">
+      <div class="header-icon-box">
+        <mat-icon>{{ isEditMode ? 'tune' : 'sensors' }}</mat-icon>
+      </div>
+      <div class="header-text">
+        <h1>{{ isEditMode ? 'Configurar Sensor IoT' : 'Registrar Sensor IoT' }}</h1>
+        <p class="subtitle">
+          {{ isEditMode
+            ? 'Actualiza los parámetros del sensor y vincula un dispositivo recurrente para calibrar el consumo'
+            : 'Conecta un nuevo tomacorriente o medidor inteligente a tu red de JouleTracker' }}
+        </p>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <mat-icon class="spin-icon">autorenew</mat-icon>
+        <p>Cargando información del sensor...</p>
+      </div>
+    } @else if (errorMessage() && !sensor() && isEditMode) {
+      <div class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" class="btn-secondary" (click)="onCancel()">Regresar</button>
+      </div>
+    } @else {
+
+      <!-- Context Info Banner (Edit mode) -->
+      @if (sensor(); as s) {
+        <div class="device-summary-strip">
+          <div class="strip-item">
+            <span class="strip-label">ID Sensor</span>
+            <span class="strip-value">#{{ s.id }}</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Potencia actual</span>
+            <span class="strip-value">{{ s.formattedCurrentPower }}</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Consumo hoy</span>
+            <span class="strip-value">{{ s.todayKwh | number:'1.2-2' }} kWh</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Última sincr.</span>
+            <span class="strip-value">{{ s.lastSync }}</span>
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sensor-edit-form">
+
+        @if (errorMessage()) {
+          <div class="error-banner form-error">
+            <mat-icon>error_outline</mat-icon>
+            <p>{{ errorMessage() }}</p>
+          </div>
+        }
+
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="sensorName" class="form-label">
+            Nombre del sensor <span class="required">*</span>
+          </label>
+          <input
+            id="sensorName"
+            type="text"
+            formControlName="name"
+            class="form-input"
+            [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
+            placeholder="Ej. Smart Plug Sala 1, Medidor Cocina"
+          />
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <span class="field-error">
+              El nombre del sensor es obligatorio (mínimo 2 caracteres).
+            </span>
+          }
+        </div>
+
+        <!-- Hardware Model Selection (Serial number removed for simplicity) -->
+        <div class="form-group">
+          <label for="sensorModel" class="form-label">
+            Modelo de hardware <span class="required">*</span>
+          </label>
+          <select id="sensorModel" formControlName="model" class="form-select">
+            @for (m of availableModels; track m) {
+              <option [value]="m">{{ m }}</option>
+            }
+          </select>
+          <span class="field-hint">
+            Selecciona el modelo de enchufe o medidor inteligente.
+          </span>
+        </div>
+
+
+        <!-- Network Status -->
+        <div class="form-group">
+          <label for="sensorStatus" class="form-label">
+            Estado de red IoT <span class="required">*</span>
+          </label>
+          <select id="sensorStatus" formControlName="status" class="form-select">
+            <option value="En línea">En línea (Conectado y transmitiendo)</option>
+            <option value="Desconectado">Desconectado (Fuera de línea)</option>
+          </select>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Device Assignment Section -->
+        <div class="assignment-header">
+          <h3>Vinculación de Electrodoméstico</h3>
+          <p>Asigna un aparato de tu hogar para registrar su telemetría y activar el límite sugerido.</p>
+        </div>
+
+        <!-- Assigned Device Select -->
+        <div class="form-group">
+          <label for="assignedDevice" class="form-label">
+            Dispositivo asignado
+          </label>
+          <select
+            id="assignedDevice"
+            formControlName="assignedDeviceId"
+            (change)="onDeviceChange()"
+            class="form-select"
+          >
+            <option [ngValue]="null">-- Ninguno (Sensor disponible / Sin asignar) --</option>
+            @for (dev of devicesStore.devices(); track dev.id) {
+              <option [ngValue]="dev.id">
+                {{ dev.name }} ({{ dev.location }} • {{ dev.category }})
+              </option>
+            }
+          </select>
+          <span class="field-hint">
+            Selecciona el electrodoméstico enchufado físicamente a este medidor.
+          </span>
+        </div>
+
+        <!-- Appliance Recurring Profile -->
+        <div class="form-group">
+          <label for="applianceProfile" class="form-label">
+            Perfil de consumo recurrente
+          </label>
+          <select
+            id="applianceProfile"
+            formControlName="applianceProfileId"
+            class="form-select"
+          >
+            <option [ngValue]="null">-- Sin perfil de referencia --</option>
+            @for (prof of store.profiles(); track prof.id) {
+              <option [ngValue]="prof.id">
+                {{ prof.name }} — Recomendado: {{ prof.recommendedDailyKwh | number:'1.2-2' }} kWh/día
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Realistic Benchmark Recommendation Box -->
+        @if (selectedProfile(); as prof) {
+          <div class="profile-recommendation-box">
+            <div class="rec-icon-wrapper">
+              <mat-icon>{{ prof.icon }}</mat-icon>
+            </div>
+            <div class="rec-details">
+              <strong>Límite recomendado: {{ prof.recommendedDailyKwh | number:'1.2-2' }} kWh / día</strong>
+              <p>
+                Rango típico en operación: {{ prof.typicalPowerWatts }}.
+                JouleTracker alertará en la sección de Alertas si el consumo diario del aparato supera este umbral.
+              </p>
+            </div>
+          </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="onCancel()"
+            [disabled]="submitting()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="form.invalid || submitting()"
+          >
+            @if (submitting()) {
+              <mat-icon class="spin-icon">autorenew</mat-icon>
+              <span>Guardando...</span>
+            } @else {
+              <mat-icon>check</mat-icon>
+              <span>{{ isEditMode ? 'Aceptar y Guardar' : 'Registrar Sensor' }}</span>
+            }
+          </button>
+        </div>
+
+      </form>
+    }
+
+  </div>
+
+</div>

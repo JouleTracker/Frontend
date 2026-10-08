@@ -1,0 +1,183 @@
+<main class="alerts-container">
+
+  <!-- Header section -->
+  <header class="header-section">
+    <h1>Alertas</h1>
+    <p class="subtitle">Mantente informado sobre tu consumo y recibe notificaciones en tiempo real</p>
+  </header>
+
+  <!-- Top summary metrics cards -->
+  <section class="summary-cards" aria-label="Resumen de alertas">
+    <article class="metric-card">
+      <div class="icon-box icon-red">
+        <mat-icon>notifications</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">{{ store.activeCount() }}</span>
+        <span class="metric-label">Alertas activas</span>
+        <span class="metric-sub">Requieren tu atención</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-green">
+        <mat-icon>check_circle_outline</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">{{ store.resolvedCount() }}</span>
+        <span class="metric-label">Alertas resueltas</span>
+        <span class="metric-sub">Últimos 30 días</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-dark">
+        <mat-icon>reorder</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">{{ store.totalCount() }}</span>
+        <span class="metric-label">Total de alertas</span>
+        <span class="metric-sub">Este mes</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="icon-box icon-arrow">
+        <mat-icon>arrow_downward</mat-icon>
+      </div>
+      <div class="metric-info">
+        <span class="metric-number">↓ {{ store.reductionPercentage() }}%</span>
+        <span class="metric-label">Reducción de alertas</span>
+        <span class="metric-sub">{{ store.reductionLabel() }}</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Main table container -->
+  <section class="main-card">
+    <div class="table-header">
+      <!-- Interactive Navigation Tabs -->
+      <nav class="tabs-nav" aria-label="Filtro de categorías">
+        @for (category of categories; track category) {
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="store.selectedCategory() === category"
+            (click)="selectCategory(category)">
+            {{ category }}
+          </button>
+        }
+      </nav>
+
+      <div class="filter-dropdown">
+        <select
+          aria-label="Ordenar alertas"
+          [ngModel]="store.selectedSort()"
+          (ngModelChange)="onSortChange($event)">
+          <option value="recent">Más recientes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Async loading states -->
+    @if (store.loading()) {
+      <p class="message" role="status">Cargando alertas...</p>
+    } @else if (store.error() && store.alerts().length === 0) {
+      <p class="message error-message" role="alert">{{ store.error() }}</p>
+    } @else {
+      <!-- Alerts datatable -->
+      <div class="table-container">
+        <table class="alerts-table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>Mensaje</th>
+              <th>Fecha y hora</th>
+              <th>Estado</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (alert of store.filteredAlerts(); track alert.id) {
+              <tr>
+                <td>
+                  <span class="type-tag" [ngClass]="getTypeClass(alert.category)">
+                    {{ alert.category }}
+                  </span>
+                </td>
+                <td>
+                  <div class="device-cell">
+                    <strong>{{ alert.deviceName }}</strong>
+                    <span>{{ alert.location }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="alert-message-text">{{ alert.dynamicMessage }}</span>
+                </td>
+                <td class="text-muted"><time>{{ alert.timestamp }}</time></td>
+                <td>
+                  <span class="pill" [ngClass]="getPillClass(alert.status)">
+                    {{ alert.status }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button class="btn-dots" aria-label="Más opciones">⋮</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="message">
+                  No hay alertas disponibles en esta categoría.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <!-- Bottom action banners -->
+  <section class="banner-cards">
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon>notifications_active</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Personaliza tus alertas</h3>
+          <p>Elige qué tipos de notificaciones quieres recibir y por qué medios.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action" (click)="goToSettings()">Ir a configuración</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon>mail_outline</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Recibe notificaciones</h3>
+          <p>Activa las notificaciones push, correo electrónico o SMS.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action" (click)="goToSettings()">Configurar notificaciones</button>
+    </article>
+
+    <article class="banner-card">
+      <div class="banner-top">
+        <div class="banner-icon">
+          <mat-icon>bar_chart</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>Mantén el control</h3>
+          <p>Las alertas te ayudan a detectar anomalías y ahorrar en tu consumo.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-action" (click)="goToRecommendations()">Conoce más</button>
+    </article>
+  </section>
+
+</main>
