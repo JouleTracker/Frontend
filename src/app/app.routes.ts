@@ -13,8 +13,8 @@ const baseTitle = 'JouleTracker';
  * - /consumo          -> Blank view (ready for Consumption metrics implementation)
  * - /dispositivos      -> Blank view (ready for Devices management implementation)
  * - /alertas          -> Blank view (ready for Alerts implementation)
- * - /reportes         -> Blank view (ready for Reports implementation)
- * - /recomendaciones  -> Blank view (ready for Recommendations implementation)
+ * - /reports          -> Reports view (/reportes remains a redirect alias)
+ * - /recommendations  -> Recommendations view (/recomendaciones remains a redirect alias)
  * - /configuracion    -> Blank view (ready for Settings implementation)
  */
 export const routes: Routes = [
@@ -22,8 +22,10 @@ export const routes: Routes = [
   { path: 'consumo', loadComponent: blankPage, title: `${baseTitle} - Consumo` },
   { path: 'dispositivos', loadComponent: blankPage, title: `${baseTitle} - Dispositivos` },
   { path: 'alertas', loadComponent: blankPage, title: `${baseTitle} - Alertas` },
-  { path: 'reportes', loadComponent: blankPage, title: `${baseTitle} - Reportes` },
-  { path: 'recomendaciones', loadComponent: blankPage, title: `${baseTitle} - Recomendaciones` },
+  { path: 'reports', loadComponent: () => import('./reports/presentation/views/reports/reports').then(m => m.Reports), title: `${baseTitle} - Reportes` },
+  { path: 'recommendations', loadComponent: () => import('./recommendations/presentation/views/recommendations/recommendations').then(m => m.Recommendations), title: `${baseTitle} - Recomendaciones` },
+  { path: 'reportes', redirectTo: 'reports', pathMatch: 'full' },
+  { path: 'recomendaciones', redirectTo: 'recommendations', pathMatch: 'full' },
   { path: 'configuracion', loadComponent: blankPage, title: `${baseTitle} - Configuración` },
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   { path: '**', redirectTo: 'inicio' }

@@ -1,0 +1,22 @@
+<div class="page">
+  <header class="page-header"><div><span class="eyebrow">TU ENERGÍA, MEJOR UTILIZADA</span><h1>Recomendaciones</h1><p>Pequeños cambios en tus hábitos pueden marcar una diferencia en tu consumo.</p></div><a class="report-link" routerLink="/reports">Ver mis reportes <mat-icon aria-hidden="true">arrow_forward</mat-icon></a></header>
+  <section class="energy-banner" aria-labelledby="energy-title"><div class="banner-icon"><mat-icon aria-hidden="true">energy_savings_leaf</mat-icon></div><div class="banner-copy"><span class="eyebrow">HÁBITOS QUE SUMAN</span><h2 id="energy-title">Usa tu energía con más conciencia</h2><p>Empieza con un cambio sencillo y construye una rutina de ahorro que funcione para ti.</p></div><mat-icon class="banner-decoration" aria-hidden="true">eco</mat-icon></section>
+  <p class="demo-note"><mat-icon aria-hidden="true">info_outline</mat-icon><span>Vista de demostración. El resumen y los consejos son ejemplos, sin análisis de mediciones reales.</span></p>
+  @if (overview(); as summary) {
+    <section class="metrics" aria-label="Resumen de consumo de ejemplo">
+      <article class="metric"><div class="metric-heading"><p>Nivel de consumo</p><mat-icon aria-hidden="true">bolt</mat-icon></div><strong>{{ summary.level }}</strong><small>Clasificación de ejemplo</small></article>
+      <article class="metric"><div class="metric-heading"><p>Tendencia</p><mat-icon aria-hidden="true">trending_flat</mat-icon></div><strong>{{ summary.trend }}</strong><small>Comportamiento de ejemplo</small></article>
+      <article class="metric"><div class="metric-heading"><p>Consumo del periodo</p><mat-icon aria-hidden="true">bar_chart</mat-icon></div><strong>{{ summary.consumptionKwh | number:'1.2-2' }} <span class="unit">kWh</span></strong><small>{{ summary.period }}</small></article>
+    </section>
+  }
+  <section aria-labelledby="recommendations-title">
+    <div class="section-heading"><div><h2 id="recommendations-title">Consejos para ahorrar energía</h2><p class="section-description">Encuentra un hábito que puedas poner en práctica hoy.</p></div>@if (overview() && recommendations().length) { <span class="count-badge">{{ recommendations().length }} consejos</span> }</div>
+    @if (overview() && recommendations().length) {
+      <div class="recommendation-grid">
+        @for (recommendation of recommendations(); track recommendation.id; let index = $index) {
+          <article [class]="'recommendation tone-' + recommendation.id"><div class="card-heading"><mat-icon class="category-icon" aria-hidden="true">{{ recommendation.icon }}</mat-icon><span class="card-number" aria-hidden="true">0{{ index + 1 }}</span></div><span class="badge">{{ recommendation.category }}</span><h3>{{ recommendation.title }}</h3><p>{{ recommendation.description }}</p><div class="card-footer"><mat-icon aria-hidden="true">check_circle_outline</mat-icon><span>Un hábito para tu día a día</span></div></article>
+        }
+      </div>
+    } @else { <div class="panel empty-state"><mat-icon aria-hidden="true">insights</mat-icon><h3>Estamos esperando más información</h3><p class="empty" role="status">Aún no hay suficientes datos de consumo para generar recomendaciones.</p></div> }
+  </section>
+</div>

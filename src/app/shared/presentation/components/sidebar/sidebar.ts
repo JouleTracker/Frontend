@@ -44,8 +44,8 @@ export class Sidebar {
     { link: '/consumo', label: 'Consumo', icon: 'bar_chart' },
     { link: '/dispositivos', label: 'Dispositivos', icon: 'devices' },
     { link: '/alertas', label: 'Alertas', icon: 'notifications_none' },
-    { link: '/reportes', label: 'Reportes', icon: 'chat_bubble_outline' },
-    { link: '/recomendaciones', label: 'Recomendaciones', icon: 'favorite_border' },
+    { link: '/reports', label: 'Reportes', icon: 'chat_bubble_outline' },
+    { link: '/recommendations', label: 'Recomendaciones', icon: 'favorite_border' },
     { link: '/configuracion', label: 'Configuración', icon: 'settings' }
   ]);
 

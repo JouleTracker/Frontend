@@ -10,10 +10,16 @@
 }
 
 .main-content {
+  min-width: 0;
   margin-left: 250px;
   flex: 1;
   min-height: 100vh;
   box-sizing: border-box;
   padding: 32px 36px;
   background-color: #f8fafc;
+}
+
+@media (max-width: 760px) {
+  .layout-container { flex-direction: column; }
+  .main-content { margin-left: 0; min-height: auto; padding: 24px 16px; }
 }
