@@ -7,12 +7,12 @@ const registerView = () =>
   import('./views/register-view/register-view.component').then((m) => m.RegisterViewComponent);
 
 const forgotPasswordView = () =>
-  import('./views/forgot-password-view/forgot-password-view.component').then(
+  import('../../iam/presentation/views/forgot-password-view/forgot-password-view.component').then(
     (m) => m.ForgotPasswordViewComponent
   );
 
 const verifyEmailView = () =>
-  import('./views/verify-email-view/verify-email-view.component').then(
+  import('../../iam/presentation/views/verify-email-view/verify-email-view.component').then(
     (m) => m.VerifyEmailViewComponent
   );
 

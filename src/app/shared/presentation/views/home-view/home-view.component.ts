@@ -11,6 +11,7 @@ import { AvoidedEmissionsCardComponent } from '../../../../consumption/presentat
 import { RecentAlertsWidgetComponent } from '../../../../alerts/presentation/components/recent-alerts-widget/recent-alerts-widget.component';
 import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/components/recommendations-widget/recommendations-widget.component';
 import { Sidebar } from '../../components/sidebar/sidebar';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
   selector: 'app-home-view',
@@ -32,9 +33,9 @@ import { Sidebar } from '../../components/sidebar/sidebar';
 })
 export class HomeViewComponent {
   readonly store = inject(ConsumptionStore);
-  private readonly authService = inject(AuthService);
+  private readonly iamStore = inject(IamStore);
 
   readonly userName = computed(() => {
-    return this.authService.currentUser()?.name || 'Usuario';
+    return this.iamStore.currentUser()?.name || 'Usuario';
   });
 }

@@ -7,6 +7,7 @@ import { DevicesStore } from '../../../application/devices.store';
 import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { Device } from '../../../domain/model/device.entity';
+import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
 /**
  * Devices view component.
@@ -15,7 +16,7 @@ import { Device } from '../../../domain/model/device.entity';
 @Component({
   selector: 'app-devices-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
   templateUrl: './devices-view.component.html',
   styleUrls: ['./devices-view.component.css'],
 })
@@ -24,7 +25,14 @@ export class DevicesViewComponent {
   readonly store = inject(DevicesStore);
   readonly sensorsStore = inject(SensorsStore);
 
-  readonly categories: string[] = ['Todos', 'Hogar', 'Cocina', 'Entretenimiento', 'Oficina', 'Otros'];
+  readonly categories: string[] = [
+    'Todos',
+    'Hogar',
+    'Cocina',
+    'Entretenimiento',
+    'Oficina',
+    'Otros',
+  ];
 
   readonly selectedDevice = signal<Device | null>(null);
   readonly showDeleteModal = signal<boolean>(false);
@@ -35,7 +43,7 @@ export class DevicesViewComponent {
   }
 
   getSensorForDevice(deviceId: number): Sensor | undefined {
-    return this.sensorsStore.sensors().find(s => s.assignedDeviceId === deviceId);
+    return this.sensorsStore.sensors().find((s) => s.assignedDeviceId === deviceId);
   }
 
   openDeleteModal(device: Device): void {
@@ -69,7 +77,7 @@ export class DevicesViewComponent {
       error: (err) => {
         console.error('Error eliminando dispositivo:', err);
         this.isProcessing.set(false);
-      }
+      },
     });
   }
 

@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatNavList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { AuthService } from '../../../../auth/application/auth.service';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 export interface NavItem {
   link: string;
@@ -28,7 +28,7 @@ export interface NavItem {
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
-  private readonly authService = inject(AuthService);
+  private readonly iamStore = inject(IamStore);
 
   readonly navItems = signal<NavItem[]>([
     { link: '/inicio', label: 'Inicio', icon: 'home' },
@@ -42,7 +42,7 @@ export class Sidebar {
   ]);
 
   readonly user = computed(() => {
-    const currentUser = this.authService.currentUser();
+    const currentUser = this.iamStore.currentUser();
     return {
       name: currentUser?.name || 'Usuario',
       email: currentUser?.email || 'sin-correo@jouletracker.com'
@@ -50,6 +50,6 @@ export class Sidebar {
   });
 
   onLogout(): void {
-    this.authService.logout();
+    this.iamStore.signOut();
   }
 }

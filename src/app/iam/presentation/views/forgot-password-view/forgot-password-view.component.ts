@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../application/auth.service';
+import { AuthService } from '../../../../auth/application/auth.service';
 
 /**
  * Forgot password view for JouleTracker.

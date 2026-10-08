@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../application/auth.service';
+import { AuthService } from '../../../../auth/application/auth.service';
 
 /**
  * Verify email view for JouleTracker.

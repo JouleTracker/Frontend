@@ -1,4 +1,33 @@
 {
+  "users": [
+    {
+      "id": 1,
+      "name": "Alex Rivera",
+      "email": "alex.rivera@gmail.com",
+      "password": "123456",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null
+    },
+    {
+      "id": 2,
+      "name": "Usuario Demo",
+      "email": "demo@jouletracker.com",
+      "password": "demo123",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null
+    },
+    {
+      "name": "Luis",
+      "email": "luis@gmail.com",
+      "password": "Luis10",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null,
+      "id": 3
+    }
+  ],
   "consumption-summaries": [
     {
       "id": 1,
@@ -20,26 +49,108 @@
     {
       "id": 1,
       "period": "semana",
-      "labels": ["Lun 01", "Mar 02", "Mié 03", "Jue 04", "Vie 05", "Sáb 07", "Dom 08", "Lun 09", "Mar 10", "Mié 11", "Jue 12", "Vie 13"],
-      "values": [39, 65, 52, 84, 90, 12, 10, 26, 76, 71, 88, 92]
+      "labels": [
+        "Lun 01",
+        "Mar 02",
+        "Mié 03",
+        "Jue 04",
+        "Vie 05",
+        "Sáb 07",
+        "Dom 08",
+        "Lun 09",
+        "Mar 10",
+        "Mié 11",
+        "Jue 12",
+        "Vie 13"
+      ],
+      "values": [
+        39,
+        65,
+        52,
+        84,
+        90,
+        12,
+        10,
+        26,
+        76,
+        71,
+        88,
+        92
+      ]
     },
     {
       "id": 2,
       "period": "dia",
-      "labels": ["00:00", "03:00", "06:00", "10:00", "13:00", "16:00", "18:00", "21:00", "23:00"],
-      "values": [0.8, 0.6, 1.2, 2.1, 1.9, 2.9, 3.8, 2.4, 1.3]
+      "labels": [
+        "00:00",
+        "03:00",
+        "06:00",
+        "10:00",
+        "13:00",
+        "16:00",
+        "18:00",
+        "21:00",
+        "23:00"
+      ],
+      "values": [
+        0.8,
+        0.6,
+        1.2,
+        2.1,
+        1.9,
+        2.9,
+        3.8,
+        2.4,
+        1.3
+      ]
     },
     {
       "id": 3,
       "period": "mes",
-      "labels": ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
-      "values": [78, 85, 92, 82]
+      "labels": [
+        "Semana 1",
+        "Semana 2",
+        "Semana 3",
+        "Semana 4"
+      ],
+      "values": [
+        78,
+        85,
+        92,
+        82
+      ]
     },
     {
       "id": 4,
       "period": "ano",
-      "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
-      "values": [290, 275, 310, 295, 320, 280, 290, 315, 285, 295, 310, 340]
+      "labels": [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Oct",
+        "Nov",
+        "Dic"
+      ],
+      "values": [
+        290,
+        275,
+        310,
+        295,
+        320,
+        280,
+        290,
+        315,
+        285,
+        295,
+        310,
+        340
+      ]
     }
   ],
   "device-distributions": [
@@ -179,26 +290,6 @@
       "actionUrl": "/recomendaciones"
     }
   ],
-  "users": [
-    {
-      "id": 1,
-      "name": "Alex Rivera",
-      "email": "alex.rivera@gmail.com",
-      "password": "123456",
-      "role": "homeowner",
-      "verified": true,
-      "verificationCode": null
-    },
-    {
-      "id": 2,
-      "name": "Usuario Demo",
-      "email": "demo@jouletracker.com",
-      "password": "demo123",
-      "role": "homeowner",
-      "verified": true,
-      "verificationCode": null
-    }
-  ],
   "devices": [
     {
       "id": 1,
@@ -297,6 +388,7 @@
       "lastActivity": "Hace 4 h"
     },
     {
+      "id": 9,
       "name": "Smart TV Google",
       "location": "Cuarto de Invitados",
       "category": "Cocina",
@@ -304,10 +396,10 @@
       "currentPowerKw": 0,
       "powerLimitKw": 0.36,
       "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "id": 9
+      "lastActivity": "Recién registrado"
     },
     {
+      "id": 10,
       "name": "Cocina Eléctrica",
       "location": "Cocina",
       "category": "Cocina",
@@ -315,10 +407,10 @@
       "currentPowerKw": 0,
       "powerLimitKw": 0.46,
       "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "id": 10
+      "lastActivity": "Recién registrado"
     },
     {
+      "id": 11,
       "name": "Equipo de Sonido",
       "location": "Sala Principal",
       "category": "Entretenimiento",
@@ -326,8 +418,7 @@
       "currentPowerKw": 0,
       "powerLimitKw": 0.3,
       "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "id": 11
+      "lastActivity": "Recién registrado"
     }
   ],
   "device-summaries": [
@@ -410,7 +501,7 @@
       "status": "En línea",
       "currentPowerKw": 0.18,
       "todayKwh": 0.85,
-      "todayCostSoles": 0.60,
+      "todayCostSoles": 0.6,
       "assignedDeviceId": 4,
       "assignedDeviceName": "Televisor",
       "assignedDeviceCategory": "Entretenimiento",
@@ -539,6 +630,7 @@
       "lastSync": "Ayer, 21:00"
     },
     {
+      "id": 9,
       "name": "Medidor de Prueba",
       "model": "Shelly Plug S",
       "serialNumber": "SN-IOT-634",
@@ -552,10 +644,10 @@
       "currentPowerKw": 0,
       "todayKwh": 0,
       "todayCostSoles": 0,
-      "lastSync": "Recién registrado",
-      "id": 9
+      "lastSync": "Recién registrado"
     },
     {
+      "id": 10,
       "name": "Medidor de Prueba 3",
       "model": "Shelly Plug S",
       "serialNumber": "SN-IOT-253",
@@ -569,10 +661,10 @@
       "currentPowerKw": 0,
       "todayKwh": 0,
       "todayCostSoles": 0,
-      "lastSync": "Recién registrado",
-      "id": 10
+      "lastSync": "Recién registrado"
     },
     {
+      "id": 11,
       "name": "Sensor de Prueba 6",
       "model": "Medidor Riel DIN Zigbee",
       "serialNumber": "SN-IOT-947",
@@ -586,8 +678,7 @@
       "currentPowerKw": 0,
       "todayKwh": 0,
       "todayCostSoles": 0,
-      "lastSync": "Recién registrado",
-      "id": 11
+      "lastSync": "Recién registrado"
     }
   ],
   "sensor-summaries": [

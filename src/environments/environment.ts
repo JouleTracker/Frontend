@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:8080/api/v1',
+  apiBaseUrl: 'http://localhost:3000',
   consumptionSummariesEndpointPath: '/consumption-summaries',
   energyReadingsEndpointPath: '/energy-readings',
   deviceDistributionsEndpointPath: '/device-distributions',
@@ -8,13 +8,16 @@ export const environment = {
   consumptionHistoriesEndpointPath: '/consumption-histories',
   alertsEndpointPath: '/alerts',
   alertSummariesEndpointPath: '/alert-summaries',
-  devicesEndpointPath: '/devices',
-  deviceSummariesEndpointPath: '/device-summaries',
   recommendationsEndpointPath: '/recommendations',
   usersEndpointPath: '/users',
   loginEndpointPath: '/users',
   registerEndpointPath: '/users',
   forgotPasswordEndpointPath: '/users',
   verifyEmailEndpointPath: '/users',
-  resendCodeEndpointPath: '/users'
+  resendCodeEndpointPath: '/users',
+  sensorsEndpointPath: '/sensors',
+  applianceProfilesEndpointPath: '/appliance-profiles',
+  sensorSummariesEndpointPath: '/sensor-summaries',
+  devicesEndpointPath: '/devices',
+  deviceSummariesEndpointPath: '/device-summaries'
 };

@@ -15,7 +15,7 @@ import { SensorResource } from '../../../infrastructure/sensors-response';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, MatIconModule],
   templateUrl: './sensor-form.component.html',
-  styleUrls: ['./sensor-form.component.css']
+  styleUrls: ['./sensor-form.component.css'],
 })
 export class SensorFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -40,31 +40,31 @@ export class SensorFormComponent implements OnInit {
     'Shelly EM 50A',
     'Tuya Smart Plug',
     'Medidor Riel DIN Zigbee',
-    'Genérico ESP32'
+    'Genérico ESP32',
   ];
 
   readonly form = this.fb.group({
     name: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)]
+      validators: [Validators.required, Validators.minLength(2)],
     }),
     model: new FormControl<string>('Shelly Plug S', {
       nonNullable: true,
-      validators: [Validators.required]
+      validators: [Validators.required],
     }),
     status: new FormControl<'En línea' | 'Desconectado'>('En línea', {
       nonNullable: true,
-      validators: [Validators.required]
+      validators: [Validators.required],
     }),
     assignedDeviceId: new FormControl<number | null>(null),
-    applianceProfileId: new FormControl<number | null>(null)
+    applianceProfileId: new FormControl<number | null>(null),
   });
 
   /** Perfil seleccionado actualmente */
   readonly selectedProfile = computed<ApplianceProfile | undefined>(() => {
     const profId = this.form.controls.applianceProfileId.value;
     if (!profId) return undefined;
-    return this.store.profiles().find(p => p.id === Number(profId));
+    return this.store.profiles().find((p) => p.id === Number(profId));
   });
 
   ngOnInit(): void {
@@ -99,7 +99,7 @@ export class SensorFormComponent implements OnInit {
         error: (err) => {
           this.errorMessage.set('No se encontró el sensor especificado: ' + err.message);
           this.loading.set(false);
-        }
+        },
       });
     }
   }
@@ -111,7 +111,7 @@ export class SensorFormComponent implements OnInit {
       model: s.model,
       status: s.status,
       assignedDeviceId: s.assignedDeviceId,
-      applianceProfileId: s.applianceProfileId
+      applianceProfileId: s.applianceProfileId,
     });
   }
 
@@ -126,25 +126,29 @@ export class SensorFormComponent implements OnInit {
       return;
     }
 
-    const dev = this.devicesStore.devices().find(d => d.id === Number(devId));
+    const dev = this.devicesStore.devices().find((d) => d.id === Number(devId));
     if (!dev) return;
 
     // Buscar coincidencia en perfiles
     const profiles = this.store.profiles();
     const devName = dev.name.toLowerCase();
 
-    let matched = profiles.find(p => devName.includes(p.name.toLowerCase()));
+    let matched = profiles.find((p) => devName.includes(p.name.toLowerCase()));
     if (!matched) {
       if (devName.includes('tv') || devName.includes('tele')) {
-        matched = profiles.find(p => p.name === 'Televisor');
+        matched = profiles.find((p) => p.name === 'Televisor');
       } else if (devName.includes('refri')) {
-        matched = profiles.find(p => p.name === 'Refrigeradora');
+        matched = profiles.find((p) => p.name === 'Refrigeradora');
       } else if (devName.includes('lava')) {
-        matched = profiles.find(p => p.name === 'Lavadora');
+        matched = profiles.find((p) => p.name === 'Lavadora');
       } else if (devName.includes('aire') || devName.includes('clima')) {
-        matched = profiles.find(p => p.name === 'Aire acondicionado');
-      } else if (devName.includes('compu') || devName.includes('laptop') || devName.includes('pc')) {
-        matched = profiles.find(p => p.name.includes('Computadora'));
+        matched = profiles.find((p) => p.name === 'Aire acondicionado');
+      } else if (
+        devName.includes('compu') ||
+        devName.includes('laptop') ||
+        devName.includes('pc')
+      ) {
+        matched = profiles.find((p) => p.name.includes('Computadora'));
       }
     }
 
@@ -162,11 +166,15 @@ export class SensorFormComponent implements OnInit {
     this.submitting.set(true);
     this.errorMessage.set(null);
 
-    const devId = this.form.value.assignedDeviceId ? Number(this.form.value.assignedDeviceId) : null;
-    const assignedDev = devId ? this.devicesStore.devices().find(d => d.id === devId) : null;
+    const devId = this.form.value.assignedDeviceId
+      ? Number(this.form.value.assignedDeviceId)
+      : null;
+    const assignedDev = devId ? this.devicesStore.devices().find((d) => d.id === devId) : null;
 
-    const profileId = this.form.value.applianceProfileId ? Number(this.form.value.applianceProfileId) : null;
-    const profile = profileId ? this.store.profiles().find(p => p.id === profileId) : null;
+    const profileId = this.form.value.applianceProfileId
+      ? Number(this.form.value.applianceProfileId)
+      : null;
+    const profile = profileId ? this.store.profiles().find((p) => p.id === profileId) : null;
 
     // Mantiene el serial existente o genera uno interno transparente para el usuario
     const serial = this.sensor()?.serialNumber || `SN-IOT-${Math.floor(100 + Math.random() * 900)}`;
@@ -181,7 +189,7 @@ export class SensorFormComponent implements OnInit {
       assignedDeviceCategory: assignedDev ? assignedDev.category : null,
       applianceProfileId: profile ? profile.id : null,
       applianceProfileName: profile ? profile.name : null,
-      recommendedDailyKwh: profile ? profile.recommendedDailyKwh : null
+      recommendedDailyKwh: profile ? profile.recommendedDailyKwh : null,
     };
 
     if (this.isEditMode) {
@@ -193,7 +201,7 @@ export class SensorFormComponent implements OnInit {
         error: (err) => {
           this.submitting.set(false);
           this.errorMessage.set('Error al actualizar el sensor: ' + err.message);
-        }
+        },
       });
     } else {
       payload.currentPowerKw = 0;
@@ -209,7 +217,7 @@ export class SensorFormComponent implements OnInit {
         error: (err) => {
           this.submitting.set(false);
           this.errorMessage.set('Error al registrar el sensor: ' + err.message);
-        }
+        },
       });
     }
   }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertsStore } from '../../../application/alerts.store';
+import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
 /**
  * Component for managing and displaying user alerts and real-time system notifications.
@@ -11,7 +12,7 @@ import { AlertsStore } from '../../../application/alerts.store';
 @Component({
   selector: 'app-alerts-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
   templateUrl: './alerts-view.component.html',
   styleUrl: './alerts-view.component.css',
 })

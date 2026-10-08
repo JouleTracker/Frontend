@@ -5,13 +5,14 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SensorsStore } from '../../../application/sensors.store';
 import { Sensor } from '../../../domain/model/sensor.entity';
+import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-sensors-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
   templateUrl: './sensors-view.component.html',
-  styleUrls: ['./sensors-view.component.css']
+  styleUrls: ['./sensors-view.component.css'],
 })
 export class SensorsViewComponent {
   private readonly router = inject(Router);
@@ -72,7 +73,7 @@ export class SensorsViewComponent {
       error: (err) => {
         console.error('Error desvinculando sensor:', err);
         this.isProcessing.set(false);
-      }
+      },
     });
   }
 
@@ -88,7 +89,7 @@ export class SensorsViewComponent {
       error: (err) => {
         console.error('Error eliminando sensor:', err);
         this.isProcessing.set(false);
-      }
+      },
     });
   }
 
@@ -110,7 +111,8 @@ export class SensorsViewComponent {
     if (lower.includes('lava') || lower.includes('lavandería')) return 'local_laundry_service';
     if (lower.includes('consol') || lower.includes('juego')) return 'sports_esports';
     if (lower.includes('aire') || lower.includes('clima')) return 'ac_unit';
-    if (lower.includes('compu') || lower.includes('laptop') || lower.includes('pc')) return 'computer';
+    if (lower.includes('compu') || lower.includes('laptop') || lower.includes('pc'))
+      return 'computer';
     if (lower.includes('microonda')) return 'microwave';
     return 'devices';
   }
