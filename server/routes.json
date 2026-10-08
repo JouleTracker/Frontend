@@ -1,4 +1,7 @@
 {
   "/api/v1/:resource/:id": "/:resource/:id",
-  "/api/v1/:resource": "/:resource"
+  "/api/v1/:resource": "/:resource",
+  "/api/v1/:*": "/:$1",
+  "/login": "/login",
+  "/register": "/users"
 }

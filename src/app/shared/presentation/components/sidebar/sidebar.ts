@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatNavList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { AuthService } from '../../../../auth/application/auth.service';
 
 /**
  * Interface representing a navigation link in the sidebar.
@@ -36,6 +37,8 @@ export interface NavItem {
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+  private readonly authService = inject(AuthService);
+
   /**
    * Navigation items for the sidebar.
    */
@@ -50,10 +53,14 @@ export class Sidebar {
   ]);
 
   /**
-   * User profile data displayed at the bottom of the sidebar.
+   * User profile data displayed at the bottom of the sidebar,
+   * reactively resolved from the current authentication state.
    */
-  readonly user = signal({
-    name: 'Alex Rivera',
-    email: 'alex.rivera@gmail.com'
+  readonly user = computed(() => {
+    const currentUser = this.authService.currentUser();
+    return {
+      name: currentUser?.name || 'Usuario',
+      email: currentUser?.email || 'sin-correo@jouletracker.com'
+    };
   });
 }

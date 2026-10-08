@@ -8,5 +8,10 @@ export const environment = {
   consumptionHistoriesEndpointPath: '/consumption-histories',
   alertsEndpointPath: '/alerts',
   recommendationsEndpointPath: '/recommendations',
-  usersEndpointPath: '/users'
+  usersEndpointPath: '/users',
+  loginEndpointPath: '/auth/login',
+  registerEndpointPath: '/auth/register',
+  forgotPasswordEndpointPath: '/auth/forgot-password',
+  verifyEmailEndpointPath: '/auth/verify-email',
+  resendCodeEndpointPath: '/auth/resend-code'
 };

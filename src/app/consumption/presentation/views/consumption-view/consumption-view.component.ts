@@ -9,6 +9,7 @@ import { ComparisonChartComponent } from '../../components/comparison-chart/comp
 import { ConsumptionHistoryTableComponent } from '../../components/consumption-history-table/consumption-history-table.component';
 import { RecentAlertsWidgetComponent } from '../../../../alerts/presentation/components/recent-alerts-widget/recent-alerts-widget.component';
 import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/components/recommendations-widget/recommendations-widget.component';
+import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-consumption-view',
@@ -22,10 +23,11 @@ import { RecommendationsWidgetComponent } from '../../../../recommendations/pres
     ComparisonChartComponent,
     ConsumptionHistoryTableComponent,
     RecentAlertsWidgetComponent,
-    RecommendationsWidgetComponent
+    RecommendationsWidgetComponent,
+    Sidebar,
   ],
   templateUrl: './consumption-view.component.html',
-  styleUrl: './consumption-view.component.css'
+  styleUrl: './consumption-view.component.css',
 })
 export class ConsumptionViewComponent {
   readonly store = inject(ConsumptionStore);
