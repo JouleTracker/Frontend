@@ -10,7 +10,7 @@ import { Sidebar } from '../../../../shared/presentation/components/sidebar/side
 @Component({
   selector: 'app-sensors-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './sensors-view.component.html',
   styleUrls: ['./sensors-view.component.css'],
 })

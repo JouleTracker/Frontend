@@ -23,8 +23,7 @@ import { RecommendationsWidgetComponent } from '../../../../recommendations/pres
     ComparisonChartComponent,
     ConsumptionHistoryTableComponent,
     RecentAlertsWidgetComponent,
-    RecommendationsWidgetComponent,
-    Sidebar,
+    RecommendationsWidgetComponent
   ],
   templateUrl: './consumption-view.component.html',
   styleUrl: './consumption-view.component.css',

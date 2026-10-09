@@ -16,7 +16,7 @@ import { Sidebar } from '../../../../shared/presentation/components/sidebar/side
 @Component({
   selector: 'app-devices-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './devices-view.component.html',
   styleUrls: ['./devices-view.component.css'],
 })

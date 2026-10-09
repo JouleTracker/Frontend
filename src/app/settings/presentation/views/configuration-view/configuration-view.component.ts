@@ -14,8 +14,7 @@ import { IamStore } from '../../../../iam/application/iam.store';
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
-    MatSlideToggleModule,
-    Sidebar
+    MatSlideToggleModule
   ],
   templateUrl: './configuration-view.component.html',
   styleUrl: './configuration-view.component.css'

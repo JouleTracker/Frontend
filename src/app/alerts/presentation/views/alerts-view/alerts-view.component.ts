@@ -12,7 +12,7 @@ import { Sidebar } from '../../../../shared/presentation/components/sidebar/side
 @Component({
   selector: 'app-alerts-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './alerts-view.component.html',
   styleUrl: './alerts-view.component.css',
 })

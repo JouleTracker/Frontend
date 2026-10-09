@@ -64,6 +64,16 @@
       "verificationCode": null,
       "plan": "starter",
       "id": 7
+    },
+    {
+      "name": "Pedro",
+      "email": "pedro@gmail.com",
+      "password": "Pedro10",
+      "role": "homeowner",
+      "plan": "starter",
+      "verified": true,
+      "verificationCode": null,
+      "id": 8
     }
   ],
   "consumption-summaries": [
