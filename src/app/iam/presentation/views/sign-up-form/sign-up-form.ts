@@ -24,10 +24,12 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   return null;
 }
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sign-up-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './sign-up-form.html',
   styleUrl: './sign-up-form.css'
 })

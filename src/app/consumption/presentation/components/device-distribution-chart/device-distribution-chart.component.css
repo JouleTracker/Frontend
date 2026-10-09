@@ -85,3 +85,11 @@
   color: #1e293b;
   font-weight: 700;
 }
+
+@media (max-width: 500px) {
+  .chart-body {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+

@@ -4,8 +4,8 @@
     <div class="brand-header">
       <img src="logoJouletracker.png" alt="JouleTracker Logo" class="brand-logo" />
     </div>
-    <h1 class="login-title">Inicia sesión</h1>
-    <p class="login-subtitle">Ingresa a tu cuenta para continuar.</p>
+    <h1 class="login-title">{{ 'AUTH.SIGN_IN_TITLE' | translate }}</h1>
+    <p class="login-subtitle">{{ 'AUTH.SIGN_IN_SUBTITLE' | translate }}</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
       <!-- Email -->
@@ -19,7 +19,7 @@
         <input
           type="email"
           formControlName="email"
-          placeholder="Correo electrónico"
+          [placeholder]="'AUTH.EMAIL_LABEL' | translate"
           class="field-input"
           autocomplete="email"
           [class.input-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
@@ -37,7 +37,7 @@
         <input
           [type]="showPassword() ? 'text' : 'password'"
           formControlName="password"
-          placeholder="Contraseña"
+          [placeholder]="'AUTH.PASSWORD_LABEL' | translate"
           class="field-input"
           autocomplete="current-password"
           [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
@@ -60,9 +60,9 @@
       <div class="form-options">
         <label class="checkbox-label">
           <input type="checkbox" formControlName="rememberMe" class="checkbox-input" />
-          <span>Recordarme</span>
+          <span>{{ 'AUTH.REMEMBER_ME' | translate }}</span>
         </label>
-        <a routerLink="/recuperar-contrasena" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        <a routerLink="/recuperar-contrasena" class="forgot-link">{{ 'AUTH.FORGOT_PASSWORD' | translate }}</a>
       </div>
 
       <!-- Error message -->
@@ -77,9 +77,9 @@
       <button type="submit" class="btn-submit" [disabled]="isLoading()">
         @if (isLoading()) {
           <span class="spinner" aria-hidden="true"></span>
-          <span>Iniciando sesión...</span>
+          <span>{{ 'COMMON.LOADING' | translate }}</span>
         } @else {
-          <span>Iniciar sesión</span>
+          <span>{{ 'AUTH.SIGN_IN_BTN' | translate }}</span>
         }
       </button>
     </form>
@@ -103,8 +103,8 @@
 
     <!-- Register link -->
     <p class="register-hint">
-      ¿No tienes una cuenta?
-      <a routerLink="/registro">Regístrate</a>
+      {{ 'AUTH.NO_ACCOUNT' | translate }}
+      <a routerLink="/registro">{{ 'AUTH.REGISTER_LINK' | translate }}</a>
     </p>
   </div>
 

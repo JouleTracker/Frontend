@@ -1,9 +1,9 @@
 <div class="edit-page-container">
   <!-- Breadcrumb / Back button -->
   <nav class="breadcrumb-nav">
-    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver a sensores">
+    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver">
       <mat-icon>arrow_back</mat-icon>
-      <span>Volver a sensores</span>
+      <span>{{ 'COMMON.BACK' | translate }}</span>
     </button>
   </nav>
 
@@ -14,11 +14,9 @@
         <mat-icon>{{ isEditMode ? 'tune' : 'sensors' }}</mat-icon>
       </div>
       <div class="header-text">
-        <h1>{{ isEditMode ? 'Configurar Sensor IoT' : 'Registrar Sensor IoT' }}</h1>
+        <h1>{{ (isEditMode ? 'IOT.FORM_TITLE_EDIT' : 'IOT.FORM_TITLE_ADD') | translate }}</h1>
         <p class="subtitle">
-          {{ isEditMode
-            ? 'Actualiza los parámetros del sensor y vincula un dispositivo recurrente para calibrar el consumo'
-            : 'Conecta un nuevo tomacorriente o medidor inteligente a tu red de JouleTracker' }}
+          {{ (isEditMode ? 'IOT.FORM_SUBTITLE_EDIT' : 'IOT.FORM_SUBTITLE_ADD') | translate }}
         </p>
       </div>
     </header>
@@ -188,7 +186,7 @@
             (click)="onCancel()"
             [disabled]="submitting()"
           >
-            Cancelar
+            {{ 'COMMON.CANCEL' | translate }}
           </button>
           <button
             type="submit"
@@ -197,10 +195,10 @@
           >
             @if (submitting()) {
               <mat-icon class="spin-icon">autorenew</mat-icon>
-              <span>Guardando...</span>
+              <span>{{ 'COMMON.LOADING' | translate }}</span>
             } @else {
               <mat-icon>check</mat-icon>
-              <span>{{ isEditMode ? 'Aceptar y Guardar' : 'Registrar Sensor' }}</span>
+              <span>{{ isEditMode ? ('COMMON.SAVE' | translate) : ('IOT.ADD_SENSOR' | translate) }}</span>
             }
           </button>
         </div>

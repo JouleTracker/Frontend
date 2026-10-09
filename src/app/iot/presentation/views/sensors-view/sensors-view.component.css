@@ -92,3 +92,18 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .sensors-container { padding: 20px 16px; }
+  .header-section { flex-direction: column; align-items: stretch; gap: 14px; }
+  .header-actions { flex-direction: column; width: 100%; gap: 10px; }
+  .search-box { width: 100%; box-sizing: border-box; }
+  .btn-primary { width: 100%; justify-content: center; }
+  .summary-cards { grid-template-columns: 1fr; }
+  .table-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+  .category-tabs { overflow-x: auto; width: 100%; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .sort-selector { width: 100%; justify-content: space-between; }
+  .action-banners { grid-template-columns: 1fr; }
+  .banner-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-banner { width: 100%; text-align: center; }
+}

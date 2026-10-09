@@ -1,8 +1,8 @@
 <main class="alerts-container">
   <!-- Header section -->
   <header class="header-section">
-    <h1>Alertas</h1>
-    <p class="subtitle">Mantente informado sobre tu consumo y recibe notificaciones en tiempo real</p>
+    <h1>{{ 'ALERTS.TITLE' | translate }}</h1>
+    <p class="subtitle">{{ 'ALERTS.SUBTITLE' | translate }}</p>
   </header>
 
   <!-- Top summary metrics cards -->
@@ -13,8 +13,8 @@
       </div>
       <div class="metric-info">
         <span class="metric-number">{{ store.activeCount() }}</span>
-        <span class="metric-label">Alertas activas</span>
-        <span class="metric-sub">Requieren tu atención</span>
+        <span class="metric-label">{{ 'ALERTS.ACTIVE_ALERTS' | translate }}</span>
+        <span class="metric-sub">{{ 'ALERTS.ACTIVE_SUB' | translate }}</span>
       </div>
     </article>
 
@@ -24,8 +24,8 @@
       </div>
       <div class="metric-info">
         <span class="metric-number">{{ store.resolvedCount() }}</span>
-        <span class="metric-label">Alertas leídas</span>
-        <span class="metric-sub">Informativas</span>
+        <span class="metric-label">{{ 'ALERTS.READ_ALERTS' | translate }}</span>
+        <span class="metric-sub">{{ 'ALERTS.READ_SUB' | translate }}</span>
       </div>
     </article>
 
@@ -35,8 +35,8 @@
       </div>
       <div class="metric-info">
         <span class="metric-number">{{ store.totalCount() }}</span>
-        <span class="metric-label">Total de alertas</span>
-        <span class="metric-sub">De tu cuenta</span>
+        <span class="metric-label">{{ 'ALERTS.TOTAL_ALERTS' | translate }}</span>
+        <span class="metric-sub">{{ 'ALERTS.TOTAL_SUB' | translate }}</span>
       </div>
     </article>
   </section>
@@ -44,12 +44,12 @@
   <!-- Main table container -->
   <section class="main-card">
     <div class="table-header">
-      <h2>Mis alertas</h2>
+      <h2>{{ 'ALERTS.TITLE' | translate }}</h2>
     </div>
 
     <!-- Async loading states -->
     @if (store.loading()) {
-      <p class="message" role="status">Cargando alertas...</p>
+      <p class="message" role="status">{{ 'COMMON.LOADING' | translate }}</p>
     } @else if (store.error() && store.alerts().length === 0) {
       <p class="message error-message" role="alert">{{ store.error() }}</p>
     } @else {
@@ -58,10 +58,10 @@
         <table class="alerts-table">
           <thead>
             <tr>
-              <th>Alerta</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th class="text-right">Acciones</th>
+              <th>{{ 'ALERTS.COL_MESSAGE' | translate }}</th>
+              <th>{{ 'ALERTS.COL_DATE' | translate }}</th>
+              <th>{{ 'ALERTS.COL_STATE' | translate }}</th>
+              <th class="text-right">{{ 'DEVICES.COL_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>

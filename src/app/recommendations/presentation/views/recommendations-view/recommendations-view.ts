@@ -13,6 +13,8 @@ interface CategoryOption {
   value: string;
 }
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-recommendations-view',
   standalone: true,
@@ -20,7 +22,8 @@ interface CategoryOption {
     CommonModule,
     FormsModule,
     MatIconModule,
-    PlanUpgradeRequiredComponent
+    PlanUpgradeRequiredComponent,
+    TranslatePipe
   ],
   templateUrl: './recommendations-view.html',
   styleUrl: './recommendations-view.css',

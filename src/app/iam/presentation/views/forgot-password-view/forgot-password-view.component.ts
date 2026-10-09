@@ -5,10 +5,12 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-forgot-password-view',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './forgot-password-view.component.html',
   styleUrl: './forgot-password-view.component.css'
 })

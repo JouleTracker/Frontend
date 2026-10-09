@@ -10,8 +10,8 @@
     } @else {
       <!-- Header Title -->
       <header class="page-header">
-        <h1 class="page-title">Recomendaciones</h1>
-        <p class="page-subtitle">Sugerencias personalizadas para reducir tu consumo y ahorrar energía</p>
+        <h1 class="page-title">{{ 'RECOMMENDATIONS.TITLE' | translate }}</h1>
+        <p class="page-subtitle">{{ 'RECOMMENDATIONS.SUBTITLE' | translate }}</p>
       </header>
 
       <!-- Metric / KPI Cards (derivadas de tus datos reales de db.json) -->
@@ -22,9 +22,9 @@
             <mat-icon class="kpi-icon">eco</mat-icon>
           </div>
           <div class="kpi-data">
-            <span class="kpi-title">Ahorro potencial</span>
+            <span class="kpi-title">{{ 'RECOMMENDATIONS.POTENTIAL_SAVINGS' | translate }}</span>
             <strong class="kpi-main-stat">{{ store.metrics().potentialSavings }}</strong>
-            <span class="kpi-foot">al mes</span>
+            <span class="kpi-foot">{{ 'RECOMMENDATIONS.PER_MONTH' | translate }}</span>
           </div>
         </div>
 
@@ -34,9 +34,9 @@
             <mat-icon class="kpi-icon">arrow_downward</mat-icon>
           </div>
           <div class="kpi-data">
-            <span class="kpi-title">Reducción estimada</span>
+            <span class="kpi-title">{{ 'RECOMMENDATIONS.ESTIMATED_REDUCTION' | translate }}</span>
             <strong class="kpi-main-stat">{{ store.metrics().estimatedReduction }}</strong>
-            <span class="kpi-foot">en tu consumo</span>
+            <span class="kpi-foot">{{ 'RECOMMENDATIONS.IN_CONSUMPTION' | translate }}</span>
           </div>
         </div>
 

@@ -307,3 +307,13 @@
   gap: 10px;
   font-size: 13px;
 }
+
+@media (max-width: 768px) {
+  .edit-page-container { padding: 20px 16px; }
+  .form-card { padding: 20px; }
+  .form-row { grid-template-columns: 1fr; }
+  .device-summary-strip { flex-direction: column; gap: 8px; }
+  .form-actions { flex-direction: column-reverse; gap: 8px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  .profile-recommendation-box { flex-direction: column; }
+}

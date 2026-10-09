@@ -17,10 +17,12 @@ interface PricingPlan {
   features: string[];
 }
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-home-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule],
+  imports: [CommonModule, RouterLink, MatIconModule, TranslatePipe],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css'
 })

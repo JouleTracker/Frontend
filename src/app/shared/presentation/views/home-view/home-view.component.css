@@ -338,6 +338,20 @@
   }
 }
 
+@media (max-width: 768px) {
+  .home-page { padding: 16px 14px 40px; }
+  .welcome-section { padding: 18px 16px; border-radius: 14px; margin-bottom: 24px; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .welcome-title { font-size: 1.45rem; }
+  .user-greeting-line { flex-wrap: wrap; gap: 8px; }
+  .quick-links { width: 100%; flex-wrap: wrap; gap: 8px; }
+  .quick-pill { flex: 1 1 calc(50% - 8px); justify-content: center; font-size: 0.8rem; padding: 8px 10px; }
+  .pricing-header { margin-bottom: 24px; }
+  .section-title { font-size: 1.35rem; }
+  .launch-banner { flex-direction: column; gap: 6px; padding: 10px 14px; }
+  .launch-text { font-size: 0.8rem; text-align: center; }
+  .plans-grid { grid-template-columns: 1fr; max-width: 100%; gap: 24px; }
+}
+
 /* Badge al lado del saludo */
 .user-greeting-line {
   display: flex;

@@ -1,7 +1,76 @@
-<aside class="sidebar" aria-label="Navegación principal">
+<!-- Mobile Top Header Bar (solo visible en <= 768px) -->
+<header class="mobile-top-bar" aria-label="Encabezado móvil">
+  <button
+    type="button"
+    class="mobile-menu-btn"
+    (click)="toggleMobileDrawer()"
+    aria-label="Abrir menú de navegación">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <a routerLink="/inicio" class="mobile-logo-link" (click)="closeMobileDrawer()">
+    <img
+      src="/logoJouletracker.png"
+      alt="JouleTracker Logo"
+      class="mobile-logo-image"
+    />
+  </a>
+
+  <!-- Selector de Idioma Minimalista -->
+  <div class="lang-switch-pill" role="group" aria-label="Selector de idioma">
+    <button
+      type="button"
+      class="lang-btn"
+      [class.active]="currentLang() === 'es'"
+      (click)="switchLang('es')">
+      ES
+    </button>
+    <span class="lang-divider">/</span>
+    <button
+      type="button"
+      class="lang-btn"
+      [class.active]="currentLang() === 'en'"
+      (click)="switchLang('en')">
+      EN
+    </button>
+  </div>
+</header>
+
+<!-- Backdrop para cerrar al hacer clic afuera en móvil -->
+@if (isMobileDrawerOpen()) {
+  <div
+    class="drawer-backdrop"
+    (click)="closeMobileDrawer()"
+    aria-hidden="true">
+  </div>
+}
+
+<aside
+  class="sidebar"
+  [class.drawer-open]="isMobileDrawerOpen()"
+  aria-label="Navegación principal">
+
+  <!-- Cabecera del Drawer en Mobile (Logo + Botón de cerrar) -->
+  <div class="drawer-header-mobile">
+    <div class="drawer-brand">
+      <img
+        src="/logoJouletracker.png"
+        alt="JouleTracker Logo"
+        class="drawer-logo-image"
+      />
+    </div>
+    <button
+      type="button"
+      class="drawer-close-btn"
+      (click)="closeMobileDrawer()"
+      aria-label="Cerrar menú">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
   <div class="sidebar-top">
-    <!-- JouleTracker Brand Logo & Language Switcher -->
-    <div class="sidebar-header">
+    <!-- JouleTracker Brand Logo & Language Switcher (Visible en Desktop) -->
+    <div class="sidebar-header desktop-only">
       <a routerLink="/inicio" class="logo-link" aria-label="JouleTracker Home">
         <img
           src="/logoJouletracker.png"
@@ -39,7 +108,8 @@
              routerLinkActive="active"
              [routerLinkActiveOptions]="{ exact: item.link === '/inicio' }"
              class="nav-item"
-             [class.locked-item]="isLocked(item.minPlan)">
+             [class.locked-item]="isLocked(item.minPlan)"
+             (click)="closeMobileDrawer()">
             <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
             <span matListItemTitle class="nav-label">{{ item.translationKey | translate }}</span>
 

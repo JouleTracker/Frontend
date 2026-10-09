@@ -1,17 +1,17 @@
 <div class="page">
   <header class="page-header">
-    <h1>Reportes</h1>
-    <p>Consulta tu historial y analiza el consumo energético durante el periodo que elijas.</p>
+    <h1>{{ 'REPORTS.TITLE' | translate }}</h1>
+    <p>{{ 'REPORTS.SUBTITLE' | translate }}</p>
   </header>
 
   <p class="demo-note">
-    Tarifa estimada: S/ {{ rate | number:'1.2-2' }} por kWh. El costo es una estimación sin cargos adicionales.
+    {{ 'REPORTS.RATE_NOTE' | translate:{ rate: (rate | number:'1.2-2') } }}
   </p>
 
   @if (hasHistoryLimit()) {
     <p class="plan-note">
-      Tu plan {{ currentPlan() | uppercase }} incluye historial de los últimos {{ historyLimitDays() }} días.
-      <a routerLink="/inicio">Mejora tu plan</a> para ver el historial completo.
+      {{ 'REPORTS.PLAN_LIMIT' | translate:{ plan: (currentPlan() | uppercase), days: historyLimitDays() } }}
+      <a routerLink="/inicio">{{ 'COMMON.REQUIRED_PLAN' | translate }}</a>.
     </p>
   }
 
@@ -21,23 +21,23 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
       </svg>
-      {{ showFilters() ? 'Ocultar filtros' : 'Filtrar historial' }}
+      {{ (showFilters() ? 'REPORTS.FILTER_TOGGLE_HIDE' : 'REPORTS.FILTER_TOGGLE_SHOW') | translate }}
     </button>
     <span class="active-range-pill">
-      Periodo: {{ applied().start | date:'dd/MM/yyyy' }} – {{ applied().end | date:'dd/MM/yyyy' }}
+      {{ 'REPORTS.PERIOD_LABEL' | translate }}: {{ applied().start | date:'dd/MM/yyyy' }} – {{ applied().end | date:'dd/MM/yyyy' }}
     </span>
   </div>
 
   <!-- Panel de filtros opcional -->
   @if (showFilters()) {
     <section class="panel filter-panel-dropdown" aria-labelledby="filters-title">
-      <h2 id="filters-title">Filtrar historial</h2>
+      <h2 id="filters-title">{{ 'REPORTS.FILTER_TOGGLE_SHOW' | translate }}</h2>
       <form (ngSubmit)="applyFilters()" novalidate>
         <div class="filters">
           <label>
-            Periodo
+            {{ 'REPORTS.PERIOD_LABEL' | translate }}
             <select name="period" [(ngModel)]="period" (ngModelChange)="selectPeriod()">
-              <option value="7">Últimos 7 días</option>
+              <option value="7">{{ 'REPORTS.PERIOD_7' | translate }}</option>
               @if (canView30Days()) {
                 <option value="30">Últimos 30 días</option>
                 <option value="month">Este mes</option>

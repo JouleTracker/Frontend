@@ -9,8 +9,8 @@
   <!-- HEADER SECTION WITH TITLE AND MAIN ACTIONS -->
   <header class="header-section">
     <div class="title-group">
-      <h1>Sensores IoT</h1>
-      <p class="subtitle">Monitorea los medidores de telemetría y gestiona la vinculación con tus electrodomésticos</p>
+      <h1>{{ 'IOT.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'IOT.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="header-actions">
@@ -19,7 +19,7 @@
         <mat-icon class="search-icon">search</mat-icon>
         <input
           type="text"
-          placeholder="Buscar sensor o dispositivo..."
+          [placeholder]="'IOT.SEARCH_PLACEHOLDER' | translate"
           [ngModel]="store.searchTerm()"
           (ngModelChange)="onSearch($event)"
           aria-label="Buscar sensores"
@@ -29,17 +29,17 @@
       <!-- Add Sensor CTA Button -->
       <button type="button" class="btn-primary" (click)="addSensor()" [disabled]="!canAddSensor()">
         <mat-icon class="btn-icon">add</mat-icon>
-        <span>Agregar sensor</span>
+        <span>{{ 'IOT.ADD_SENSOR' | translate }}</span>
       </button>
     </div>
 
     @if (!canAddSensor()) {
       <p class="limit-note">
-        Alcanzaste el límite de sensores de tu plan ({{ sensorLimitLabel() }}).
-        <a routerLink="/inicio">Mejora tu plan</a> para agregar más.
+        {{ 'IOT.LIMIT_REACHED' | translate:{ limit: sensorLimitLabel() } }}
+        <a routerLink="/inicio">{{ 'COMMON.REQUIRED_PLAN' | translate }}</a>.
       </p>
     } @else {
-      <p class="limit-note subtle">Sensores registrados: {{ sensorLimitLabel() }}</p>
+      <p class="limit-note subtle">{{ 'IOT.REGISTERED_COUNT' | translate:{ limit: sensorLimitLabel() } }}</p>
     }
   </header>
 
@@ -52,9 +52,9 @@
         <mat-icon>sensors</mat-icon>
       </div>
       <div class="card-content">
-        <span class="card-label">Total sensores</span>
+        <span class="card-label">{{ 'IOT.TOTAL_SENSORS' | translate }}</span>
         <div class="card-value">{{ store.totalSensorsCount() }}</div>
-        <span class="card-subtext">{{ store.activeSensorsCount() }} en línea</span>
+        <span class="card-subtext">{{ store.activeSensorsCount() }} {{ 'COMMON.ONLINE' | translate }}</span>
       </div>
     </article>
 
@@ -64,9 +64,9 @@
         <mat-icon>power</mat-icon>
       </div>
       <div class="card-content">
-        <span class="card-label">Monitoreando</span>
+        <span class="card-label">{{ 'IOT.COL_DEVICE' | translate }}</span>
         <div class="card-value">{{ store.monitoredDevicesCount() }}</div>
-        <span class="card-subtext">Aparatos vinculados</span>
+        <span class="card-subtext">{{ 'DEVICES.CONNECTED_DEVICES' | translate }}</span>
       </div>
     </article>
 
@@ -76,9 +76,9 @@
         <mat-icon>link_off</mat-icon>
       </div>
       <div class="card-content">
-        <span class="card-label">Disponibles</span>
+        <span class="card-label">{{ 'IOT.UNASSIGNED' | translate }}</span>
         <div class="card-value">{{ store.unassignedSensorsCount() }}</div>
-        <span class="card-subtext">Sin dispositivo asignado</span>
+        <span class="card-subtext">{{ 'IOT.UNASSIGNED_SENSORS' | translate }}</span>
       </div>
     </article>
 
@@ -88,9 +88,9 @@
         <mat-icon>bolt</mat-icon>
       </div>
       <div class="card-content">
-        <span class="card-label">Potencia censada</span>
+        <span class="card-label">{{ 'IOT.COL_POWER' | translate }}</span>
         <div class="card-value">{{ store.totalMonitoredPowerKw() }} kW</div>
-        <span class="card-subtext">Hoy: {{ store.totalEnergyTodayKwh() }} kWh</span>
+        <span class="card-subtext">{{ 'IOT.COL_TODAY' | translate }}: {{ store.totalEnergyTodayKwh() }} kWh</span>
       </div>
     </article>
 

@@ -2,8 +2,8 @@
   <!-- Header Banner with House & Solar Panels Illustration -->
   <header class="page-header">
     <div class="header-text">
-      <h1 class="page-title">Consumo eléctrico</h1>
-      <p class="page-subtitle">Consulta y analiza tu consumo de energía en detalle.</p>
+      <h1 class="page-title">{{ 'CONSUMPTION.TITLE' | translate }}</h1>
+      <p class="page-subtitle">{{ 'CONSUMPTION.SUBTITLE' | translate }}</p>
     </div>
     <div class="header-illustration" aria-hidden="true">
       <svg viewBox="0 0 240 100" width="220" height="90" preserveAspectRatio="xMidYMid meet">
@@ -35,16 +35,16 @@
     <app-metric-card
       icon="bolt"
       iconTheme="theme-flash"
-      label="Consumo actual"
+      [label]="'CONSUMPTION.CURRENT_POWER' | translate"
       [value]="store.currentPower()"
       unit="kw"
-      subtext="En tiempo real">
+      [subtext]="'CONSUMPTION.REAL_TIME' | translate">
     </app-metric-card>
 
     <app-metric-card
       icon="bar_chart"
       iconTheme="theme-green"
-      label="Consumo del período"
+      [label]="'CONSUMPTION.PERIOD_CONSUMPTION' | translate"
       [value]="store.periodConsumption()"
       unit="kwh"
       [diff]="store.summary()?.periodConsumptionDiff"
@@ -54,17 +54,17 @@
     <app-metric-card
       icon="payments"
       iconTheme="theme-money"
-      label="Costo estimado"
+      [label]="'CONSUMPTION.ESTIMATED_COST' | translate"
       [value]="store.formattedPeriodCost()"
-      subtext="Con tus hábitos eficientes">
+      [subtext]="'CONSUMPTION.EFFICIENT_HABITS' | translate">
     </app-metric-card>
 
     <app-metric-card
       icon="savings"
       iconTheme="theme-savings"
-      label="Ahorro estimado"
+      [label]="'RECOMMENDATIONS.POTENTIAL_SAVINGS' | translate"
       [value]="store.formattedEstimatedSavings()"
-      subtext="Con tus hábitos eficientes">
+      [subtext]="'CONSUMPTION.EFFICIENT_HABITS' | translate">
     </app-metric-card>
   </section>
 

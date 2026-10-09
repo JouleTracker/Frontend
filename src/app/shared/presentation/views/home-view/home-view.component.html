@@ -6,27 +6,27 @@
       <div class="welcome-text">
         <div class="user-greeting-line">
           <h1 class="welcome-title">
-            ¡Hola, {{ iamStore.currentUser()?.name || 'Usuario' }}! 👋
+            {{ 'HOME.GREETING' | translate:{ name: (iamStore.currentUser()?.name || 'Usuario') } }} 👋
           </h1>
           <span class="current-plan-badge">
-            Plan {{ iamStore.currentPlan() | uppercase }} Activo
+            {{ 'HOME.CURRENT_PLAN_BADGE' | translate:{ plan: (iamStore.currentPlan() | uppercase) } }}
           </span>
         </div>
         <p class="welcome-subtitle">
-          Bienvenido a JouleTracker. Gestiona tu energía y maximiza tu ahorro.
+          {{ 'HOME.WELCOME_SUBTITLE' | translate }}
         </p>
       </div>
 
       <!-- Accesos directos rápidos -->
       <div class="quick-links">
         <a routerLink="/consumo" class="quick-pill">
-          <mat-icon>bar_chart</mat-icon> Ver Consumo
+          <mat-icon>bar_chart</mat-icon> {{ 'HOME.QUICK_CONSUMPTION' | translate }}
         </a>
         <a routerLink="/recomendaciones" class="quick-pill">
-          <mat-icon>lightbulb</mat-icon> Recomendaciones
+          <mat-icon>lightbulb</mat-icon> {{ 'HOME.QUICK_RECOMMENDATIONS' | translate }}
         </a>
         <a routerLink="/reportes" class="quick-pill">
-          <mat-icon>receipt_long</mat-icon> Reportes
+          <mat-icon>receipt_long</mat-icon> {{ 'HOME.QUICK_REPORTS' | translate }}
         </a>
       </div>
     </header>
@@ -34,14 +34,14 @@
     <!-- Pricing Section -->
     <section class="pricing-section">
       <div class="pricing-header">
-        <span class="badge-tag">PLANES</span>
-        <h2 class="section-title">Elige el plan que se adapta a tus necesidades</h2>
-        <p class="section-subtitle">Planes claros, sin permanencia y sin sorpresas.</p>
+        <span class="badge-tag">{{ 'HOME.PRICING_TAG' | translate }}</span>
+        <h2 class="section-title">{{ 'HOME.PRICING_TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'HOME.PRICING_SUBTITLE' | translate }}</p>
 
         <div class="launch-banner">
-          <div class="launch-pill">LANZAMIENTO</div>
+          <div class="launch-pill">{{ 'HOME.LAUNCH_PILL' | translate }}</div>
           <span class="launch-text">
-            Precio de lanzamiento por tiempo limitado · 14 días de prueba · Cancela cuando quieras
+            {{ 'HOME.LAUNCH_BANNER' | translate }}
           </span>
         </div>
       </div>
@@ -55,7 +55,7 @@
             [class.popular-card]="plan.badge && !isCurrentPlan(plan.id)"
           >
             @if (isCurrentPlan(plan.id)) {
-              <div class="plan-status-ribbon">Tu Plan Actual</div>
+              <div class="plan-status-ribbon">{{ 'HOME.CURRENT_PLAN_RIBBON' | translate }}</div>
             } @else if (plan.badge) {
               <div class="popular-ribbon">{{ plan.badge }}</div>
             }
@@ -67,7 +67,7 @@
               <div class="price-box">
                 <span class="currency">S/</span>
                 <span class="price-val">{{ plan.price }}</span>
-                <span class="price-period">/ mes</span>
+                <span class="price-period">{{ 'HOME.MONTH' | translate }}</span>
               </div>
 
               <div class="discount-row">
@@ -98,14 +98,14 @@
               [disabled]="isCurrentPlan(plan.id)"
               (click)="onSelectPlan(plan.id)"
             >
-              {{ isCurrentPlan(plan.id) ? '✓ Plan Activo' : 'Cambiar a ' + plan.name }}
+              {{ isCurrentPlan(plan.id) ? ('HOME.ACTIVE_PLAN_BTN' | translate) : ('HOME.CHANGE_PLAN_BTN' | translate:{ plan: plan.name }) }}
             </button>
           </article>
         }
       </div>
 
       <footer class="pricing-footer">
-        <p>Precios referenciales en soles (S/), facturación mensual. La prueba gratuita de 14 días no requiere tarjeta.</p>
+        <p>{{ 'HOME.PRICING_FOOTER' | translate }}</p>
       </footer>
     </section>
 

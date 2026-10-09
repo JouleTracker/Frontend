@@ -11,6 +11,8 @@ import { RecentAlertsWidgetComponent } from '../../../../alerts/presentation/com
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/component/recommendations-widget/recommendations-widget';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-consumption-view',
   standalone: true,
@@ -23,7 +25,8 @@ import { RecommendationsWidgetComponent } from '../../../../recommendations/pres
     ComparisonChartComponent,
     ConsumptionHistoryTableComponent,
     RecentAlertsWidgetComponent,
-    RecommendationsWidgetComponent
+    RecommendationsWidgetComponent,
+    TranslatePipe
   ],
   templateUrl: './consumption-view.component.html',
   styleUrl: './consumption-view.component.css',

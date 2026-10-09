@@ -6,10 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { IamStore } from '../../../application/iam.store';
 import { SignInCommand } from '../../../domain/model/sign-in.command';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sign-in-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatIconModule, TranslatePipe],
   templateUrl: './sign-in-form.html',
   styleUrl: './sign-in-form.css'
 })

@@ -47,4 +47,6 @@
   .edit-page-container { padding: 20px 16px; }
   .form-card { padding: 20px; }
   .device-summary-strip { flex-direction: column; gap: 8px; }
+  .form-actions { flex-direction: column-reverse; gap: 8px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
 }

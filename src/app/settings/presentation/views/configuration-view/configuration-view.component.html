@@ -3,8 +3,8 @@
   <!-- Contenido principal -->
   <main class="content-container">
     <header class="page-header">
-      <h1 class="page-title">Configuración</h1>
-      <p class="page-subtitle">Personaliza tu cuenta y la configuración de tu hogar.</p>
+      <h1 class="page-title">{{ 'SETTINGS.TITLE' | translate }}</h1>
+      <p class="page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
     </header>
 
     <div class="cards-grid">
@@ -17,24 +17,24 @@
             </div>
           </div>
           <div class="header-texts">
-            <h2 class="card-title">Información personal</h2>
-            <p class="card-subtitle">Administra tu información de perfil.</p>
+            <h2 class="card-title">{{ 'SETTINGS.PERSONAL_INFO' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.PERSONAL_SUB' | translate }}</p>
           </div>
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
           <div class="form-group">
-            <label>Nombre completo</label>
+            <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
             <input type="text" formControlName="fullName" placeholder="Tu nombre" />
           </div>
 
           <div class="form-group">
-            <label>Correo electrónico</label>
+            <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
             <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
           </div>
 
           <div class="form-group">
-            <label>Teléfono</label>
+            <label>{{ 'SETTINGS.PHONE' | translate }}</label>
             <input type="tel" formControlName="phone" placeholder="Número de contacto" />
           </div>
 
@@ -47,7 +47,7 @@
 
           <div class="action-btn-row">
             <button type="submit" class="btn-primary" [disabled]="savingProfile()">
-              {{ savingProfile() ? 'Guardando...' : 'Guardar cambios' }}
+              {{ savingProfile() ? ('COMMON.LOADING' | translate) : ('SETTINGS.SAVE_PROFILE' | translate) }}
             </button>
           </div>
         </form>

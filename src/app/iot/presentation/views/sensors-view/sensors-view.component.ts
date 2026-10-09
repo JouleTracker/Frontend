@@ -10,10 +10,12 @@ import {
   PlanUpgradeRequiredComponent
 } from '../../../../shared/presentation/components/plan-upgrade-required/plan-upgrade-required';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sensors-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, PlanUpgradeRequiredComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, PlanUpgradeRequiredComponent, TranslatePipe],
   templateUrl: './sensors-view.component.html',
   styleUrls: ['./sensors-view.component.css'],
 })

@@ -2,8 +2,8 @@
 
   <!-- Left: Form Card -->
   <div class="register-card">
-    <h1 class="register-title">Crea tu cuenta</h1>
-    <p class="register-subtitle">Únete a JouleTracker y comienza a tener el control de tu energía.</p>
+    <h1 class="register-title">{{ 'AUTH.SIGN_UP_TITLE' | translate }}</h1>
+    <p class="register-subtitle">{{ 'AUTH.SIGN_UP_SUBTITLE' | translate }}</p>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <!-- Full Name -->
@@ -14,7 +14,7 @@
         <input
           type="text"
           formControlName="name"
-          placeholder="Nombre completo"
+          [placeholder]="'AUTH.NAME_LABEL' | translate"
           class="field-input"
           autocomplete="name"
         />
@@ -28,7 +28,7 @@
         <input
           type="email"
           formControlName="email"
-          placeholder="Correo electrónico"
+          [placeholder]="'AUTH.EMAIL_LABEL' | translate"
           class="field-input"
           autocomplete="email"
         />
@@ -42,7 +42,7 @@
         <input
           [type]="showPassword() ? 'text' : 'password'"
           formControlName="password"
-          placeholder="Contraseña"
+          [placeholder]="'AUTH.PASSWORD_LABEL' | translate"
           class="field-input"
           autocomplete="new-password"
         />
@@ -152,8 +152,8 @@
 
     <!-- Login link -->
     <p class="login-hint">
-      ¿Ya tienes una cuenta?
-      <a routerLink="/login">Inicia sesión</a>
+      {{ 'AUTH.HAS_ACCOUNT' | translate }}
+      <a routerLink="/login">{{ 'AUTH.LOGIN_LINK' | translate }}</a>
     </p>
   </div>
 

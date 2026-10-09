@@ -75,3 +75,9 @@
 .btn-upgrade:hover {
   background-color: #166534;
 }
+
+@media (max-width: 600px) {
+  .upgrade-container { padding: 16px; min-height: 60vh; }
+  .upgrade-card { padding: 24px 16px; border-radius: 16px; }
+  .btn-upgrade { width: 100%; box-sizing: border-box; text-align: center; }
+}

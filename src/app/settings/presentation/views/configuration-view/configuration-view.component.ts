@@ -8,6 +8,8 @@ import { IamStore } from '../../../../iam/application/iam.store';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
 import { UserNotifications } from '../../../../iam/domain/model/user.entity';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-configuration-view',
   standalone: true,
@@ -17,7 +19,8 @@ import { UserNotifications } from '../../../../iam/domain/model/user.entity';
     ReactiveFormsModule,
     RouterModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    TranslatePipe
   ],
   templateUrl: './configuration-view.component.html',
   styleUrl: './configuration-view.component.css'

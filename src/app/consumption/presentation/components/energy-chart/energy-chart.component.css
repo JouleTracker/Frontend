@@ -70,3 +70,11 @@
   min-height: 240px;
   width: 100%;
 }
+
+@media (max-width: 600px) {
+  .chart-card { padding: 16px 14px; }
+  .chart-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .period-selector { width: 100%; justify-content: space-between; }
+  .period-btn { flex: 1; padding: 5px 6px; text-align: center; }
+}
+

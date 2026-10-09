@@ -10,10 +10,12 @@ import { Sensor } from '../../../domain/model/sensor.entity';
 import { ApplianceProfile } from '../../../domain/model/appliance-profile.entity';
 import { SensorResource } from '../../../infrastructure/sensors-response';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sensor-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatIconModule, TranslatePipe],
   templateUrl: './sensor-form.component.html',
   styleUrls: ['./sensor-form.component.css'],
 })

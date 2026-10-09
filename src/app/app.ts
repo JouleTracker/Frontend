@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Layout } from './shared/presentation/components/layout/layout';
 
 /**
@@ -15,4 +16,10 @@ import { Layout } from './shared/presentation/components/layout/layout';
 })
 export class App {
   protected readonly title = signal('jouletrackerfront');
+  private readonly translate = inject(TranslateService);
+
+  constructor() {
+    const saved = localStorage.getItem('joule_lang') || 'es';
+    this.translate.use(saved);
+  }
 }

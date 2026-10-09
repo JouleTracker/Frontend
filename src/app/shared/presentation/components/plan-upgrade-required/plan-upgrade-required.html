@@ -4,16 +4,16 @@
       <mat-icon>lock</mat-icon>
     </div>
 
-    <span class="plan-pill">Exclusivo Plan {{ requiredPlan() }}</span>
+    <span class="plan-pill">{{ 'PAYWALL.PLAN_REQUIRED' | translate:{ plan: requiredPlan() } }}</span>
 
-    <h2 class="upgrade-title">Desbloquea {{ featureName() }}</h2>
+    <h2 class="upgrade-title">{{ 'PAYWALL.UPGRADE_REQUIRED' | translate }}</h2>
     <p class="upgrade-description">
-      Tu plan actual no incluye acceso a {{ featureName() }}. Pásate al plan
-      <strong>{{ requiredPlan() }}</strong> para acceder a mediciones avanzadas, recomendaciones automáticas y límites ampliados.
+      {{ 'PAYWALL.ACCESS_DENIED_PREFIX' | translate }} {{ featureName() }}, {{ 'PAYWALL.ACCESS_DENIED_SUFFIX' | translate }}
+      <strong>{{ requiredPlan() }}</strong>.
     </p>
 
     <div class="actions">
-      <a routerLink="/inicio" class="btn-upgrade">Ver Planes y Actualizar</a>
+      <a routerLink="/inicio" class="btn-upgrade">{{ 'PAYWALL.UPGRADE_BTN' | translate:{ plan: requiredPlan() } }}</a>
     </div>
   </div>
 </div>

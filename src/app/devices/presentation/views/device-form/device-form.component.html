@@ -2,9 +2,9 @@
 
   <!-- Breadcrumb / Back button -->
   <nav class="breadcrumb-nav">
-    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver a dispositivos">
+    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver">
       <mat-icon>arrow_back</mat-icon>
-      <span>Volver a dispositivos</span>
+      <span>{{ 'COMMON.BACK' | translate }}</span>
     </button>
   </nav>
 
@@ -15,11 +15,9 @@
         <mat-icon>{{ isEditMode ? 'edit_note' : 'add_circle_outline' }}</mat-icon>
       </div>
       <div class="header-text">
-        <h1>{{ isEditMode ? 'Editar Dispositivo' : 'Registrar Nuevo Dispositivo' }}</h1>
+        <h1>{{ (isEditMode ? 'DEVICES.FORM_TITLE_EDIT' : 'DEVICES.FORM_TITLE_ADD') | translate }}</h1>
         <p class="subtitle">
-          {{ isEditMode
-            ? 'Actualiza el nombre, ubicación, categoría y sensor asociado de este dispositivo'
-            : 'Añade un nuevo electrodoméstico o equipo a tu inventario de JouleTracker' }}
+          {{ (isEditMode ? 'DEVICES.FORM_SUBTITLE_EDIT' : 'DEVICES.FORM_SUBTITLE_ADD') | translate }}
         </p>
       </div>
     </header>
@@ -207,7 +205,7 @@
             (click)="onCancel()"
             [disabled]="submitting()"
           >
-            Cancelar
+            {{ 'COMMON.CANCEL' | translate }}
           </button>
           <button
             type="submit"
@@ -216,10 +214,10 @@
           >
             @if (submitting()) {
               <mat-icon class="spin-icon">autorenew</mat-icon>
-              <span>Guardando...</span>
+              <span>{{ 'COMMON.LOADING' | translate }}</span>
             } @else {
               <mat-icon>check</mat-icon>
-              <span>{{ isEditMode ? 'Aceptar' : 'Registrar Dispositivo' }}</span>
+              <span>{{ isEditMode ? ('COMMON.SAVE' | translate) : ('DEVICES.ADD_DEVICE' | translate) }}</span>
             }
           </button>
         </div>

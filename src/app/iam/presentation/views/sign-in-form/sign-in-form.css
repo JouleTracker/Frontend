@@ -360,79 +360,32 @@
 
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 960px) {
-  .login-page {
-    flex-direction: column;
-  }
-
-  .login-card {
-    flex: none;
-    border-radius: 0;
-    margin: 0;
-    padding: 36px 24px;
-    border: none;
-    border-bottom: 1px solid #bed4c2;
-  }
-
-  .login-promo {
-    padding: 36px 24px;
-  }
-
-  .devices-svg {
-    width: 260px;
-  }
-
   :host {
-    display: block;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Roboto', sans-serif;
-    color: #1a1a1a;
-    background-color: #ffffff;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
   }
 
   .login-page {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    background-color: #ffffff;
-    box-sizing: border-box;
-  }
-
-  /* ── Card izquierda ─────────────────────────────── */
-  .login-card {
-    flex: 0 0 450px;
-    height: calc(100vh - 48px);
-    margin: 24px 0 24px 24px;
-    background-color: #dcedd5;
-    border: 1px solid #bed4c2;
-    border-radius: 20px;
-    padding: 32px 40px;
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    box-sizing: border-box;
-    overflow-y: auto; /* Scroll contenido si la resolución vertical es muy reducida */
-  }
-
-  /* Ocultar barra de scroll en navegadores modernos */
-  .login-card::-webkit-scrollbar {
-    width: 4px;
-  }
-  .login-card::-webkit-scrollbar-thumb {
-    background-color: #bed4c2;
-    border-radius: 4px;
-  }
-
-  .login-promo {
-    flex: 1;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    min-height: 100vh;
     align-items: center;
     justify-content: center;
-    padding: 32px 48px;
+    padding: 24px 16px;
     box-sizing: border-box;
-    overflow: hidden;
+  }
+
+  .login-card {
+    flex: 1;
+    width: 100%;
+    max-width: 440px;
+    margin: 0;
+    padding: 32px 24px;
+    border-radius: 20px;
+    box-sizing: border-box;
+  }
+
+  .login-promo {
+    display: none;
   }
 }

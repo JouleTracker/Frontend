@@ -8,10 +8,16 @@ html, body {
   background-color: #f8fafc;
   color: #1e293b;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 *, *:before, *:after {
   box-sizing: inherit;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ==========================================================================
@@ -142,4 +148,19 @@ html, body {
 }
 .btn-modal-danger:hover { background-color: #b91c1c; }
 .btn-modal-danger mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+@media (max-width: 600px) {
+  .modal-card {
+    max-width: 100%;
+    margin: 12px;
+  }
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .modal-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+}
 

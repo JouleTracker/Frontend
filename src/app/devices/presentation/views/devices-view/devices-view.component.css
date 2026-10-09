@@ -296,6 +296,10 @@
   .header-section { flex-direction: column; align-items: flex-start; }
   .header-actions { width: 100%; flex-direction: column; }
   .search-box, .search-box input, .btn-primary { width: 100%; }
+  .table-toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .category-tabs { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px; }
+  .category-tabs::-webkit-scrollbar { display: none; }
+  .sort-selector { width: 100%; justify-content: space-between; }
 }
 
 /* Nota de límite de dispositivos según el plan */

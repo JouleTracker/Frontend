@@ -42,6 +42,17 @@ export class Sidebar {
     localStorage.getItem('joule_lang') || 'es'
   );
 
+  // Control del drawer/sidenav en versión mobile
+  readonly isMobileDrawerOpen = signal<boolean>(false);
+
+  toggleMobileDrawer(): void {
+    this.isMobileDrawerOpen.update((open) => !open);
+  }
+
+  closeMobileDrawer(): void {
+    this.isMobileDrawerOpen.set(false);
+  }
+
   readonly navItems: NavItem[] = [
     { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
     { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },

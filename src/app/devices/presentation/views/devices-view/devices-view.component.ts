@@ -9,6 +9,8 @@ import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { Device } from '../../../domain/model/device.entity';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 /**
  * Devices view component.
  * Displays real-time device monitoring, calculated energy metrics, category filters and actions.
@@ -16,7 +18,7 @@ import { Sidebar } from '../../../../shared/presentation/components/sidebar/side
 @Component({
   selector: 'app-devices-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, TranslatePipe],
   templateUrl: './devices-view.component.html',
   styleUrls: ['./devices-view.component.css'],
 })

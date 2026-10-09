@@ -5,10 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { AlertSeverity, AlertStatus } from '../../../domain/model/alert.entity';
 import { AlertsStore } from '../../../application/alerts.store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-alerts-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatIconModule, TranslatePipe],
   templateUrl: './alerts-view.component.html',
   styleUrl: './alerts-view.component.css'
 })

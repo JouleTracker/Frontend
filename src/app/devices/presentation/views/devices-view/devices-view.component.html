@@ -2,8 +2,8 @@
   <!-- HEADER SECTION WITH TITLE AND MAIN SEARCH/ADD ACTIONS -->
   <header class="header-section">
     <div class="title-group">
-      <h1>Dispositivos</h1>
-      <p class="subtitle">Gestiona y monitorea los dispositivos conectados a tu red eléctrica</p>
+      <h1>{{ 'DEVICES.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'DEVICES.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="header-actions">
@@ -12,7 +12,7 @@
         <mat-icon class="search-icon">search</mat-icon>
         <input
           type="text"
-          placeholder="Buscar dispositivo..."
+          [placeholder]="'DEVICES.SEARCH_PLACEHOLDER' | translate"
           [ngModel]="store.searchTerm()"
           (ngModelChange)="onSearch($event)"
           aria-label="Buscar dispositivos"
@@ -21,17 +21,17 @@
 
       <!-- Add Device CTA Button -->
       <button type="button" class="btn-primary" (click)="addDevice()" [disabled]="!canAddDevice()">
-        <mat-icon class="btn-icon">add</mat-icon> Agregar dispositivo
+        <mat-icon class="btn-icon">add</mat-icon> {{ 'DEVICES.ADD_DEVICE' | translate }}
       </button>
     </div>
 
     @if (!canAddDevice()) {
       <p class="limit-note">
-        Alcanzaste el límite de dispositivos de tu plan ({{ deviceLimitLabel }}).
-        <a routerLink="/inicio">Mejora tu plan</a> para agregar más.
+        {{ 'DEVICES.LIMIT_REACHED' | translate:{ limit: deviceLimitLabel } }}
+        <a routerLink="/inicio">{{ 'COMMON.REQUIRED_PLAN' | translate }}</a>.
       </p>
     } @else {
-      <p class="limit-note subtle">Dispositivos registrados: {{ deviceLimitLabel }}</p>
+      <p class="limit-note subtle">{{ 'DEVICES.REGISTERED_COUNT' | translate:{ limit: deviceLimitLabel } }}</p>
     }
   </header>
 
@@ -44,9 +44,9 @@
         <mat-icon>weekend</mat-icon>
       </div>
       <div class="card-content">
-        <span class="card-label">Dispositivos conectados</span>
+        <span class="card-label">{{ 'DEVICES.CONNECTED_DEVICES' | translate }}</span>
         <div class="card-value">{{ store.connectedDevices() }}</div>
-        <span class="card-subtext">{{ store.waitingDevices() }} en espera</span>
+        <span class="card-subtext">{{ store.waitingDevices() }} {{ 'DEVICES.STANDBY_DEVICES' | translate }}</span>
       </div>
     </article>
 
@@ -57,7 +57,7 @@
       </div>
       <div class="card-content">
         <div class="card-value">{{ store.totalPowerKw() }}kW</div>
-        <span class="card-label">Consumo total actual</span>
+        <span class="card-label">{{ 'DEVICES.COL_CONSUMPTION' | translate }}</span>
         <span class="card-subtext trend-down">↓ {{ store.powerDiffVsYesterdayLabel() }}</span>
       </div>
     </article>
@@ -69,7 +69,7 @@
       </div>
       <div class="card-content">
         <div class="card-value">S/{{ store.estimatedCostSoles() | number:'1.2-2' }}</div>
-        <span class="card-label">Costo estimado(mes)</span>
+        <span class="card-label">{{ 'CONSUMPTION.ESTIMATED_COST' | translate }}</span>
         <span class="card-subtext trend-down">↓ {{ store.costDiffVsMonthLabel() }}</span>
       </div>
     </article>
@@ -81,7 +81,7 @@
       </div>
       <div class="card-content">
         <div class="card-value">{{ store.co2AvoidedKg() | number:'1.1-1' }} kg</div>
-        <span class="card-label">CO₂ evitado (mes)</span>
+        <span class="card-label">{{ 'CONSUMPTION.AVOIDED_EMISSIONS' | translate }}</span>
         <span class="card-subtext">{{ store.treeEquivalence() }}</span>
       </div>
     </article>
@@ -105,11 +105,10 @@
       </nav>
 
       <div class="sort-selector">
-        <label for="sortSelect">Ordenar por</label>
+        <label for="sortSelect">{{ 'RECOMMENDATIONS.SORT_BY' | translate }}</label>
         <select id="sortSelect" [ngModel]="store.selectedSort()" (ngModelChange)="onSortChange($event)">
-          <option value="consumo-desc">Consumo (mayor a menor)</option>
-          <option value="consumo-asc">Consumo (menor a mayor)</option>
-          <option value="nombre">Nombre</option>
+          <option value="consumo-desc">{{ 'DEVICES.COL_CONSUMPTION' | translate }}</option>
+          <option value="nombre">{{ 'DEVICES.COL_NAME' | translate }}</option>
         </select>
       </div>
     </div>
@@ -117,20 +116,20 @@
     <!-- Data Table -->
     <div class="table-responsive">
       @if (store.loading()) {
-        <p class="state-message">Cargando dispositivos...</p>
+        <p class="state-message">{{ 'COMMON.LOADING' | translate }}</p>
       } @else if (store.error() && store.devices().length === 0) {
         <p class="state-message error">{{ store.error() }}</p>
       } @else {
         <table class="devices-table">
           <thead>
             <tr>
-              <th>Dispositivos</th>
-              <th>Estado</th>
-              <th>Consumo actual</th>
-              <th>Consumo hoy</th>
-              <th>Costo hoy</th>
-              <th>Última actividad</th>
-              <th class="text-right">Acciones</th>
+              <th>{{ 'DEVICES.COL_NAME' | translate }}</th>
+              <th>{{ 'DEVICES.COL_STATUS' | translate }}</th>
+              <th>{{ 'DEVICES.COL_CONSUMPTION' | translate }}</th>
+              <th>{{ 'IOT.COL_TODAY' | translate }}</th>
+              <th>{{ 'CONSUMPTION.ESTIMATED_COST' | translate }}</th>
+              <th>{{ 'ALERTS.COL_DATE' | translate }}</th>
+              <th class="text-right">{{ 'DEVICES.COL_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>

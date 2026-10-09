@@ -10,6 +10,8 @@ import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { DeviceResource } from '../../../infrastructure/devices-response';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 /**
  * Component for creating and editing device information.
  * Routes: /dispositivos/nuevo (crear) and /dispositivos/:id (editar)
@@ -17,7 +19,7 @@ import { DeviceResource } from '../../../infrastructure/devices-response';
 @Component({
   selector: 'app-device-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatIconModule, TranslatePipe],
   templateUrl: './device-form.component.html',
   styleUrls: ['./device-form.component.css']
 })

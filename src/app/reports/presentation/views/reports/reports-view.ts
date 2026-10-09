@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReportsStore } from '../../../application/reports.store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-reports-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, DatePipe, DecimalPipe],
+  imports: [CommonModule, FormsModule, RouterModule, DatePipe, DecimalPipe, TranslatePipe],
   templateUrl: './reports-view.html',
   styleUrl: './reports-view.css',
 })
