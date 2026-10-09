@@ -1,0 +1,41 @@
+<div class="page">
+  <header class="page-header"><h1>Reportes</h1><p>Consulta tu historial y analiza el consumo energético durante el periodo que elijas.</p></header>
+  <p class="demo-note">Datos de demostración · Tarifa ficticia: S/ {{ rate | number:'1.2-2' }} por kWh. El costo es una estimación ilustrativa, sin cargos adicionales.</p>
+  <section class="panel" aria-labelledby="filters-title">
+    <h2 id="filters-title">Filtrar historial</h2>
+    <form (ngSubmit)="applyFilters()" novalidate>
+      <div class="filters">
+        <label>Periodo<select name="period" [(ngModel)]="period" (ngModelChange)="selectPeriod()"><option value="7">Últimos 7 días</option><option value="30">Últimos 30 días</option><option value="month">Este mes</option><option value="custom">Personalizado</option></select></label>
+        <label>Fecha inicial<input type="date" name="start" [(ngModel)]="startDate" (ngModelChange)="period = 'custom'" required [attr.aria-invalid]="error() ? true : null" aria-describedby="filter-error"></label>
+        <label>Fecha final<input type="date" name="end" [(ngModel)]="endDate" (ngModelChange)="period = 'custom'" required [attr.aria-invalid]="error() ? true : null" aria-describedby="filter-error"></label>
+      </div>
+      <div class="actions"><button class="primary" type="submit">Aplicar filtros</button><button type="button" (click)="reset()">Restablecer filtros</button></div>
+      <p id="filter-error" class="error" role="alert">{{ error() }}</p>
+    </form>
+  </section>
+  <p class="section-description" aria-live="polite">Periodo aplicado: {{ applied().start | date:'dd/MM/yyyy' }} – {{ applied().end | date:'dd/MM/yyyy' }} · {{ filtered().length }} registros diarios</p>
+  <section class="metrics" aria-label="Resumen del periodo">
+    <article class="metric"><p>Consumo total</p><strong>{{ total() | number:'1.2-2' }} kWh</strong></article>
+    <article class="metric"><p>Consumo promedio</p><strong>{{ average() | number:'1.2-2' }} kWh</strong><small>Por día registrado</small></article>
+    <article class="metric"><p>Costo estimado</p><strong>S/ {{ total() * rate | number:'1.2-2' }}</strong><small>Tarifa de demostración</small></article>
+    <article class="metric"><p>Mayor consumo registrado</p><strong>{{ peak() | number:'1.2-2' }} kWh</strong><small>Máximo diario</small></article>
+  </section>
+  <section class="panel" aria-labelledby="chart-title">
+    <h2 id="chart-title">Evolución del consumo</h2><p class="section-description">Consumo diario en kWh. El detalle de cada día está disponible en el historial.</p>
+    @if (filtered().length) {
+      <div class="chart-scroll"><div class="chart" role="img" aria-label="Gráfico de barras de consumo diario; valores detallados en la tabla de historial">
+        @for (record of filtered(); track record.date; let index = $index) {
+          <div class="chart-column" [title]="record.date + ': ' + record.consumptionKwh + ' kWh'"><div class="bar" [style.height.%]="record.consumptionKwh / peak() * 85"></div><span class="chart-label">@if (index % (filtered().length > 14 ? 7 : 1) === 0 || $last) { {{ record.date | date:'dd/MM' }} }</span></div>
+        }
+      </div></div>
+    } @else { <p class="empty">No hay datos de consumo disponibles para el periodo seleccionado.</p> }
+  </section>
+  <section class="panel" aria-labelledby="history-title">
+    <h2 id="history-title">Historial de consumo</h2>
+    @if (filtered().length) {
+      <div class="table-scroll"><table><caption>Registros diarios de demostración · Costos en soles (PEN)</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Consumo (kWh)</th><th scope="col">Costo estimado</th></tr></thead><tbody>
+        @for (record of filtered(); track record.date) { <tr><td>{{ record.date | date:'dd/MM/yyyy' }}</td><td>{{ record.consumptionKwh | number:'1.2-2' }}</td><td>S/ {{ record.consumptionKwh * rate | number:'1.2-2' }}</td></tr> }
+      </tbody></table></div>
+    } @else { <p class="empty">No hay datos de consumo disponibles para el periodo seleccionado.</p> }
+  </section>
+</div>
