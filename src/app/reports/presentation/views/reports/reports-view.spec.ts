@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { Reports } from './reports';
+import { ReportsView } from './reports-view';
 
-describe('Reports', () => {
+describe('ReportsView', () => {
   it('filters inclusively and calculates the summary from the selected records', () => {
-    const page = new Reports();
+    const page = new ReportsView();
     page.records.set([{ date: '2026-10-01', consumptionKwh: 4 }, { date: '2026-10-02', consumptionKwh: 8 }, { date: '2026-10-03', consumptionKwh: 20 }]);
     page.startDate = '2026-10-01';
     page.endDate = '2026-10-02';
@@ -16,7 +16,7 @@ describe('Reports', () => {
   });
 
   it('preserves the applied range when invalid dates are submitted', () => {
-    const page = new Reports();
+    const page = new ReportsView();
     const previous = page.applied();
     page.startDate = '2026-10-10';
     page.endDate = '2026-10-01';
@@ -29,8 +29,8 @@ describe('Reports', () => {
   });
 
   it('renders an empty history and resets to seven days', async () => {
-    await TestBed.configureTestingModule({ imports: [Reports] }).compileComponents();
-    const fixture = TestBed.createComponent(Reports);
+    await TestBed.configureTestingModule({ imports: [ReportsView] }).compileComponents();
+    const fixture = TestBed.createComponent(ReportsView);
     fixture.componentInstance.startDate = '2000-01-01';
     fixture.componentInstance.endDate = '2000-01-02';
     fixture.componentInstance.applyFilters();

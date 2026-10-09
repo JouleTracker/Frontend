@@ -1,7 +1,13 @@
-<div class="layout-container">
+<div class="shell-layout" [class.no-sidebar]="!showSidebar()">
+  <!-- Sidebar condicional -->
+  @if (showSidebar()) {
+    <aside class="shell-sidebar">
+      <app-sidebar></app-sidebar>
+    </aside>
+  }
 
-  <!-- Main Routed Content Area -->
-  <main class="main-content">
-    <router-outlet />
+  <!-- Contenedor dinámico de las vistas -->
+  <main class="shell-content">
+    <router-outlet></router-outlet>
   </main>
 </div>

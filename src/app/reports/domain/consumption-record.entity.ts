@@ -1,6 +1,9 @@
 export interface ConsumptionRecord {
+  readonly id?: number;
   readonly date: string;
   readonly consumptionKwh: number;
 }
 
-export type ReportPeriod = '7' | '30' | 'month' | 'custom';
+export interface ReportsConfig {
+  readonly kwhRate: number;
+}

@@ -19,8 +19,9 @@ const alertsRoutes = () =>
 const recommendationsRoutes = () =>
   import('./recommendations/presentation/recommendations.routes').then((m) => m.recommendationsRoutes);
 
-const blankPage = () =>
-  import('./shared/presentation/views/blank-page/blank-page').then((m) => m.BlankPage);
+// Función lazy para reportes
+const reportsRoutes = () =>
+  import('./reports/presentation/reports.routes').then((m) => m.reportsRoutes);
 
 const configurationView = () =>
   import('./settings/presentation/views/configuration-view/configuration-view.component').then(
@@ -33,30 +34,30 @@ export const routes: Routes = [
   // 1. Redirección raíz
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
 
-  // 2. Rutas principales de la aplicación (protegidas con iamGuard)
+  // 2. Rutas protegidas
   { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard] },
   { path: 'sensores', loadChildren: iotRoutes, canActivate: [iamGuard] },
   { path: 'alertas', loadChildren: alertsRoutes, canActivate: [iamGuard] },
 
-  // ── Recomendaciones (Carga el módulo real) ──
+  // ── Recomendaciones ──
   { path: 'recomendaciones', loadChildren: recommendationsRoutes, canActivate: [iamGuard], title: `${baseTitle} - Recomendaciones` },
   { path: 'recommendations', redirectTo: 'recomendaciones', pathMatch: 'full' },
 
-  // ── Reportes ──
-  { path: 'reportes', loadComponent: blankPage, canActivate: [iamGuard], title: `${baseTitle} - Reportes` },
+  // ── Reportes (Con lazy loader function) ──
+  { path: 'reportes', loadChildren: reportsRoutes, canActivate: [iamGuard], title: `${baseTitle} - Reportes` },
   { path: 'reports', redirectTo: 'reportes', pathMatch: 'full' },
 
   // ── Configuración ──
   { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard], title: `${baseTitle} - Configuración` },
 
-  // 3. Rutas de IAM (login, registro, recuperar contraseña)
+  // 3. IAM
   {
     path: '',
     loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)
   },
 
-  // 4. Wildcard fallback
+  // 4. Wildcard
   { path: '**', redirectTo: 'inicio' }
 ];
