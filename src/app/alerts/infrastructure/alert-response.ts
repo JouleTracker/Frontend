@@ -4,10 +4,13 @@ import { AlertSeverity } from '../domain/model/alert.entity';
 export interface AlertResource extends BaseResource {
   userId?: number;
   title: string;
-  description: string;
-  timeAgo: string;
+  description?: string;
+  message?: string;
+  timeAgo?: string;
+  timestamp?: string;
   severity: AlertSeverity;
-  actionUrl: string;
+  actionUrl?: string;
+  read?: boolean;
 }
 
 export type AlertResponse = AlertResource[];

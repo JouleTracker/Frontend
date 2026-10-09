@@ -199,7 +199,7 @@ export class DevicesStore {
     );
   }
 
-  updateDevice(id: number, changes: { name?: string; location?: string; category?: string }): Observable<Device> {
+  updateDevice(id: number, changes: Partial<DeviceResource>): Observable<Device> {
     this.loadingSignal.set(true);
     return this.api.updateDevice(id, changes).pipe(
       tap(updatedDevice => {

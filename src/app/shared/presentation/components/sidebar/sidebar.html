@@ -1,6 +1,6 @@
 <aside class="sidebar" aria-label="Navegación principal">
   <div class="sidebar-top">
-    <!-- JouleTracker Brand Logo -->
+    <!-- JouleTracker Brand Logo & Language Switcher -->
     <div class="sidebar-header">
       <a routerLink="/inicio" class="logo-link" aria-label="JouleTracker Home">
         <img
@@ -9,6 +9,25 @@
           class="logo-image"
         />
       </a>
+
+      <!-- Selector de Idioma Minimalista -->
+      <div class="lang-switch-pill" role="group" aria-label="Selector de idioma">
+        <button
+          type="button"
+          class="lang-btn"
+          [class.active]="currentLang() === 'es'"
+          (click)="switchLang('es')">
+          ES
+        </button>
+        <span class="lang-divider">/</span>
+        <button
+          type="button"
+          class="lang-btn"
+          [class.active]="currentLang() === 'en'"
+          (click)="switchLang('en')">
+          EN
+        </button>
+      </div>
     </div>
 
     <!-- Navigation List with Angular Material -->
@@ -22,7 +41,7 @@
              class="nav-item"
              [class.locked-item]="isLocked(item.minPlan)">
             <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
-            <span matListItemTitle class="nav-label">{{ item.label }}</span>
+            <span matListItemTitle class="nav-label">{{ item.translationKey | translate }}</span>
 
             @if (isLocked(item.minPlan)) {
               <div class="lock-indicator">
@@ -41,8 +60,8 @@
     <div class="eco-icon-wrapper">
       <mat-icon class="eco-icon">eco</mat-icon>
     </div>
-    <strong class="eco-title">Pequeñas acciones, grandes cambios</strong>
-    <p class="eco-desc">Un hogar más eficiente también cuida el planeta</p>
+    <strong class="eco-title">{{ 'SIDEBAR.ECO_TITLE' | translate }}</strong>
+    <p class="eco-desc">{{ 'SIDEBAR.ECO_DESC' | translate }}</p>
   </div>
 
   <!-- User Profile Section at Bottom -->
@@ -64,8 +83,8 @@
         mat-icon-button
         class="logout-btn"
         (click)="onLogout()"
-        aria-label="Cerrar sesión"
-        title="Cerrar sesión">
+        [attr.aria-label]="'SIDEBAR.LOGOUT' | translate"
+        [attr.title]="'SIDEBAR.LOGOUT' | translate">
         <mat-icon class="logout-icon">logout</mat-icon>
       </button>
     </div>

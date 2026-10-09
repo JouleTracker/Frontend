@@ -1,7 +1,18 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { AlertsApi } from '../infrastructure/alerts-api';
 import { Alert } from '../domain/model/alert.entity';
 import { IamStore } from '../../iam/application/iam.store';
+import { environment } from '../../../environments/environment';
+
+interface SensorItem {
+  id: number;
+  userId: number;
+  name: string;
+  todayKwh: number;
+  recommendedDailyKwh: number | null;
+  assignedDeviceName?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,27 +27,15 @@ export class AlertsStore {
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
 
-  // === COMPUTED SIGNALS (Métricas derivadas únicamente de los datos reales de db.json) ===
+  readonly totalCount = computed(() => this.alertsSignal().length);
+  readonly activeCount = computed(() => this.alertsSignal().filter(a => a.status === 'Activa').length);
+  readonly resolvedCount = computed(() => this.alertsSignal().filter(a => a.status === 'Leída').length);
 
-  /** Total real de alertas del usuario */
-  readonly totalCount = computed(() => {
-    return this.alertsSignal().length;
-  });
+  private readonly http = inject(HttpClient);
 
-  /** Alertas activas que requieren atención */
-  readonly activeCount = computed(() => {
-    return this.alertsSignal().filter(a => a.status === 'Activa').length;
-  });
-
-  /** Alertas leídas */
-  readonly resolvedCount = computed(() => {
-    return this.alertsSignal().filter(a => a.status === 'Leída').length;
-  });
-
-  constructor(private api: AlertsApi, iamStore: IamStore) {
-    // Recarga las alertas cuando cambia el usuario autenticado (datos propios por usuario)
+  constructor(private api: AlertsApi, private iamStore: IamStore) {
     effect(() => {
-      const userId = iamStore.currentUserId();
+      const userId = this.iamStore.currentUserId();
       if (userId) {
         this.loadAll();
       }
@@ -44,13 +43,45 @@ export class AlertsStore {
   }
 
   loadAll(): void {
+    const userId = this.iamStore.currentUserId();
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
+    // 1. Cargar las alertas guardadas en la API
     this.api.getAlerts().subscribe({
-      next: data => {
-        this.alertsSignal.set(data);
-        this.loadingSignal.set(false);
+      next: dbAlerts => {
+        // 2. Consultar los sensores del usuario para evaluar excesos en tiempo real
+        const sensorsEndpoint = `${environment.apiBaseUrl}/sensors?userId=${userId}`;
+        this.http.get<SensorItem[]>(sensorsEndpoint).subscribe({
+          next: sensors => {
+            const dynamicSensorAlerts: Alert[] = [];
+
+            // Detectar cualquier sensor que supere su límite recomendado
+            sensors.forEach(sensor => {
+              if (sensor.recommendedDailyKwh && sensor.todayKwh > sensor.recommendedDailyKwh) {
+                dynamicSensorAlerts.push(
+                  new Alert({
+                    id: 9000 + sensor.id,
+                    title: `Límite diario superado: ${sensor.name} `,
+                    description: ` | El dispositivo ${sensor.assignedDeviceName ?? sensor.name} consumió ${sensor.todayKwh.toFixed(2)} kWh (Límite: ${sensor.recommendedDailyKwh.toFixed(2)} kWh/día).`,
+                    timeAgo: 'Ahora',
+                    severity: 'warning',
+                    actionUrl: '/dispositivos'
+                  })
+                );
+              }
+            });
+
+            // Combinar alertas dinámicas al inicio de la lista
+            this.alertsSignal.set([...dynamicSensorAlerts, ...dbAlerts]);
+            this.loadingSignal.set(false);
+          },
+          error: () => {
+            // Si falla la consulta de sensores, al menos mostrar las alertas de la API
+            this.alertsSignal.set(dbAlerts);
+            this.loadingSignal.set(false);
+          }
+        });
       },
       error: err => {
         this.errorSignal.set(err.message);

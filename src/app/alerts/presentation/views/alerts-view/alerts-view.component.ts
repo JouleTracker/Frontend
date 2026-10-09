@@ -2,21 +2,35 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AlertSeverity, AlertStatus } from '../../../domain/model/alert.entity';
 import { AlertsStore } from '../../../application/alerts.store';
 
-/**
- * Component for managing and displaying user alerts and real-time system notifications.
- */
 @Component({
   selector: 'app-alerts-view',
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './alerts-view.component.html',
-  styleUrl: './alerts-view.component.css',
+  styleUrl: './alerts-view.component.css'
 })
 export class AlertsViewComponent {
-  private readonly router = inject(Router);
   readonly store = inject(AlertsStore);
+  private readonly router = inject(Router);
+
+  getSeverityIcon(severity: AlertSeverity): string {
+    switch (severity) {
+      case 'warning':
+        return 'warning_amber';
+      case 'error':
+        return 'error_outline';
+      case 'info':
+      default:
+        return 'info_outline';
+    }
+  }
+
+  getPillClass(status: AlertStatus): string {
+    return status === 'Activa' ? 'pill-active' : 'pill-resolved';
+  }
 
   goToSettings(): void {
     this.router.navigate(['/configuracion']);
@@ -24,27 +38,5 @@ export class AlertsViewComponent {
 
   goToRecommendations(): void {
     this.router.navigate(['/recomendaciones']);
-  }
-
-  getPillClass(status: string): string {
-    switch (status) {
-      case 'Activa':
-        return 'pill-red';
-      case 'Leída':
-        return 'pill-green';
-      default:
-        return 'pill-gray';
-    }
-  }
-
-  getSeverityIcon(severity: string): string {
-    switch (severity) {
-      case 'error':
-        return 'error_outline';
-      case 'warning':
-        return 'warning_amber';
-      default:
-        return 'info_outline';
-    }
   }
 }

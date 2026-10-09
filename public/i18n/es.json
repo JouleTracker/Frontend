@@ -1,0 +1,15 @@
+{
+  "SIDEBAR": {
+    "HOME": "Inicio",
+    "CONSUMPTION": "Consumo",
+    "DEVICES": "Dispositivos",
+    "SENSORS": "Sensores",
+    "ALERTS": "Alertas",
+    "REPORTS": "Reportes",
+    "RECOMMENDATIONS": "Recomendaciones",
+    "SETTINGS": "Configuración",
+    "ECO_TITLE": "Pequeñas acciones, grandes cambios",
+    "ECO_DESC": "Un hogar más eficiente también cuida el planeta",
+    "LOGOUT": "Cerrar sesión"
+  }
+}

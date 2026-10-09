@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -14,7 +14,10 @@ import { ReportsStore } from '../../../application/reports.store';
 export class ReportsViewComponent implements OnInit {
   readonly store = inject(ReportsStore);
 
-  period = '30';
+  /** Controla si el panel de filtros está visible */
+  readonly showFilters = signal<boolean>(false);
+
+  period = '7';
   startDate = '';
   endDate = '';
 
@@ -49,18 +52,51 @@ export class ReportsViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Período por defecto según el plan del usuario
-    this.period = this.canView30Days() ? '30' : '7';
+    // Siempre inicia predeterminado en los últimos 7 días
+    this.period = '7';
     this.store.loadInitialData();
+    this.applyPresetGmt5(7);
+  }
+
+  toggleFilters(): void {
+    this.showFilters.update((v) => !v);
+  }
+
+  /**
+   * Genera una cadena YYYY-MM-DD en la zona horaria GMT-5
+   */
+  private formatGmt5(date: Date): string {
+    const targetOffsetMinutes = -5 * 60;
+    const utcTime = date.getTime() + date.getTimezoneOffset() * 60000;
+    const gmt5Date = new Date(utcTime + targetOffsetMinutes * 60000);
+
+    const year = gmt5Date.getFullYear();
+    const month = String(gmt5Date.getMonth() + 1).padStart(2, '0');
+    const day = String(gmt5Date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private applyPresetGmt5(days: number): void {
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - (days - 1));
+
+    this.startDate = this.formatGmt5(start);
+    this.endDate = this.formatGmt5(today);
+    this.store.applyCustomRange(this.startDate, this.endDate);
   }
 
   selectPeriod(): void {
     if (this.period === '7') {
-      this.store.applyDaysPreset(7);
+      this.applyPresetGmt5(7);
     } else if (this.period === '30') {
-      this.store.applyDaysPreset(30);
+      this.applyPresetGmt5(30);
     } else if (this.period === 'month') {
-      this.store.applyCurrentMonthPreset();
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      this.startDate = this.formatGmt5(firstDay);
+      this.endDate = this.formatGmt5(today);
+      this.store.applyCustomRange(this.startDate, this.endDate);
     }
   }
 
@@ -69,7 +105,7 @@ export class ReportsViewComponent implements OnInit {
   }
 
   reset(): void {
-    this.period = this.canView30Days() ? '30' : '7';
-    this.store.resetToDefault();
+    this.period = '7';
+    this.applyPresetGmt5(7);
   }
 }

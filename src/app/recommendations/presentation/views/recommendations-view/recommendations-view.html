@@ -68,7 +68,7 @@
       <!-- Filter & Sort Bar -->
       <div class="filter-row">
         <nav class="filter-tabs" aria-label="Categorías de recomendaciones">
-          @for (cat of categories; track cat.value) {
+          @for (cat of categories(); track cat.value) {
             <button
               type="button"
               class="tab-btn"

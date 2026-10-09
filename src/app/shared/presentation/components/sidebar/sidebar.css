@@ -263,3 +263,58 @@
   width: 18px;
   height: 18px;
 }
+
+/* Contenedor del encabezado: Logo a la izquierda, switch a la derecha */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem 0.75rem 0.25rem;
+}
+
+/* Pastilla contenedora del selector de idioma */
+.lang-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 0.2rem 0.45rem;
+  user-select: none;
+}
+
+/* Botón individual (ES / EN) */
+.lang-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1;
+}
+
+.lang-btn:hover {
+  color: #0f172a;
+}
+
+/* Estado activo del idioma seleccionado */
+.lang-btn.active {
+  background-color: #ffffff;
+  color: #16a34a; /* Verde JouleTracker */
+  font-weight: 800;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Barra separadora entre idiomas */
+.lang-divider {
+  font-size: 0.7rem;
+  color: #cbd5e1;
+  pointer-events: none;
+}

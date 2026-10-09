@@ -1,1 +1,1 @@
-node server/server.js
+--watch db.json --routes routes.json

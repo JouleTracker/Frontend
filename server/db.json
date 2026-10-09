@@ -3,191 +3,1025 @@
     {
       "name": "Juan",
       "email": "juan@gmail.com",
-      "password": "Juan10",
+      "password": "Juan20",
       "role": "homeowner",
       "plan": "pro",
       "verified": true,
       "verificationCode": null,
       "id": 1,
-      "phone": "987654321"
+      "phone": "987654321",
+      "home": {
+        "homeType": "Departamento",
+        "occupants": 1,
+        "location": "San Borja",
+        "tariff": "BT5B"
+      }
+    },
+    {
+      "name": "Pepe",
+      "email": "pepe@gmail.com",
+      "password": "Pepe10",
+      "role": "homeowner",
+      "plan": "pro",
+      "verified": true,
+      "verificationCode": null,
+      "id": 2,
+      "phone": "912345678",
+      "home": {
+        "homeType": "Departamento",
+        "occupants": 2,
+        "location": "Miraflores",
+        "tariff": "BT5B"
+      }
+    },
+    {
+      "name": "Pedro",
+      "email": "pedro@gmail.com",
+      "password": "Pedro10",
+      "role": "homeowner",
+      "plan": "pro",
+      "verified": true,
+      "verificationCode": null,
+      "id": 3,
+      "phone": "934567890",
+      "home": {
+        "homeType": "Casa",
+        "occupants": 3,
+        "location": "Santiago de Surco",
+        "tariff": "BT5B"
+      }
     }
   ],
-  "consumption-summaries": [],
-  "energy-readings": [],
-  "device-distributions": [],
-  "comparative-consumptions": [],
-  "consumption-histories": [],
-  "alerts": [],
-  "recommendations": [],
+  "consumption-summaries": [
+    {
+      "id": 1,
+      "userId": 1,
+      "totalConsumption": 184.5,
+      "totalConsumptionDiff": -8.5,
+      "totalConsumptionDiffLabel": "vs mes anterior",
+      "periodConsumption": 42.6,
+      "periodConsumptionDiff": -12.4,
+      "currentPower": 1.15,
+      "activeDevicesCount": 4,
+      "baselineMonthlyKwh": 210,
+      "savedKwhWeekly": 6.8,
+      "savedKwhMonthly": 25.5
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "totalConsumption": 28.5,
+      "totalConsumptionDiff": 14.2,
+      "totalConsumptionDiffLabel": "vs semana anterior",
+      "periodConsumption": 28.5,
+      "periodConsumptionDiff": 14.2,
+      "currentPower": 2.2,
+      "activeDevicesCount": 1,
+      "baselineMonthlyKwh": 140,
+      "savedKwhWeekly": 0,
+      "savedKwhMonthly": 0
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "totalConsumption": 165.2,
+      "totalConsumptionDiff": -5.3,
+      "totalConsumptionDiffLabel": "vs semana anterior",
+      "periodConsumption": 43.2,
+      "periodConsumptionDiff": -8.1,
+      "currentPower": 1.32,
+      "activeDevicesCount": 4,
+      "baselineMonthlyKwh": 185,
+      "savedKwhWeekly": 5.2,
+      "savedKwhMonthly": 19.8
+    }
+  ],
+  "energy-readings": [
+    {
+      "id": 1,
+      "userId": 1,
+      "period": "dia",
+      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
+      "values": [0.45, 0.32, 0.58, 1.25, 0.95, 0.88, 2.1, 1.65, 0.72]
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "period": "semana",
+      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+      "values": [5.8, 6.2, 5.4, 6.9, 7.1, 6, 5.2]
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "period": "mes",
+      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
+      "values": [42.6, 45.1, 47.8, 49]
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "period": "ano",
+      "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct"],
+      "values": [195.2, 188, 192.4, 185.1, 180.6, 178.2, 175, 182.4, 181, 184.5]
+    },
+    {
+      "id": 5,
+      "userId": 2,
+      "period": "dia",
+      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
+      "values": [0.1, 0.1, 0.15, 0.4, 2.2, 0.3, 0.8, 0.2, 0.1]
+    },
+    {
+      "id": 6,
+      "userId": 2,
+      "period": "semana",
+      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+      "values": [3.2, 3.5, 4, 3.8, 4.5, 4.8, 4.7]
+    },
+    {
+      "id": 7,
+      "userId": 2,
+      "period": "mes",
+      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
+      "values": [25, 28.5, 0, 0]
+    },
+    {
+      "id": 8,
+      "userId": 2,
+      "period": "ano",
+      "labels": ["Ago", "Set", "Oct"],
+      "values": [110, 115.4, 28.5]
+    },
+    {
+      "id": 9,
+      "userId": 3,
+      "period": "dia",
+      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
+      "values": [0.15, 0.12, 0.18, 1.15, 1.32, 1.28, 1.05, 0.45, 0.22]
+    },
+    {
+      "id": 10,
+      "userId": 3,
+      "period": "semana",
+      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+      "values": [6.4, 6.1, 5.9, 6.5, 6.2, 5.8, 6.17]
+    },
+    {
+      "id": 11,
+      "userId": 3,
+      "period": "mes",
+      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
+      "values": [41.5, 43.2, 39.8, 40.7]
+    },
+    {
+      "id": 12,
+      "userId": 3,
+      "period": "ano",
+      "labels": ["Jun", "Jul", "Ago", "Set", "Oct"],
+      "values": [172.0, 168.4, 164.5, 161.0, 165.2]
+    }
+  ],
+  "device-distributions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "Refrigeradora Inverter",
+      "percentage": 32,
+      "kwh": 13.6,
+      "color": "#10b981"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "name": "Aire Acondicionado Sala",
+      "percentage": 28,
+      "kwh": 11.9,
+      "color": "#3b82f6"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "name": "Terma Eléctrica",
+      "percentage": 22,
+      "kwh": 9.4,
+      "color": "#f59e0b"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "name": "Centro de Entretenimiento",
+      "percentage": 11,
+      "kwh": 4.7,
+      "color": "#8b5cf6"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "name": "Otros / Iluminación",
+      "percentage": 7,
+      "kwh": 3,
+      "color": "#94a3b8"
+    },
+    {
+      "id": 6,
+      "userId": 2,
+      "name": "Horno Eléctrico Cocina",
+      "percentage": 100,
+      "kwh": 4.5,
+      "color": "#ef4444"
+    },
+    {
+      "id": 7,
+      "userId": 3,
+      "name": "Aire Acondicionado Oficina",
+      "percentage": 62,
+      "kwh": 3.8,
+      "color": "#3b82f6"
+    },
+    {
+      "id": 8,
+      "userId": 3,
+      "name": "Workstation Oficina",
+      "percentage": 24,
+      "kwh": 1.5,
+      "color": "#8b5cf6"
+    },
+    {
+      "id": 9,
+      "userId": 3,
+      "name": "Frigobar Oficina",
+      "percentage": 10,
+      "kwh": 0.65,
+      "color": "#10b981"
+    },
+    {
+      "id": 10,
+      "userId": 3,
+      "name": "Iluminación Oficina",
+      "percentage": 4,
+      "kwh": 0.22,
+      "color": "#f59e0b"
+    }
+  ],
+  "comparative-consumptions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "month": "Jun",
+      "currentPeriod": 178,
+      "previousPeriod": 190
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "month": "Jul",
+      "currentPeriod": 175,
+      "previousPeriod": 188
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "month": "Ago",
+      "currentPeriod": 182,
+      "previousPeriod": 185
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "month": "Set",
+      "currentPeriod": 181,
+      "previousPeriod": 183
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "month": "Oct",
+      "currentPeriod": 184,
+      "previousPeriod": 195
+    },
+    {
+      "id": 6,
+      "userId": 2,
+      "month": "Ago",
+      "currentPeriod": 110,
+      "previousPeriod": 105
+    },
+    {
+      "id": 7,
+      "userId": 2,
+      "month": "Set",
+      "currentPeriod": 115,
+      "previousPeriod": 110
+    },
+    {
+      "id": 8,
+      "userId": 2,
+      "month": "Oct",
+      "currentPeriod": 128,
+      "previousPeriod": 115
+    },
+    {
+      "id": 9,
+      "userId": 3,
+      "month": "Jun",
+      "currentPeriod": 172,
+      "previousPeriod": 180
+    },
+    {
+      "id": 10,
+      "userId": 3,
+      "month": "Jul",
+      "currentPeriod": 168,
+      "previousPeriod": 175
+    },
+    {
+      "id": 11,
+      "userId": 3,
+      "month": "Ago",
+      "currentPeriod": 164,
+      "previousPeriod": 170
+    },
+    {
+      "id": 12,
+      "userId": 3,
+      "month": "Set",
+      "currentPeriod": 161,
+      "previousPeriod": 165
+    },
+    {
+      "id": 13,
+      "userId": 3,
+      "month": "Oct",
+      "currentPeriod": 165,
+      "previousPeriod": 174
+    }
+  ],
+  "consumption-histories": [
+    {
+      "id": 1,
+      "userId": 1,
+      "date": "2026-10-03",
+      "consumption": 5.8,
+      "cost": 4.06,
+      "status": "Eficiente"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "date": "2026-10-04",
+      "consumption": 6.2,
+      "cost": 4.34,
+      "status": "Normal"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "date": "2026-10-05",
+      "consumption": 5.4,
+      "cost": 3.78,
+      "status": "Eficiente"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "date": "2026-10-06",
+      "consumption": 6.9,
+      "cost": 4.83,
+      "status": "Normal"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "date": "2026-10-07",
+      "consumption": 7.1,
+      "cost": 4.97,
+      "status": "Alto"
+    },
+    {
+      "id": 6,
+      "userId": 1,
+      "date": "2026-10-08",
+      "consumption": 6,
+      "cost": 4.2,
+      "status": "Normal"
+    },
+    {
+      "id": 7,
+      "userId": 1,
+      "date": "2026-10-09",
+      "consumption": 5.2,
+      "cost": 3.64,
+      "status": "Eficiente"
+    },
+    {
+      "id": 8,
+      "userId": 2,
+      "date": "2026-10-03",
+      "consumption": 3.2,
+      "cost": 2.24,
+      "status": "Eficiente"
+    },
+    {
+      "id": 9,
+      "userId": 2,
+      "date": "2026-10-04",
+      "consumption": 3.5,
+      "cost": 2.45,
+      "status": "Eficiente"
+    },
+    {
+      "id": 10,
+      "userId": 2,
+      "date": "2026-10-05",
+      "consumption": 4,
+      "cost": 2.8,
+      "status": "Normal"
+    },
+    {
+      "id": 11,
+      "userId": 2,
+      "date": "2026-10-06",
+      "consumption": 3.8,
+      "cost": 2.66,
+      "status": "Normal"
+    },
+    {
+      "id": 12,
+      "userId": 2,
+      "date": "2026-10-07",
+      "consumption": 4.5,
+      "cost": 3.15,
+      "status": "Alto"
+    },
+    {
+      "id": 13,
+      "userId": 2,
+      "date": "2026-10-08",
+      "consumption": 4.8,
+      "cost": 3.36,
+      "status": "Alto"
+    },
+    {
+      "id": 14,
+      "userId": 2,
+      "date": "2026-10-09",
+      "consumption": 4.7,
+      "cost": 3.29,
+      "status": "Alto"
+    },
+    {
+      "id": 15,
+      "userId": 3,
+      "date": "2026-10-03",
+      "consumption": 6.4,
+      "cost": 4.48,
+      "status": "Normal"
+    },
+    {
+      "id": 16,
+      "userId": 3,
+      "date": "2026-10-04",
+      "consumption": 6.1,
+      "cost": 4.27,
+      "status": "Normal"
+    },
+    {
+      "id": 17,
+      "userId": 3,
+      "date": "2026-10-05",
+      "consumption": 5.9,
+      "cost": 4.13,
+      "status": "Eficiente"
+    },
+    {
+      "id": 18,
+      "userId": 3,
+      "date": "2026-10-06",
+      "consumption": 6.5,
+      "cost": 4.55,
+      "status": "Normal"
+    },
+    {
+      "id": 19,
+      "userId": 3,
+      "date": "2026-10-07",
+      "consumption": 6.2,
+      "cost": 4.34,
+      "status": "Normal"
+    },
+    {
+      "id": 20,
+      "userId": 3,
+      "date": "2026-10-08",
+      "consumption": 5.8,
+      "cost": 4.06,
+      "status": "Eficiente"
+    },
+    {
+      "id": 21,
+      "userId": 3,
+      "date": "2026-10-09",
+      "consumption": 6.17,
+      "cost": 4.32,
+      "status": "Normal"
+    }
+  ],
+  "alerts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Pico de consumo detectado",
+      "description": "El Aire Acondicionado superó 1.8 kW entre 18:00 y 19:30.",
+      "message": "El Aire Acondicionado superó 1.8 kW entre 18:00 y 19:30.",
+      "severity": "warning",
+      "status": "Activa",
+      "timeAgo": "Hace 2 horas",
+      "actionUrl": "/consumo",
+      "timestamp": "2026-10-09T02:00:00Z",
+      "read": false
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "Meta semanal alcanzada",
+      "description": "Ahorraste 6.8 kWh en comparación con tu semana base.",
+      "message": "Ahorraste 6.8 kWh en comparación con tu semana base.",
+      "severity": "info",
+      "status": "Leída",
+      "timeAgo": "Ayer",
+      "actionUrl": "/reportes",
+      "timestamp": "2026-10-08T08:00:00Z",
+      "read": true
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "Consumo diario excedido",
+      "description": "El Horno Eléctrico Cocina registró 4.5 kWh superando el límite diario de 1.5 kWh.",
+      "message": "El sensor Medidor Cocina superó su cuota recomendada.",
+      "severity": "warning",
+      "status": "Activa",
+      "timeAgo": "Hace 15 min",
+      "actionUrl": "/dispositivos",
+      "timestamp": "2026-10-09T04:00:00Z",
+      "read": false
+    },
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "Uso eficiente en oficina",
+      "description": "El consumo general de la oficina se mantiene 8.1% por debajo del baseline.",
+      "message": "Uso eficiente de energía mantenido en oficina.",
+      "severity": "info",
+      "status": "Leída",
+      "timeAgo": "Hace 1 hora",
+      "actionUrl": "/consumo",
+      "timestamp": "2026-10-09T03:30:00Z",
+      "read": true
+    }
+  ],
+  "recommendations": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Ajuste de termostato",
+      "description": "Mantener el aire acondicionado en 24°C puede reducir hasta un 15% de consumo en horas punta.",
+      "estimatedSavingsKwh": 4.5,
+      "category": "Climatización"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "Temporizador en terma eléctrica",
+      "description": "Encender la terma solo 45 minutos antes de su uso ahorra aprox. S/ 12.00 al mes.",
+      "estimatedSavingsKwh": 8,
+      "category": "Agua Caliente"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "Optimización de Horno Eléctrico",
+      "description": "Evita precalentar más de 10 minutos para mantener el consumo dentro de la meta recomendada.",
+      "estimatedSavingsKwh": 3,
+      "category": "Cocina"
+    },
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "Modo ecológico en Workstation",
+      "description": "Activar la suspensión automática tras 15 minutos sin uso ahorrará aprox. 1.2 kWh/semana.",
+      "estimatedSavingsKwh": 4.8,
+      "category": "Oficina"
+    }
+  ],
   "devices": [
     {
-      "name": "Aire Acondicionado",
-      "location": "Sala Principal",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "name": "Refrigeradora Inverter",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "Encendido",
+      "currentPowerKw": 0.18,
+      "todayKwh": 1.45,
+      "lastActivity": "Activo hace 2 min",
       "userId": 1,
       "id": 1
     },
     {
-      "name": "safsda",
-      "location": "adsfdsaf",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "name": "Aire Acondicionado",
+      "location": "Sala Principal",
+      "category": "Climatización",
+      "status": "Encendido",
+      "currentPowerKw": 0.65,
+      "todayKwh": 2.1,
+      "lastActivity": "Activo hace 5 min",
       "userId": 1,
       "id": 2
     },
     {
-      "name": "dsfdsagads",
-      "location": "gafdgf",
-      "category": "Cocina",
+      "name": "Terma Eléctrica",
+      "location": "Baño Principal",
+      "category": "Hogar",
       "status": "Apagado",
       "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "todayKwh": 1.2,
+      "lastActivity": "Apagado hoy a las 07:30",
       "userId": 1,
       "id": 3
     },
     {
-      "name": "agddfg",
-      "location": "adgag",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "name": "Smart TV 55\"",
+      "location": "Sala Principal",
+      "category": "Entretenimiento",
+      "status": "Encendido",
+      "currentPowerKw": 0.12,
+      "todayKwh": 0.35,
+      "lastActivity": "Activo ahora",
       "userId": 1,
       "id": 4
     },
     {
-      "name": "adfgfagfgf",
-      "location": "gadgfaagfa",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "name": "Horno Microondas",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "Standby",
+      "currentPowerKw": 0.01,
+      "todayKwh": 0.1,
+      "lastActivity": "Usado hoy 13:15",
       "userId": 1,
       "id": 5
     },
     {
-      "name": "adga",
-      "location": "agaaggfa",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "name": "Luces Sala y Pasillo",
+      "location": "Sala Principal",
+      "category": "Iluminación",
+      "status": "Encendido",
+      "currentPowerKw": 0.05,
+      "todayKwh": 0.18,
+      "lastActivity": "Activo ahora",
       "userId": 1,
       "id": 6
     },
     {
-      "name": "adfgfdag",
-      "location": "adafd",
-      "category": "Cocina",
+      "name": "Lavadora Automática",
+      "location": "Lavandería",
+      "category": "Hogar",
       "status": "Apagado",
       "currentPowerKw": 0,
       "todayKwh": 0,
-      "lastActivity": "Recién registrado",
+      "lastActivity": "Sin uso hoy",
       "userId": 1,
       "id": 7
     },
     {
-      "name": "adggfadfdhadfh",
-      "location": "ahdfhfadadf",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
+      "name": "Horno Eléctrico Cocina",
+      "location": "Cocina",
+      "category": "Cocina",
+      "status": "En línea",
+      "currentPowerKw": 2.2,
+      "todayKwh": 4.5,
+      "lastActivity": "Telemetría IoT en vivo",
+      "userId": 2,
       "id": 8
     },
     {
-      "name": "fdsafdas",
-      "location": "dsfasdfdsaadfs",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
+      "name": "Aire Acondicionado Oficina",
+      "location": "Oficina",
+      "category": "Climatización",
+      "status": "En línea",
+      "currentPowerKw": 0.95,
+      "todayKwh": 3.8,
+      "lastActivity": "Telemetría IoT en vivo",
+      "userId": 3,
       "id": 9
     },
     {
-      "name": "adsgcxax",
-      "location": "adfasdfcs",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
+      "name": "Workstation Oficina",
+      "location": "Oficina",
+      "category": "Oficina",
+      "status": "En línea",
+      "currentPowerKw": 0.25,
+      "todayKwh": 1.5,
+      "lastActivity": "Telemetría IoT en vivo",
+      "userId": 3,
       "id": 10
     },
     {
-      "name": "zadfsfdsaxfds",
-      "location": "zasdxfads",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
+      "name": "Iluminación LED Oficina",
+      "location": "Oficina",
+      "category": "Iluminación",
+      "status": "En línea",
+      "currentPowerKw": 0.04,
+      "todayKwh": 0.22,
+      "lastActivity": "Telemetría IoT en vivo",
+      "userId": 3,
       "id": 11
     },
     {
-      "name": "aa",
-      "location": "aa",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
+      "name": "Frigobar Ejecutivo",
+      "location": "Oficina",
+      "category": "Cocina",
+      "status": "En línea",
+      "currentPowerKw": 0.08,
+      "todayKwh": 0.65,
+      "lastActivity": "Telemetría IoT en vivo",
+      "userId": 3,
       "id": 12
-    },
-    {
-      "name": "aa",
-      "location": "aa",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
-      "id": 13
-    },
-    {
-      "name": "aa",
-      "location": "aa",
-      "category": "Hogar",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
-      "id": 14
-    },
-    {
-      "name": "zz",
-      "location": "zz",
-      "category": "Entretenimiento",
-      "status": "Apagado",
-      "currentPowerKw": 0,
-      "todayKwh": 0,
-      "lastActivity": "Recién registrado",
-      "userId": 1,
-      "id": 15
     }
   ],
-  "device-summaries": [],
-  "appliance-profiles": [],
-  "sensors": [],
-  "sensor-summaries": []
+  "device-summaries": [
+    {
+      "id": 1,
+      "userId": 1,
+      "totalDevices": 7,
+      "activeDevices": 4,
+      "standbyDevices": 1,
+      "offlineDevices": 2,
+      "totalPowerKw": 1.01
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "totalDevices": 1,
+      "activeDevices": 1,
+      "standbyDevices": 0,
+      "offlineDevices": 0,
+      "totalPowerKw": 2.2
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "totalDevices": 4,
+      "activeDevices": 4,
+      "standbyDevices": 0,
+      "offlineDevices": 0,
+      "totalPowerKw": 1.32
+    }
+  ],
+  "appliance-profiles": [
+    {
+      "id": 1,
+      "name": "Refrigeradora A+",
+      "typicalPowerKw": 0.2,
+      "recommendedDailyKwh": 1.5
+    },
+    {
+      "id": 2,
+      "name": "Aire Acondicionado Inverter 12000BTU",
+      "typicalPowerKw": 0.9,
+      "recommendedDailyKwh": 3
+    },
+    {
+      "id": 3,
+      "name": "Terma Rápida 50L",
+      "typicalPowerKw": 1.5,
+      "recommendedDailyKwh": 1.8
+    },
+    {
+      "id": 4,
+      "name": "Horno Eléctrico Empotrado",
+      "typicalPowerKw": 2.2,
+      "recommendedDailyKwh": 1.5
+    },
+    {
+      "id": 5,
+      "name": "Estación de Trabajo / PC",
+      "typicalPowerKw": 0.3,
+      "recommendedDailyKwh": 2.0
+    },
+    {
+      "id": 6,
+      "name": "Frigobar Compacto A+",
+      "typicalPowerKw": 0.1,
+      "recommendedDailyKwh": 0.8
+    }
+  ],
+  "sensors": [
+    {
+      "name": "Smart Plug Refri",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-441",
+      "status": "En línea",
+      "assignedDeviceId": 1,
+      "assignedDeviceName": "Refrigeradora Inverter",
+      "assignedDeviceCategory": "Cocina",
+      "applianceProfileId": 1,
+      "applianceProfileName": "Refrigeradora A+",
+      "recommendedDailyKwh": 1.5,
+      "currentPowerKw": 0.18,
+      "todayKwh": 1.45,
+      "todayCostSoles": 1.02,
+      "lastSync": "Hace 1 min",
+      "userId": 1,
+      "id": 1
+    },
+    {
+      "name": "Medidor Riel Clima",
+      "model": "Sonoff POW R3",
+      "serialNumber": "SN-IOT-174",
+      "status": "En línea",
+      "assignedDeviceId": 2,
+      "assignedDeviceName": "Aire Acondicionado",
+      "assignedDeviceCategory": "Climatización",
+      "applianceProfileId": 2,
+      "applianceProfileName": "Aire Acondicionado Inverter 12000BTU",
+      "recommendedDailyKwh": 3,
+      "currentPowerKw": 0.65,
+      "todayKwh": 2.1,
+      "todayCostSoles": 1.47,
+      "lastSync": "Hace 2 min",
+      "userId": 1,
+      "id": 2
+    },
+    {
+      "name": "Interruptor Terma",
+      "model": "Shelly EM 50A",
+      "serialNumber": "SN-IOT-132",
+      "status": "En línea",
+      "assignedDeviceId": 3,
+      "assignedDeviceName": "Terma Eléctrica",
+      "assignedDeviceCategory": "Hogar",
+      "applianceProfileId": 3,
+      "applianceProfileName": "Terma Rápida 50L",
+      "recommendedDailyKwh": 1.8,
+      "currentPowerKw": 0,
+      "todayKwh": 1.2,
+      "todayCostSoles": 0.84,
+      "lastSync": "Hace 5 min",
+      "userId": 1,
+      "id": 3
+    },
+    {
+      "name": "Smart Plug TV Sala",
+      "model": "Tuya Smart Plug",
+      "serialNumber": "SN-IOT-302",
+      "status": "En línea",
+      "assignedDeviceId": 4,
+      "assignedDeviceName": "Smart TV 55\"",
+      "assignedDeviceCategory": "Entretenimiento",
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": 0.8,
+      "currentPowerKw": 0.12,
+      "todayKwh": 0.35,
+      "todayCostSoles": 0.25,
+      "lastSync": "Hace 1 min",
+      "userId": 1,
+      "id": 4
+    },
+    {
+      "name": "Sensor Lavandería",
+      "model": "Sonoff S26R2",
+      "serialNumber": "SN-IOT-789",
+      "status": "Desconectado",
+      "assignedDeviceId": 7,
+      "assignedDeviceName": "Lavadora Automática",
+      "assignedDeviceCategory": "Hogar",
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": 0.6,
+      "currentPowerKw": 0,
+      "todayKwh": 0,
+      "todayCostSoles": 0,
+      "lastSync": "Ayer 22:15",
+      "userId": 1,
+      "id": 5
+    },
+    {
+      "name": "Medidor Cocina",
+      "model": "Genérico ESP32",
+      "serialNumber": "SN-IOT-687",
+      "status": "En línea",
+      "assignedDeviceId": 8,
+      "assignedDeviceName": "Horno Eléctrico Cocina",
+      "assignedDeviceCategory": "Cocina",
+      "applianceProfileId": 4,
+      "applianceProfileName": "Horno Eléctrico Empotrado",
+      "recommendedDailyKwh": 1.5,
+      "currentPowerKw": 2.2,
+      "todayKwh": 4.5,
+      "todayCostSoles": 3.15,
+      "lastSync": "Hace 1 min",
+      "userId": 2,
+      "id": 6
+    },
+    {
+      "name": "Sensor Clima Oficina",
+      "model": "Sonoff POW R3",
+      "serialNumber": "SN-IOT-713",
+      "status": "En línea",
+      "assignedDeviceId": 9,
+      "assignedDeviceName": "Aire Acondicionado Oficina",
+      "assignedDeviceCategory": "Climatización",
+      "applianceProfileId": 2,
+      "applianceProfileName": "Aire Acondicionado Inverter 12000BTU",
+      "recommendedDailyKwh": 3.0,
+      "currentPowerKw": 0.95,
+      "todayKwh": 3.8,
+      "todayCostSoles": 2.66,
+      "lastSync": "Hace 1 min",
+      "userId": 3,
+      "id": 7
+    },
+    {
+      "name": "Smart Plug Workstation",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-842",
+      "status": "En línea",
+      "assignedDeviceId": 10,
+      "assignedDeviceName": "Workstation Oficina",
+      "assignedDeviceCategory": "Oficina",
+      "applianceProfileId": 5,
+      "applianceProfileName": "Estación de Trabajo / PC",
+      "recommendedDailyKwh": 2.0,
+      "currentPowerKw": 0.25,
+      "todayKwh": 1.5,
+      "todayCostSoles": 1.05,
+      "lastSync": "Hace 2 min",
+      "userId": 3,
+      "id": 8
+    },
+    {
+      "name": "Switch Iluminación Oficina",
+      "model": "Tuya Smart Plug",
+      "serialNumber": "SN-IOT-905",
+      "status": "En línea",
+      "assignedDeviceId": 11,
+      "assignedDeviceName": "Iluminación LED Oficina",
+      "assignedDeviceCategory": "Iluminación",
+      "applianceProfileId": null,
+      "applianceProfileName": null,
+      "recommendedDailyKwh": 0.5,
+      "currentPowerKw": 0.04,
+      "todayKwh": 0.22,
+      "todayCostSoles": 0.15,
+      "lastSync": "Hace 3 min",
+      "userId": 3,
+      "id": 9
+    },
+    {
+      "name": "Smart Plug Frigobar",
+      "model": "Shelly Plug S",
+      "serialNumber": "SN-IOT-961",
+      "status": "En línea",
+      "assignedDeviceId": 12,
+      "assignedDeviceName": "Frigobar Ejecutivo",
+      "assignedDeviceCategory": "Cocina",
+      "applianceProfileId": 6,
+      "applianceProfileName": "Frigobar Compacto A+",
+      "recommendedDailyKwh": 0.8,
+      "currentPowerKw": 0.08,
+      "todayKwh": 0.65,
+      "todayCostSoles": 0.46,
+      "lastSync": "Hace 1 min",
+      "userId": 3,
+      "id": 10
+    }
+  ],
+  "sensor-summaries": [
+    {
+      "id": 1,
+      "userId": 1,
+      "totalSensors": 5,
+      "onlineSensors": 4,
+      "offlineSensors": 1,
+      "unassignedSensors": 0
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "totalSensors": 1,
+      "onlineSensors": 1,
+      "offlineSensors": 0,
+      "unassignedSensors": 0
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "totalSensors": 4,
+      "onlineSensors": 4,
+      "offlineSensors": 0,
+      "unassignedSensors": 0
+    }
+  ]
 }

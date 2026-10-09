@@ -129,6 +129,25 @@
 
         <div class="section-divider"></div>
 
+        <!-- Status Field -->
+        <div class="form-group">
+          <label for="deviceStatus" class="form-label">
+            Estado del dispositivo <span class="required">*</span>
+          </label>
+          <select
+            id="deviceStatus"
+            formControlName="status"
+            class="form-select"
+          >
+            <option value="En línea">En línea</option>
+            <option value="En espera">En espera</option>
+            <option value="Apagado">Apagado</option>
+          </select>
+          <span class="field-hint">
+    Define el estado operativo del dispositivo.
+  </span>
+        </div>
+
         <!-- IoT Sensor Assignment Section -->
         <div class="assignment-header">
           <h3>Conectividad IoT</h3>

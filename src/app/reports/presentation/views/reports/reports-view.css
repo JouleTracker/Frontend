@@ -267,3 +267,62 @@ tr:hover td {
 .plan-note a:hover {
   text-decoration: underline;
 }
+
+/* ── Filtros Opcionales ─────────────────────── */
+.filters-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.btn-toggle-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.btn-toggle-filters:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-toggle-filters svg {
+  color: #15803d;
+}
+
+.active-range-pill {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #4b5563;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(209, 213, 219, 0.6);
+}
+
+.filter-panel-dropdown {
+  animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -5,16 +5,13 @@ import { environment } from '../../../environments/environment';
 import { ConsumptionRecord } from '../domain/consumption-record.entity';
 import { IamStore } from '../../iam/application/iam.store';
 
-/**
- * Forma real de un registro en la colección `consumption-histories` de db.json.
- */
 interface ConsumptionHistoryResource {
   id: number;
   userId?: number;
-  date: string; // DD/MM/YYYY
-  consumption: string; // ej. "82.4kWh"
-  cost: string;
-  status: string;
+  date: string;
+  consumption: number | string;
+  cost?: number | string;
+  status?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -23,10 +20,6 @@ export class ReportsApi {
   private readonly iamStore = inject(IamStore);
   private readonly baseUrl = environment.apiBaseUrl;
 
-  /**
-   * Obtiene el historial de consumo del usuario autenticado desde la colección
-   * `consumption-histories` de db.json y lo adapta a registros de reporte.
-   */
   getConsumptionRecords(): Observable<ConsumptionRecord[]> {
     const userId = this.iamStore.currentUserId();
     const query = userId ? `?userId=${userId}` : '';
@@ -38,21 +31,29 @@ export class ReportsApi {
     );
   }
 
-  /**
-   * Adapta el registro de db.json al modelo de dominio:
-   * - date: DD/MM/YYYY → YYYY-MM-DD (ISO) para ordenar y filtrar correctamente
-   * - consumption: "82.4kWh" → 82.4 (number)
-   */
   private toRecord(resource: ConsumptionHistoryResource): ConsumptionRecord {
-    const parts = (resource.date ?? '').split('/');
-    const isoDate = parts.length === 3
-      ? `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
-      : resource.date;
-    const parsed = Number(String(resource.consumption).replace(/[^\d.,-]/g, '').replace(',', '.'));
+    // Normalizar fecha: soporta tanto "DD/MM/YYYY" como "YYYY-MM-DD"
+    let isoDate = resource.date;
+    if (resource.date && resource.date.includes('/')) {
+      const parts = resource.date.split('/');
+      if (parts.length === 3) {
+        isoDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+    }
+
+    // Normalizar consumo: soporta number puro (4.5) o string ("4.5kWh")
+    let kwh = 0;
+    if (typeof resource.consumption === 'number') {
+      kwh = resource.consumption;
+    } else if (typeof resource.consumption === 'string') {
+      const cleaned = resource.consumption.replace(/[^\d.,-]/g, '').replace(',', '.');
+      kwh = parseFloat(cleaned) || 0;
+    }
+
     return {
       id: resource.id,
       date: isoDate,
-      consumptionKwh: isNaN(parsed) ? 0 : parsed
+      consumptionKwh: Number(kwh.toFixed(2))
     };
   }
 }

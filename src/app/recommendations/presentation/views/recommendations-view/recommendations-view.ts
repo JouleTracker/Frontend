@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,12 +29,13 @@ export class RecommendationsViewComponent implements OnInit {
   readonly store = inject(RecommendationsStore);
   readonly iamStore = inject(IamStore);
 
-  /** Categorías reales de la colección `recommendations` en db.json */
-  readonly categories: CategoryOption[] = [
-    { label: 'Todas', value: 'Todas' },
-    { label: 'Climatización', value: 'climatizacion' },
-    { label: 'Iluminación', value: 'iluminacion' },
-  ];
+  /** Opciones de categoría derivadas dinámicamente con tipado explícito */
+  readonly categories = computed<CategoryOption[]>(() => {
+    return this.store.availableCategories().map((cat: string) => ({
+      label: cat,
+      value: cat
+    }));
+  });
 
   selectedSort = 'impact';
 
@@ -49,7 +50,10 @@ export class RecommendationsViewComponent implements OnInit {
   }
 
   onSortChange(event: Event): void {
-    const val = (event.target as HTMLSelectElement).value as 'impact' | 'name';
-    this.store.setSort(val);
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      const val = target.value as 'impact' | 'name';
+      this.store.setSort(val);
+    }
   }
 }

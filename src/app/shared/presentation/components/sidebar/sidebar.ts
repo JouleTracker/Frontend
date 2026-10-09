@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatNavList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
@@ -6,12 +6,13 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { SubscriptionPlan } from '../../../../iam/domain/model/user.entity';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 export interface NavItem {
   link: string;
-  label: string;
+  translationKey: string;
   icon: string;
-  minPlan?: SubscriptionPlan; // 'starter' (por defecto), 'plus', o 'pro'
+  minPlan?: SubscriptionPlan;
 }
 
 @Component({
@@ -26,23 +27,35 @@ export interface NavItem {
     MatListItemIcon,
     MatListItemTitle,
     MatIcon,
-    MatIconButton
+    MatIconButton,
+    TranslatePipe,
   ],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css'
+  styleUrl: './sidebar.css',
 })
 export class Sidebar {
   private readonly iamStore = inject(IamStore);
+  private readonly translate = inject(TranslateService);
+
+  // Idioma actual detectado de localStorage o por defecto 'es'
+  readonly currentLang = signal<string>(
+    localStorage.getItem('joule_lang') || 'es'
+  );
 
   readonly navItems: NavItem[] = [
-    { link: '/inicio', label: 'Inicio', icon: 'home' },
-    { link: '/consumo', label: 'Consumo', icon: 'bar_chart' },
-    { link: '/dispositivos', label: 'Dispositivos', icon: 'devices' },
-    { link: '/sensores', label: 'Sensores', icon: 'sensors', minPlan: 'plus' },
-    { link: '/alertas', label: 'Alertas', icon: 'notifications_none' },
-    { link: '/reportes', label: 'Reportes', icon: 'chat_bubble_outline' },
-    { link: '/recomendaciones', label: 'Recomendaciones', icon: 'favorite_border', minPlan: 'plus' },
-    { link: '/configuracion', label: 'Configuración', icon: 'settings' }
+    { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
+    { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
+    { link: '/dispositivos', translationKey: 'SIDEBAR.DEVICES', icon: 'devices' },
+    { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
+    { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
+    { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },
+    {
+      link: '/recomendaciones',
+      translationKey: 'SIDEBAR.RECOMMENDATIONS',
+      icon: 'favorite_border',
+      minPlan: 'plus',
+    },
+    { link: '/configuracion', translationKey: 'SIDEBAR.SETTINGS', icon: 'settings' },
   ];
 
   readonly currentPlan = this.iamStore.currentPlan;
@@ -52,9 +65,20 @@ export class Sidebar {
     return {
       name: currentUser?.name || 'Usuario',
       email: currentUser?.email || 'sin-correo@jouletracker.com',
-      plan: this.currentPlan()
+      plan: this.currentPlan(),
     };
   });
+
+  constructor() {
+    const saved = this.currentLang();
+    this.translate.use(saved);
+  }
+
+  switchLang(lang: string): void {
+    this.currentLang.set(lang);
+    this.translate.use(lang);
+    localStorage.setItem('joule_lang', lang);
+  }
 
   isLocked(minPlan?: SubscriptionPlan): boolean {
     if (!minPlan) return false;

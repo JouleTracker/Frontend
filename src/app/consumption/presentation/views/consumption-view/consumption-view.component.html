@@ -79,7 +79,7 @@
     </div>
     <div class="col-donut-chart">
       <app-device-distribution-chart
-        [items]="store.deviceDistributions()"
+        [items]="store.liveDeviceDistributions()"
         [totalKwh]="store.periodConsumption()">
       </app-device-distribution-chart>
     </div>
