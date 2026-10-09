@@ -25,7 +25,8 @@
       "role": "homeowner",
       "verified": true,
       "verificationCode": null,
-      "id": 3
+      "id": 3,
+      "plan": "starter"
     },
     {
       "name": "Mario",
@@ -53,6 +54,16 @@
       "verified": true,
       "verificationCode": null,
       "id": 6
+    },
+    {
+      "name": "Pablo",
+      "email": "pablo@gmail.com",
+      "password": "Pablo10",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null,
+      "plan": "starter",
+      "id": 7
     }
   ],
   "consumption-summaries": [
@@ -662,9 +673,9 @@
       "model": "Shelly Plug S",
       "serialNumber": "SN-IOT-634",
       "status": "Desconectado",
-      "assignedDeviceId": null,
-      "assignedDeviceName": null,
-      "assignedDeviceCategory": null,
+      "assignedDeviceId": 8,
+      "assignedDeviceName": "Consola de juegos",
+      "assignedDeviceCategory": "Entretenimiento",
       "applianceProfileId": null,
       "applianceProfileName": null,
       "recommendedDailyKwh": null,

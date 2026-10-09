@@ -1,96 +1,113 @@
 <div class="home-page">
-  <app-sidebar/>
-  <!-- Greeting Header -->
-  <header class="home-header">
-    <h1 class="greeting-title">¡Hola, {{ userName() }}!</h1>
-    <p class="greeting-subtitle">Aquí tienes un resumen de tu consumo eléctrico.</p>
-  </header>
+  <div class="home-container">
 
-  <!-- 1. Top Stat Cards Row (Calculados reactivamente desde el dominio) -->
-  <section class="metrics-row">
-    <app-metric-card
-      icon="bolt"
-      iconTheme="theme-flash"
-      label="Consumo total"
-      [value]="store.totalConsumption()"
-      unit="kWh"
-      [diff]="store.summary()?.totalConsumptionDiff ?? -12"
-      subtext="vs semana anterior">
-    </app-metric-card>
+    <!-- Welcome Header con Badge de Plan Actual -->
+    <header class="welcome-section">
+      <div class="welcome-text">
+        <div class="user-greeting-line">
+          <h1 class="welcome-title">
+            ¡Hola, {{ iamStore.currentUser()?.name || 'Usuario' }}! 👋
+          </h1>
+          <span class="current-plan-badge">
+            Plan {{ iamStore.currentPlan() | uppercase }} Activo
+          </span>
+        </div>
+        <p class="welcome-subtitle">
+          Bienvenido a JouleTracker. Gestiona tu energía y maximiza tu ahorro.
+        </p>
+      </div>
 
-    <app-metric-card
-      icon="payments"
-      iconTheme="theme-money"
-      label="Costo estimado"
-      [value]="store.formattedEstimatedCost()"
-      [diff]="store.summary()?.totalConsumptionDiff ? -8 : undefined"
-      subtext="vs semana anterior">
-    </app-metric-card>
+      <!-- Accesos directos rápidos -->
+      <div class="quick-links">
+        <a routerLink="/consumo" class="quick-pill">
+          <mat-icon>bar_chart</mat-icon> Ver Consumo
+        </a>
+        <a routerLink="/recomendaciones" class="quick-pill">
+          <mat-icon>lightbulb</mat-icon> Recomendaciones
+        </a>
+        <a routerLink="/reportes" class="quick-pill">
+          <mat-icon>receipt_long</mat-icon> Reportes
+        </a>
+      </div>
+    </header>
 
-    <app-metric-card
-      icon="savings"
-      iconTheme="theme-savings"
-      label="Ahorro estimado"
-      [value]="store.formattedEstimatedSavings()"
-      subtext="Con tus hábitos eficientes">
-    </app-metric-card>
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+      <div class="pricing-header">
+        <span class="badge-tag">PLANES</span>
+        <h2 class="section-title">Elige el plan que se adapta a tus necesidades</h2>
+        <p class="section-subtitle">Planes claros, sin permanencia y sin sorpresas.</p>
 
-    <app-metric-card
-      icon="devices"
-      iconTheme="theme-devices"
-      label="Dispositivos activos"
-      [value]="store.summary()?.activeDevicesCount ?? 4"
-      subtext="En línea">
-    </app-metric-card>
-  </section>
+        <div class="launch-banner">
+          <div class="launch-pill">LANZAMIENTO</div>
+          <span class="launch-text">
+            Precio de lanzamiento por tiempo limitado · 14 días de prueba · Cancela cuando quieras
+          </span>
+        </div>
+      </div>
 
-  <!-- 2. Charts Row: Energy Bar Chart & Device Distribution Doughnut -->
-  <section class="charts-middle-row">
-    <div class="col-main-chart">
-      <app-energy-chart
-        [reading]="store.energyReading()"
-        [selectedPeriod]="store.selectedPeriod()"
-        (periodChange)="store.setPeriod($event)">
-      </app-energy-chart>
-    </div>
-    <div class="col-donut-chart">
-      <app-device-distribution-chart
-        [items]="store.deviceDistributions()"
-        [totalKwh]="store.totalConsumption()">
-      </app-device-distribution-chart>
-    </div>
-  </section>
+      <!-- Grid de Tarjetas de Precios -->
+      <div class="plans-grid">
+        @for (plan of plans; track plan.id) {
+          <article
+            class="plan-card"
+            [class.active-user-plan]="isCurrentPlan(plan.id)"
+            [class.popular-card]="plan.badge && !isCurrentPlan(plan.id)"
+          >
+            @if (isCurrentPlan(plan.id)) {
+              <div class="plan-status-ribbon">Tu Plan Actual</div>
+            } @else if (plan.badge) {
+              <div class="popular-ribbon">{{ plan.badge }}</div>
+            }
 
-  <!-- 3. Lower Row: Realtime Area Chart, Monthly Comparison & Avoided Emissions -->
-  <section class="charts-lower-row">
-    <div class="col-third">
-      <app-hourly-chart
-        title="Consumo en tiempo real"
-        [showRealtimeHeader]="true"
-        [realtimeKw]="store.currentPower()"
-        [reading]="store.hourlyReading()">
-      </app-hourly-chart>
-    </div>
-    <div class="col-third">
-      <app-comparison-chart
-        [items]="store.comparativeConsumptions()">
-      </app-comparison-chart>
-    </div>
-    <div class="col-third">
-      <app-avoided-emissions-card
-        [kg]="store.avoidedEmissionsKg()"
-        [equivalence]="store.avoidedEmissionsEquivalence()">
-      </app-avoided-emissions-card>
-    </div>
-  </section>
+            <div class="plan-card-header">
+              <h3 class="plan-name">{{ plan.name }}</h3>
+              <p class="plan-desc">{{ plan.description }}</p>
 
-  <!-- 4. Bottom Widgets Row: Recent Alerts & Recommendations -->
-  <section class="widgets-row">
-    <div class="col-half">
-      <app-recent-alerts-widget></app-recent-alerts-widget>
-    </div>
-    <div class="col-half">
-      <app-recommendations-widget></app-recommendations-widget>
-    </div>
-  </section>
+              <div class="price-box">
+                <span class="currency">S/</span>
+                <span class="price-val">{{ plan.price }}</span>
+                <span class="price-period">/ mes</span>
+              </div>
+
+              <div class="discount-row">
+                <span class="original-price">S/ {{ plan.originalPrice }}</span>
+                <span class="discount-badge">{{ plan.discountBadge }}</span>
+              </div>
+
+              <p class="highlight-line">{{ plan.highlightText }}</p>
+            </div>
+
+            <hr class="card-divider" />
+
+            <ul class="features-list">
+              @for (feat of plan.features; track feat) {
+                <li class="feature-item">
+                  <mat-icon class="check-icon">check</mat-icon>
+                  <span>{{ feat }}</span>
+                </li>
+              }
+            </ul>
+
+            <!-- Botón Dinámico -->
+            <button
+              type="button"
+              class="cta-btn"
+              [class.btn-current]="isCurrentPlan(plan.id)"
+              [class.cta-btn-primary]="!isCurrentPlan(plan.id)"
+              [disabled]="isCurrentPlan(plan.id)"
+              (click)="onSelectPlan(plan.id)"
+            >
+              {{ isCurrentPlan(plan.id) ? '✓ Plan Activo' : 'Cambiar a ' + plan.name }}
+            </button>
+          </article>
+        }
+      </div>
+
+      <footer class="pricing-footer">
+        <p>Precios referenciales en soles (S/), facturación mensual. La prueba gratuita de 14 días no requiere tarjeta.</p>
+      </footer>
+    </section>
+
+  </div>
 </div>

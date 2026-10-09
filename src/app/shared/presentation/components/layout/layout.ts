@@ -21,7 +21,6 @@ export class Layout {
   private readonly router = inject(Router);
   private readonly iamStore = inject(IamStore);
 
-  // Señal con la URL actual para evaluar cambios de ruta reactivamente
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -30,7 +29,6 @@ export class Layout {
     { initialValue: this.router.url }
   );
 
-  // Rutas de autenticación donde el sidebar nunca debe mostrarse
   private readonly authRoutes = [
     '/login',
     '/registro',
@@ -39,7 +37,6 @@ export class Layout {
     '/forgot-password'
   ];
 
-  // Solo se muestra si está autenticado Y no está en una página de autenticación
   readonly showSidebar = computed(() => {
     const url = this.currentUrl();
     const isAuthPage = this.authRoutes.some((route) => url.startsWith(route));

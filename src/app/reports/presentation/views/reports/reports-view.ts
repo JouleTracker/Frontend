@@ -7,7 +7,7 @@ import { Sidebar } from '../../../../shared/presentation/components/sidebar/side
 @Component({
   selector: 'app-reports-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, DecimalPipe, Sidebar],
+  imports: [CommonModule, FormsModule, DatePipe, DecimalPipe],
   templateUrl: './reports-view.html',
   styleUrl: './reports-view.css',
 })

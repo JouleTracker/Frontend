@@ -3,17 +3,26 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RecommendationsStore } from '../../../application/recommendations.store';
-import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
+import { IamStore } from '../../../../iam/application/iam.store';
+import {
+  PlanUpgradeRequiredComponent
+} from '../../../../shared/presentation/components/plan-upgrade-required/plan-upgrade-required';
 
 @Component({
   selector: 'app-recommendations-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, Sidebar],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    PlanUpgradeRequiredComponent
+  ],
   templateUrl: './recommendations-view.html',
   styleUrl: './recommendations-view.css',
 })
 export class RecommendationsViewComponent implements OnInit {
   readonly store = inject(RecommendationsStore);
+  readonly iamStore = inject(IamStore);
 
   readonly categories = [
     'Todas',
@@ -26,7 +35,9 @@ export class RecommendationsViewComponent implements OnInit {
   selectedSort = 'impact';
 
   ngOnInit(): void {
-    this.store.loadAll();
+    if (this.iamStore.hasPlusAccess()) {
+      this.store.loadAll();
+    }
   }
 
   onSelectCategory(category: string): void {

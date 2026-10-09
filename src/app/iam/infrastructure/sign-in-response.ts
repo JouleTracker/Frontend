@@ -1,4 +1,4 @@
-import { User } from '../domain/model/user.entity';
+import { SubscriptionPlan, User } from '../domain/model/user.entity';
 
 export interface SignInResponse {
   id: number;
@@ -6,5 +6,6 @@ export interface SignInResponse {
   email: string;
   token?: string;
   role?: string;
+  plan?: SubscriptionPlan;
   user?: User;
 }

@@ -14,14 +14,22 @@
     <!-- Navigation List with Angular Material -->
     <nav class="sidebar-nav">
       <mat-nav-list class="nav-list">
-        @for (item of navItems(); track item.link) {
+        @for (item of navItems; track item.link) {
           <a mat-list-item
              [routerLink]="item.link"
              routerLinkActive="active"
              [routerLinkActiveOptions]="{ exact: item.link === '/inicio' }"
-             class="nav-item">
+             class="nav-item"
+             [class.locked-item]="isLocked(item.minPlan)">
             <mat-icon matListItemIcon class="nav-icon">{{ item.icon }}</mat-icon>
             <span matListItemTitle class="nav-label">{{ item.label }}</span>
+
+            @if (isLocked(item.minPlan)) {
+              <div class="lock-indicator">
+                <span class="plan-badge">{{ item.minPlan | uppercase }}</span>
+                <mat-icon class="lock-icon">lock</mat-icon>
+              </div>
+            }
           </a>
         }
       </mat-nav-list>
@@ -45,7 +53,10 @@
           <mat-icon class="avatar-icon">person_outline</mat-icon>
         </div>
         <div class="user-details">
-          <span class="user-name">{{ user().name }}</span>
+          <div class="name-plan-row">
+            <span class="user-name">{{ user().name }}</span>
+            <span class="user-plan-pill">{{ user().plan | uppercase }}</span>
+          </div>
           <span class="user-email">{{ user().email }}</span>
         </div>
       </div>
@@ -59,5 +70,4 @@
       </button>
     </div>
   </div>
-
 </aside>

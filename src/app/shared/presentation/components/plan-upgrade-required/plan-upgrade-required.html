@@ -1,0 +1,19 @@
+<div class="upgrade-container">
+  <div class="upgrade-card">
+    <div class="lock-circle">
+      <mat-icon>lock</mat-icon>
+    </div>
+
+    <span class="plan-pill">Exclusivo Plan {{ requiredPlan() }}</span>
+
+    <h2 class="upgrade-title">Desbloquea {{ featureName() }}</h2>
+    <p class="upgrade-description">
+      Tu plan actual no incluye acceso a {{ featureName() }}. Pásate al plan
+      <strong>{{ requiredPlan() }}</strong> para acceder a mediciones avanzadas, recomendaciones automáticas y límites ampliados.
+    </p>
+
+    <div class="actions">
+      <a routerLink="/inicio" class="btn-upgrade">Ver Planes y Actualizar</a>
+    </div>
+  </div>
+</div>

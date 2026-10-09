@@ -1,67 +1,387 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #111827;
+  background-color: #ebf3ec;
+  box-sizing: border-box;
+}
+
 .home-page {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  padding: 10px 4px 40px 4px;
-  max-width: 1440px;
+  padding: 32px 40px 60px;
+}
+
+.home-container {
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.home-header {
-  padding: 4px 8px;
+/* ── Welcome Header ─────────────────────────── */
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: #ffffff;
+  padding: 24px 32px;
+  border-radius: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  margin-bottom: 36px;
 }
 
-.greeting-title {
-  font-size: 2.1rem;
+.welcome-title {
+  font-size: 1.85rem;
   font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
+  color: #111827;
   margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
 }
 
-.greeting-subtitle {
-  font-size: 0.95rem;
-  color: #64748b;
+.welcome-subtitle {
+  font-size: 0.92rem;
+  color: #4b5563;
   margin: 0;
 }
 
-.metrics-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+.quick-links {
+  display: flex;
+  gap: 12px;
 }
 
-.charts-middle-row {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 18px;
-  min-height: 330px;
+.quick-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.charts-lower-row {
+.quick-pill mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.quick-pill:hover {
+  background: #dcfce7;
+  transform: translateY(-2px);
+}
+
+/* ── Pricing Header ─────────────────────────── */
+.pricing-section {
+  text-align: center;
+}
+
+.pricing-header {
+  margin-bottom: 36px;
+}
+
+.badge-tag {
+  display: inline-block;
+  background-color: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.025em;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0 0 20px 0;
+}
+
+.launch-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #86efac;
+  padding: 6px 18px 6px 8px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.launch-pill {
+  background: #166534;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+}
+
+.launch-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #15803d;
+}
+
+/* ── Cards Grid ─────────────────────────────── */
+.plans-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  min-height: 250px;
+  gap: 28px;
+  align-items: stretch;
+  margin-bottom: 24px;
 }
 
-.widgets-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+.plan-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px 28px;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@media (max-width: 1200px) {
-  .metrics-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .charts-middle-row {
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Destacado "Más elegido" */
+.popular-card {
+  border: 2px solid #16a34a;
+  box-shadow: 0 8px 30px rgba(22, 163, 74, 0.12);
+}
+
+.popular-ribbon {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+}
+
+.plan-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+  color: #111827;
+}
+
+.plan-desc {
+  font-size: 0.84rem;
+  color: #4b5563;
+  margin: 0 0 18px 0;
+  min-height: 40px;
+}
+
+.price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.currency {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.price-val {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.price-period {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.discount-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.original-price {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.discount-badge {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.highlight-line {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #15803d;
+  margin: 0 0 14px 0;
+}
+
+.card-divider {
+  border: none;
+  height: 1px;
+  background-color: #f3f4f6;
+  margin: 0 0 20px 0;
+}
+
+/* Features */
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: #374151;
+}
+
+.check-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+/* Botón CTA */
+.cta-btn {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  transition: all 0.15s ease;
+}
+
+.cta-btn:hover {
+  background-color: #f9fafb;
+}
+
+.cta-btn-primary {
+  background-color: #15803d;
+  color: #ffffff;
+  border: none;
+}
+
+.cta-btn-primary:hover {
+  background-color: #166534;
+}
+
+/* Footer */
+.pricing-footer p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .plans-grid {
     grid-template-columns: 1fr;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .charts-lower-row {
-    grid-template-columns: 1fr;
-  }
-  .widgets-row {
-    grid-template-columns: 1fr;
-  }
+}
+
+/* Badge al lado del saludo */
+.user-greeting-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.current-plan-badge {
+  background-color: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #86efac;
+}
+
+/* Tarjeta del plan seleccionado actualmente */
+.plan-card.active-user-plan {
+  border: 2.5px solid #15803d;
+  background-color: #fcfdfc;
+  box-shadow: 0 10px 28px rgba(21, 128, 61, 0.12);
+}
+
+.plan-status-ribbon {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #15803d;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 16px;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.35);
+}
+
+/* Botón deshabilitado cuando ya es el plan actual */
+.cta-btn.btn-current {
+  background-color: #f3f4f6;
+  color: #15803d;
+  font-weight: 800;
+  border: 1px solid #d1d5db;
+  cursor: default;
 }

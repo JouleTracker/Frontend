@@ -1,3 +1,5 @@
+export type SubscriptionPlan = 'starter' | 'plus' | 'pro';
+
 export interface User {
   id: number;
   name: string;
@@ -5,4 +7,5 @@ export interface User {
   role?: string;
   token?: string;
   verified?: boolean;
+  plan?: SubscriptionPlan;
 }

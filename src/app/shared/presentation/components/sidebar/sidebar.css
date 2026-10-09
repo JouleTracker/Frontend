@@ -1,22 +1,18 @@
 :host {
   display: block;
+  height: 100%;
 }
 
 .sidebar {
   width: 250px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  height: 100%;
   background-color: #ffffff;
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 24px 16px 20px 16px;
+  padding: 20px 14px 16px 14px;
   box-sizing: border-box;
-  z-index: 1000;
   user-select: none;
 }
 
@@ -26,7 +22,7 @@
 }
 
 .sidebar-header {
-  padding: 4px 8px 26px 8px;
+  padding: 4px 8px 20px 8px;
   display: flex;
   align-items: center;
 }
@@ -54,19 +50,19 @@
   padding-bottom: 0 !important;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
-/* Material List Item customizations */
+/* Material List Item */
 .nav-item {
   border-radius: 12px !important;
-  margin-bottom: 3px;
-  min-height: 46px !important;
-  height: 46px !important;
+  min-height: 44px !important;
+  height: 44px !important;
   color: #374151 !important;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
   padding-left: 12px !important;
-  padding-right: 12px !important;
+  padding-right: 10px !important;
+  position: relative;
 }
 
 .nav-item:hover {
@@ -75,43 +71,69 @@
 
 .nav-icon {
   color: #1f2937 !important;
-  margin-right: 14px !important;
-  font-size: 22px !important;
-  width: 22px !important;
-  height: 22px !important;
+  margin-right: 12px !important;
+  font-size: 21px !important;
+  width: 21px !important;
+  height: 21px !important;
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
 }
 
 .nav-label {
-  font-size: 14.5px !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
   letter-spacing: -0.15px;
   color: inherit !important;
 }
 
-/* Active item matching the screenshot's green pill */
+/* Active item */
 .nav-item.active {
   background-color: #dff2e1 !important;
   color: #0f172a !important;
 }
 
-.nav-item.active .nav-icon {
-  color: #14532d !important;
-}
-
+.nav-item.active .nav-icon,
 .nav-item.active .nav-label {
-  font-weight: 600 !important;
   color: #14532d !important;
+  font-weight: 600 !important;
 }
 
-/* Eco banner card */
+/* Candado y badge */
+.lock-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.plan-badge {
+  font-size: 9px;
+  font-weight: 800;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  padding: 1px 5px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.lock-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  color: #9ca3af;
+}
+
+.locked-item:hover .lock-icon {
+  color: #d97706;
+}
+
+/* Eco banner */
 .sidebar-eco-card {
   background-color: #dcfce7;
   border-radius: 16px;
-  padding: 16px 14px;
-  margin: 16px 0 10px 0;
+  padding: 14px 12px;
+  margin: 12px 0 8px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,40 +141,40 @@
 }
 
 .eco-icon-wrapper {
-  color: #16a34a;
-  margin-bottom: 6px;
-}
-
-.eco-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-}
-
-.eco-title {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #14532d;
-  line-height: 1.25;
+  color: #166534;
   margin-bottom: 4px;
 }
 
-.eco-desc {
-  font-size: 0.72rem;
-  color: #166534;
-  margin: 0;
-  line-height: 1.3;
+.eco-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
-/* User profile card at bottom */
+.eco-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #14532d;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.eco-desc {
+  font-size: 0.7rem;
+  color: #166534;
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Footer / Usuario */
 .sidebar-footer {
-  padding-top: 16px;
+  padding-top: 10px;
 }
 
 .user-card {
-  background-color: #ebebeb;
-  border-radius: 16px;
-  padding: 8px 12px;
+  background-color: #f3f4f6;
+  border-radius: 14px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -162,14 +184,14 @@
 .user-info-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
   flex: 1;
 }
 
 .user-avatar {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
   background-color: #ede9fe;
   display: flex;
@@ -180,9 +202,9 @@
 
 .avatar-icon {
   color: #7c3aed;
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .user-details {
@@ -192,56 +214,52 @@
   overflow: hidden;
 }
 
+.name-plan-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .user-name {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #111827;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.25;
+}
+
+.user-plan-pill {
+  font-size: 8.5px;
+  font-weight: 800;
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.2;
 }
 
 .user-email {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #6b7280;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-.action-btn {
-  color: #111827 !important;
-  width: 32px !important;
-  height: 32px !important;
+.logout-btn {
+  color: #dc2626 !important;
+  width: 30px !important;
+  height: 30px !important;
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  flex-shrink: 0;
-}
-
-.action-btn mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-}
-
-.logout-btn {
-  color: #d32f2f;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.logout-btn:hover {
-  background-color: rgba(211, 47, 47, 0.08);
 }
 
 .logout-icon {
-  color: #d32f2f;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
