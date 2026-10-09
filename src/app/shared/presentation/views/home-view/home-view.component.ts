@@ -1,6 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../../auth/application/auth.service';
 import { ConsumptionStore } from '../../../../consumption/application/consumption.store';
 import { MetricCardComponent } from '../../../../consumption/presentation/components/metric-card/metric-card.component';
 import { EnergyChartComponent } from '../../../../consumption/presentation/components/energy-chart/energy-chart.component';

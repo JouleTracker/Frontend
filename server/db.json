@@ -21,11 +21,38 @@
     {
       "name": "Luis",
       "email": "luis@gmail.com",
-      "password": "Luis10",
+      "password": "Luisito10",
       "role": "homeowner",
       "verified": true,
       "verificationCode": null,
       "id": 3
+    },
+    {
+      "name": "Mario",
+      "email": "mario@gmail.com",
+      "password": "Mario10",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null,
+      "id": 4
+    },
+    {
+      "name": "Miguel",
+      "email": "jiwax53939@calirona.com",
+      "password": "Miguel10",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null,
+      "id": 5
+    },
+    {
+      "name": "rotox",
+      "email": "rotox36489@calirona.com",
+      "password": "Rotox10",
+      "role": "homeowner",
+      "verified": true,
+      "verificationCode": null,
+      "id": 6
     }
   ],
   "consumption-summaries": [

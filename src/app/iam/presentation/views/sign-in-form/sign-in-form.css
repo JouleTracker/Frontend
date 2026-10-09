@@ -380,4 +380,59 @@
   .devices-svg {
     width: 260px;
   }
+
+  :host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    color: #1a1a1a;
+    background-color: #ffffff;
+  }
+
+  .login-page {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-sizing: border-box;
+  }
+
+  /* ── Card izquierda ─────────────────────────────── */
+  .login-card {
+    flex: 0 0 450px;
+    height: calc(100vh - 48px);
+    margin: 24px 0 24px 24px;
+    background-color: #dcedd5;
+    border: 1px solid #bed4c2;
+    border-radius: 20px;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow-y: auto; /* Scroll contenido si la resolución vertical es muy reducida */
+  }
+
+  /* Ocultar barra de scroll en navegadores modernos */
+  .login-card::-webkit-scrollbar {
+    width: 4px;
+  }
+  .login-card::-webkit-scrollbar-thumb {
+    background-color: #bed4c2;
+    border-radius: 4px;
+  }
+
+  .login-promo {
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 48px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
 }

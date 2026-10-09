@@ -43,9 +43,7 @@ export class IamStore {
     const request = SignUpAssembler.toRequestFromCommand(command);
     return this.iamApi.signUp(request).pipe(
       tap((response) => {
-        console.log('Usuario registrado con éxito:', response);
-        // Redirige al login tras registrarse
-        this.router.navigate(['/login']);
+        console.log('Usuario registrado con éxito en IamStore:', response);
       })
     );
   }

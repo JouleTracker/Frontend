@@ -1,14 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-  AbstractControl,
-  ValidationErrors
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 import { IamStore } from '../../../application/iam.store';
 import { SignUpCommand } from '../../../domain/model/sign-up.command';
 
@@ -34,7 +27,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 @Component({
   selector: 'app-sign-up-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './sign-up-form.html',
   styleUrl: './sign-up-form.css'
 })
@@ -43,13 +36,11 @@ export class SignUpFormComponent {
   private readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
 
+  // 1. Signals declaradas correctamente para coincidir con errorMessage(), isLoading(), etc.
   readonly errorMessage = signal<string | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly showPassword = signal<boolean>(false);
   readonly showConfirmPassword = signal<boolean>(false);
-
-  // Regex para restricciones: al menos 1 mayúscula, 1 minúscula y 1 número
-  readonly passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
   readonly registerForm = this.fb.group(
     {
@@ -60,7 +51,7 @@ export class SignUpFormComponent {
         [
           Validators.required,
           Validators.minLength(6),
-          Validators.pattern(this.passwordPattern)
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
         ]
       ],
       confirmPassword: ['', [Validators.required]],
@@ -77,33 +68,17 @@ export class SignUpFormComponent {
     this.showConfirmPassword.update((val) => !val);
   }
 
-  // Verificadores en tiempo real para las restricciones
-  get passwordVal(): string {
-    return this.registerForm.get('password')?.value || '';
+  // Getters para no pasar argumentos si los usas en el HTML
+  get passwordControl() {
+    return this.registerForm.get('password');
   }
 
-  hasMinLength(): boolean {
-    return this.passwordVal.length >= 6;
-  }
-
-  hasUpperCase(): boolean {
-    return /[A-Z]/.test(this.passwordVal);
-  }
-
-  hasLowerCase(): boolean {
-    return /[a-z]/.test(this.passwordVal);
-  }
-
-  hasNumber(): boolean {
-    return /\d/.test(this.passwordVal);
+  get confirmPasswordControl() {
+    return this.registerForm.get('confirmPassword');
   }
 
   onSubmit(): void {
-    console.log('--- INTENTO DE REGISTRO ---');
-    console.log('Formulario válido?:', this.registerForm.valid);
-
     if (this.registerForm.invalid) {
-      console.warn('Errores del campo password:', this.registerForm.get('password')?.errors);
       this.registerForm.markAllAsTouched();
       return;
     }
@@ -119,13 +94,11 @@ export class SignUpFormComponent {
     };
 
     this.iamStore.signUp(command).subscribe({
-      next: (res) => {
-        console.log('Registro exitoso:', res);
+      next: () => {
         this.isLoading.set(false);
         this.router.navigate(['/login']);
       },
       error: (err: Error) => {
-        console.error('Error al registrarse:', err);
         this.isLoading.set(false);
         this.errorMessage.set(err.message || 'Error al registrar la cuenta');
       }

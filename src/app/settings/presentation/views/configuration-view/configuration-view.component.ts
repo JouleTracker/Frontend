@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angu
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
-import { AuthService } from '../../../../auth/application/auth.service';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
   selector: 'app-configuration-view',
@@ -22,9 +22,9 @@ import { AuthService } from '../../../../auth/application/auth.service';
 })
 export class ConfigurationViewComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  private readonly iamStore = inject(IamStore);
 
-  readonly user = this.authService.currentUser;
+  readonly user = this.iamStore.currentUser;
 
   // Formulario Información Personal
   profileForm = this.fb.group({

@@ -61,14 +61,14 @@
       </div>
 
       <!-- Password Validation Feedback -->
-      @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+      @if (passwordControl?.touched && passwordControl?.invalid) {
         <div class="error-text">
-          @if (registerForm.get('password')?.hasError('required')) {
-            La contraseña es requerida.
-          } @else if (registerForm.get('password')?.hasError('minlength')) {
-            Debe tener al menos 6 caracteres.
-          } @else if (registerForm.get('password')?.hasError('pattern')) {
-            Debe contener al menos una mayúscula, una minúscula y un número.
+          @if (passwordControl?.errors?.['required']) {
+            <span>La contraseña es requerida.</span>
+          } @else if (passwordControl?.errors?.['minlength']) {
+            <span>Debe tener al menos 6 caracteres.</span>
+          } @else if (passwordControl?.errors?.['pattern']) {
+            <span>Debe contener al menos una mayúscula, una minúscula y un número.</span>
           }
         </div>
       }

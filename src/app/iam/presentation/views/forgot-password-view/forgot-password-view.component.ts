@@ -1,14 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../../auth/application/auth.service';
+import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
-/**
- * Forgot password view for JouleTracker.
- *
- * Centered card layout on a soft green background with organic shapes.
- */
 @Component({
   selector: 'app-forgot-password-view',
   standalone: true,
@@ -18,44 +14,80 @@ import { AuthService } from '../../../../auth/application/auth.service';
 })
 export class ForgotPasswordViewComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
 
-  /** Whether a recovery request is in progress. */
-  readonly isLoading = signal(false);
+  private readonly usersUrl = `${environment.apiBaseUrl}/users`;
 
-  /** Whether the recovery email has been sent. */
-  readonly emailSent = signal(false);
+  readonly step = signal<'email' | 'new-password' | 'success'>('email');
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
+  readonly showPassword = signal<boolean>(false);
 
-  /** Error message to display. */
-  readonly errorMessage = signal('');
+  private userId: number | string | null = null;
 
-  /** Forgot password form. */
-  readonly forgotForm = this.fb.nonNullable.group({
+  readonly emailForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]]
   });
 
-  /** Submits the forgot password form. */
-  onSubmit(): void {
-    if (this.forgotForm.invalid) {
-      this.forgotForm.markAllAsTouched();
+  readonly resetForm = this.fb.group({
+    newPassword: ['', [Validators.required, Validators.minLength(6)]]
+  });
+
+  togglePasswordVisibility(): void {
+    this.showPassword.update((v) => !v);
+  }
+
+  onCheckEmail(): void {
+    if (this.emailForm.invalid) {
+      this.emailForm.markAllAsTouched();
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
+    this.errorMessage.set(null);
 
-    const { email } = this.forgotForm.getRawValue();
+    const email = this.emailForm.value.email!.trim().toLowerCase();
 
-    this.authService.forgotPassword(email).subscribe({
+    this.http.get<any[]>(`${this.usersUrl}?email=${email}`).subscribe({
+      next: (users) => {
+        this.isLoading.set(false);
+        if (users.length > 0) {
+          this.userId = users[0].id;
+          this.step.set('new-password');
+        } else {
+          this.errorMessage.set('No encontramos ninguna cuenta con ese correo.');
+        }
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.errorMessage.set('Error de conexión con el servidor.');
+      }
+    });
+  }
+
+  onResetPassword(): void {
+    if (this.resetForm.invalid || !this.userId) {
+      this.resetForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    const newPassword = this.resetForm.value.newPassword!;
+
+    this.http.patch(`${this.usersUrl}/${this.userId}`, { password: newPassword }).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.emailSent.set(true);
+        this.step.set('success');
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading.set(false);
-        this.errorMessage.set(
-          err?.error?.message ?? 'No se pudo enviar el enlace. Verifica tu correo.'
-        );
+        this.errorMessage.set('No se pudo actualizar la contraseña.');
       }
     });
   }

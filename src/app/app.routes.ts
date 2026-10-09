@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { iamGuard, guestGuard } from './iam/infrastructure/iam.guard';
+import { iamGuard } from './iam/infrastructure/iam.guard';
 
 const homeView = () =>
   import('./shared/presentation/views/home-view/home-view.component').then((m) => m.HomeViewComponent);
@@ -27,13 +27,10 @@ const configurationView = () =>
 const baseTitle = 'JouleTracker';
 
 export const routes: Routes = [
-  // ── IAM Routes (Carga modular de todas las rutas de autenticación) ───────
-  {
-    path: '',
-    loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)
-  },
+  // 1. Redirección manda a /inicio
+  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
 
-  // ── App routes (Protegidas con iamGuard) ──────
+  // 2. Rutas de la app (protegidas con iamGuard)
   { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard] },
@@ -43,7 +40,12 @@ export const routes: Routes = [
   { path: 'recomendaciones', loadComponent: blankPage, canActivate: [iamGuard], title: `${baseTitle} - Recomendaciones` },
   { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard], title: `${baseTitle} - Configuración` },
 
-  // ── Fallback ─────────────────────────────────────
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+  // 3. Rutas de IAM (login, registro, recuperar-contrasena)
+  {
+    path: '',
+    loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)
+  },
+
+  // 4. Wildcard fallback: cualquier URL desconocida va a /inicio
   { path: '**', redirectTo: 'inicio' }
 ];
