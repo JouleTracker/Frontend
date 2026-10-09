@@ -1,0 +1,114 @@
+<div class="recommendations-page">
+  <app-sidebar/>
+  <div class="recommendations-container">
+
+    <!-- Header Title -->
+    <header class="page-header">
+      <h1 class="page-title">Recomendaciones</h1>
+      <p class="page-subtitle">Sugerencias personalizadas para reducir tu consumo y ahorrar energía</p>
+    </header>
+
+    <!-- Metric / KPI Cards -->
+    <section class="kpi-grid">
+      <!-- 1. Ahorro potencial -->
+      <div class="kpi-card">
+        <div class="kpi-icon-circle icon-leaf">
+          <mat-icon class="kpi-icon">eco</mat-icon>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-title">Ahorro potencial</span>
+          <strong class="kpi-main-stat">{{ store.metrics()?.potentialSavings || 'S/18.50' }}</strong>
+          <span class="kpi-foot">al mes</span>
+        </div>
+      </div>
+
+      <!-- 2. Reducción estimada -->
+      <div class="kpi-card">
+        <div class="kpi-icon-circle icon-arrow">
+          <mat-icon class="kpi-icon">arrow_downward</mat-icon>
+        </div>
+        <div class="kpi-data">
+          <span class="kpi-title">Reducción estimada</span>
+          <strong class="kpi-main-stat">{{ store.metrics()?.estimatedReduction || '15%' }}</strong>
+          <span class="kpi-foot">en tu consumo</span>
+        </div>
+      </div>
+
+      <!-- 3. CO2 evitado -->
+      <div class="kpi-card">
+        <div class="kpi-icon-circle icon-cloud">
+          <mat-icon class="kpi-icon">cloud</mat-icon>
+        </div>
+        <div class="kpi-data">
+          <div class="kpi-combined">
+            <strong class="kpi-main-stat">{{ store.metrics()?.co2Avoided || '28.6 Kg' }}</strong>
+          </div>
+          <span class="kpi-foot">de CO₂ evitados al mes</span>
+        </div>
+      </div>
+
+      <!-- 4. Recomendaciones activas -->
+      <div class="kpi-card">
+        <div class="kpi-icon-circle icon-bell">
+          <mat-icon class="kpi-icon">notifications_none</mat-icon>
+        </div>
+        <div class="kpi-data">
+          <strong class="kpi-main-stat">{{ store.metrics()?.activeCount || '6' }}</strong>
+          <span class="kpi-foot">recomendaciones activas</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Sort Bar -->
+    <div class="filter-row">
+      <nav class="filter-tabs" aria-label="Categorías de recomendaciones">
+        @for (cat of categories; track cat) {
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="(cat === 'Por dispositivos' && store.selectedCategory() === 'Dispositivos') || store.selectedCategory() === cat"
+            (click)="onSelectCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+        }
+      </nav>
+
+      <div class="sort-box">
+        <span class="sort-caption">Ordenar por</span>
+        <div class="select-container">
+          <select class="sort-dropdown" [(ngModel)]="selectedSort" (change)="onSortChange($event)">
+            <option value="impact">Mayor impacto</option>
+            <option value="name">Alfabético</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations Cards Grid (4 columnas) -->
+    <section class="recommendations-grid">
+      @for (rec of store.filteredRecommendations(); track rec.id) {
+        <article class="rec-card">
+          <div class="rec-image-box">
+            <img [src]="rec.imageUrl" [alt]="rec.title" class="rec-thumbnail" loading="lazy" />
+          </div>
+
+          <div class="rec-body">
+            <h2 class="rec-card-title">{{ rec.title }}</h2>
+            <p class="rec-card-desc">{{ rec.description }}</p>
+
+            <div class="rec-pill">
+              <span class="pill-label">
+                {{ rec.savingsType === 'eco' ? 'Impacto ambiental' : 'Ahorro estimado' }}
+              </span>
+              <span class="pill-amount">{{ rec.savings }}</span>
+            </div>
+
+            <button type="button" class="btn-action">Ver detalles</button>
+          </div>
+        </article>
+      }
+    </section>
+
+  </div>
+</div>

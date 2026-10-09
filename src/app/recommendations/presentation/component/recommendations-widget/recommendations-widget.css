@@ -1,0 +1,62 @@
+.widget-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-wrap h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.widget-icon {
+  color: #166534;
+}
+
+.view-all-link {
+  font-size: 0.82rem;
+  color: #166534;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.widget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widget-item {
+  background: #f0fdf4;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.item-saving {
+  color: #15803d;
+  font-weight: 700;
+}

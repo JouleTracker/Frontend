@@ -1,0 +1,20 @@
+<div class="widget-card">
+  <div class="widget-header">
+    <div class="title-wrap">
+      <mat-icon class="widget-icon">lightbulb_outline</mat-icon>
+      <h3>Recomendaciones</h3>
+    </div>
+    <a routerLink="/recomendaciones" class="view-all-link">Ver todas</a>
+  </div>
+
+  <div class="widget-list">
+    @for (rec of store.filteredRecommendations().slice(0, 2); track rec.id) {
+      <div class="widget-item">
+        <div class="item-info">
+          <strong>{{ rec.title }}</strong>
+          <span class="item-saving">{{ rec.savings }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

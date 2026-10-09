@@ -8,8 +8,8 @@ import { HourlyChartComponent } from '../../components/hourly-chart/hourly-chart
 import { ComparisonChartComponent } from '../../components/comparison-chart/comparison-chart.component';
 import { ConsumptionHistoryTableComponent } from '../../components/consumption-history-table/consumption-history-table.component';
 import { RecentAlertsWidgetComponent } from '../../../../alerts/presentation/components/recent-alerts-widget/recent-alerts-widget.component';
-import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/components/recommendations-widget/recommendations-widget.component';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
+import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/component/recommendations-widget/recommendations-widget';
 
 @Component({
   selector: 'app-consumption-view',

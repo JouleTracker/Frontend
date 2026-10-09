@@ -16,6 +16,9 @@ const iotRoutes = () =>
 const alertsRoutes = () =>
   import('./alerts/presentation/alerts.routes').then((m) => m.alertsRoutes);
 
+const recommendationsRoutes = () =>
+  import('./recommendations/presentation/recommendations.routes').then((m) => m.recommendationsRoutes);
+
 const blankPage = () =>
   import('./shared/presentation/views/blank-page/blank-page').then((m) => m.BlankPage);
 
@@ -27,25 +30,33 @@ const configurationView = () =>
 const baseTitle = 'JouleTracker';
 
 export const routes: Routes = [
-  // 1. Redirección manda a /inicio
+  // 1. Redirección raíz
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
 
-  // 2. Rutas de la app (protegidas con iamGuard)
+  // 2. Rutas principales de la aplicación (protegidas con iamGuard)
   { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard] },
   { path: 'sensores', loadChildren: iotRoutes, canActivate: [iamGuard] },
   { path: 'alertas', loadChildren: alertsRoutes, canActivate: [iamGuard] },
+
+  // ── Recomendaciones (Carga el módulo real) ──
+  { path: 'recomendaciones', loadChildren: recommendationsRoutes, canActivate: [iamGuard], title: `${baseTitle} - Recomendaciones` },
+  { path: 'recommendations', redirectTo: 'recomendaciones', pathMatch: 'full' },
+
+  // ── Reportes ──
   { path: 'reportes', loadComponent: blankPage, canActivate: [iamGuard], title: `${baseTitle} - Reportes` },
-  { path: 'recomendaciones', loadComponent: blankPage, canActivate: [iamGuard], title: `${baseTitle} - Recomendaciones` },
+  { path: 'reports', redirectTo: 'reportes', pathMatch: 'full' },
+
+  // ── Configuración ──
   { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard], title: `${baseTitle} - Configuración` },
 
-  // 3. Rutas de IAM (login, registro, recuperar-contrasena)
+  // 3. Rutas de IAM (login, registro, recuperar contraseña)
   {
     path: '',
     loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)
   },
 
-  // 4. Wildcard fallback: cualquier URL desconocida va a /inicio
+  // 4. Wildcard fallback
   { path: '**', redirectTo: 'inicio' }
 ];

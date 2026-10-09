@@ -8,9 +8,11 @@ import { HourlyChartComponent } from '../../../../consumption/presentation/compo
 import { ComparisonChartComponent } from '../../../../consumption/presentation/components/comparison-chart/comparison-chart.component';
 import { AvoidedEmissionsCardComponent } from '../../../../consumption/presentation/components/avoided-emissions-card/avoided-emissions-card.component';
 import { RecentAlertsWidgetComponent } from '../../../../alerts/presentation/components/recent-alerts-widget/recent-alerts-widget.component';
-import { RecommendationsWidgetComponent } from '../../../../recommendations/presentation/components/recommendations-widget/recommendations-widget.component';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { IamStore } from '../../../../iam/application/iam.store';
+import {
+  RecommendationsWidgetComponent
+} from '../../../../recommendations/presentation/component/recommendations-widget/recommendations-widget';
 
 @Component({
   selector: 'app-home-view',
