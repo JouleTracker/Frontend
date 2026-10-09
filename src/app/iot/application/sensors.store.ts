@@ -1,10 +1,11 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Observable, tap, catchError } from 'rxjs';
 import { SensorsApi } from '../infrastructure/sensors-api';
 import { Sensor } from '../domain/model/sensor.entity';
 import { ApplianceProfile } from '../domain/model/appliance-profile.entity';
 import { SensorSummary } from '../domain/model/sensor-summary.entity';
 import { SensorResource } from '../infrastructure/sensors-response';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
@@ -121,8 +122,27 @@ export class SensorsStore {
     return this.summarySignal()?.totalEnergyTodayKwh || 0;
   });
 
+  private readonly iamStore = inject(IamStore);
+
+  // === LÍMITES DEL PLAN ===
+
+  /** Límite de sensores según el plan (Starter 0, Plus 3, Pro ilimitado) */
+  readonly sensorLimit = this.iamStore.sensorLimit;
+
+  /** Sensores usados actualmente por el usuario */
+  readonly sensorCount = computed(() => this.sensorsSignal().length);
+
+  /** Indica si el usuario puede registrar un sensor más */
+  readonly canAddSensor = computed(() => this.sensorCount() < this.sensorLimit());
+
   constructor(private readonly api: SensorsApi) {
-    this.loadAll();
+    // Recarga los sensores cuando cambia el usuario autenticado (datos propios por usuario)
+    effect(() => {
+      const userId = this.iamStore.currentUserId();
+      if (userId) {
+        this.loadAll();
+      }
+    });
   }
 
   loadAll(): void {

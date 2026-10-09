@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
@@ -7,6 +7,7 @@ import { DeviceResource, DeviceSummaryResource } from './devices-response';
 import { DeviceAssembler, DeviceSummaryAssembler } from './devices-assembler';
 import { Device } from '../domain/model/device.entity';
 import { DeviceSummary } from '../domain/model/device-summary.entity';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +15,23 @@ import { DeviceSummary } from '../domain/model/device-summary.entity';
 export class DevicesApi extends BaseApi {
   private readonly deviceAssembler = new DeviceAssembler();
   private readonly summaryAssembler = new DeviceSummaryAssembler();
+  private readonly http = inject(HttpClient);
+  private readonly iamStore = inject(IamStore);
 
-  constructor(private http: HttpClient) {
-    super();
+  /**
+   * Cada usuario consulta únicamente sus propios dispositivos (filtro por userId en db.json).
+   */
+  private get userQuery(): string {
+    const userId = this.iamStore.currentUserId();
+    return userId ? `?userId=${userId}` : '';
   }
 
   /**
-   * Obtiene la lista completa de dispositivos registrados.
+   * Obtiene la lista de dispositivos registrados por el usuario autenticado.
    */
   getDevices(): Observable<Device[]> {
     return this.http.get<DeviceResource[]>(
-      `${this.baseUrl}${environment.devicesEndpointPath}`
+      `${this.baseUrl}${environment.devicesEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => this.deviceAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar dispositivos: ' + err.message)))
@@ -44,12 +51,14 @@ export class DevicesApi extends BaseApi {
   }
 
   /**
-   * Registra un nuevo dispositivo en el sistema.
+   * Registra un nuevo dispositivo en el sistema (queda asociado al usuario autenticado).
    */
   createDevice(device: Partial<DeviceResource>): Observable<Device> {
+    const userId = this.iamStore.currentUserId();
+    const payload = userId ? { ...device, userId } : device;
     return this.http.post<DeviceResource>(
       `${this.baseUrl}${environment.devicesEndpointPath}`,
-      device
+      payload
     ).pipe(
       map(res => this.deviceAssembler.toEntity(res)),
       catchError(err => throwError(() => new Error('Error al registrar dispositivo: ' + err.message)))
@@ -70,15 +79,15 @@ export class DevicesApi extends BaseApi {
   }
 
   /**
-   * Obtiene las métricas agregadas de los dispositivos.
+   * Obtiene las métricas agregadas de los dispositivos del usuario autenticado.
    */
-  getDeviceSummary(): Observable<DeviceSummary> {
+  getDeviceSummary(): Observable<DeviceSummary | null> {
     return this.http.get<DeviceSummaryResource[] | DeviceSummaryResource>(
-      `${this.baseUrl}${environment.deviceSummariesEndpointPath}`
+      `${this.baseUrl}${environment.deviceSummariesEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => {
         const item = Array.isArray(res) ? res[0] : res;
-        return this.summaryAssembler.toEntity(item);
+        return item ? this.summaryAssembler.toEntity(item) : null;
       }),
       catchError(err => throwError(() => new Error('Error al cargar resumen de dispositivos: ' + err.message)))
     );
@@ -96,4 +105,3 @@ export class DevicesApi extends BaseApi {
     );
   }
 }
-

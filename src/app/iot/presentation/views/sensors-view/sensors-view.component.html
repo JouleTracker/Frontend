@@ -1,4 +1,11 @@
 <div class="sensors-container">
+  @if (!canAccessSensors()) {
+    <!-- Plan Starter: módulo de sensores bloqueado -->
+    <app-plan-upgrade-required
+      featureName="el módulo de Sensores IoT"
+      requiredPlan="Plus">
+    </app-plan-upgrade-required>
+  } @else {
   <!-- HEADER SECTION WITH TITLE AND MAIN ACTIONS -->
   <header class="header-section">
     <div class="title-group">
@@ -20,11 +27,20 @@
       </div>
 
       <!-- Add Sensor CTA Button -->
-      <button type="button" class="btn-primary" (click)="addSensor()">
+      <button type="button" class="btn-primary" (click)="addSensor()" [disabled]="!canAddSensor()">
         <mat-icon class="btn-icon">add</mat-icon>
         <span>Agregar sensor</span>
       </button>
     </div>
+
+    @if (!canAddSensor()) {
+      <p class="limit-note">
+        Alcanzaste el límite de sensores de tu plan ({{ sensorLimitLabel() }}).
+        <a routerLink="/inicio">Mejora tu plan</a> para agregar más.
+      </p>
+    } @else {
+      <p class="limit-note subtle">Sensores registrados: {{ sensorLimitLabel() }}</p>
+    }
   </header>
 
   <!-- TOP SUMMARY METRIC CARDS -->
@@ -334,6 +350,7 @@
 
       </div>
     </div>
+  }
   }
 
 </div>

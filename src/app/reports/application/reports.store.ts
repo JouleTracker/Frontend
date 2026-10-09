@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ReportsApi } from '../infrastructure/reports-api';
 import { ConsumptionRecord } from '../domain/consumption-record.entity';
+import { IamStore } from '../../iam/application/iam.store';
+import { ELECTRICITY_TARIFF_PER_KWH } from '../../shared/domain/model/energy-calculation.constants';
 
 export interface FilterRange {
   start: string;
@@ -10,13 +12,22 @@ export interface FilterRange {
 @Injectable({ providedIn: 'root' })
 export class ReportsStore {
   private readonly api = inject(ReportsApi);
+  private readonly iamStore = inject(IamStore);
 
   private readonly _records = signal<ConsumptionRecord[]>([]);
-  readonly rate = signal<number>(0.85);
+
+  /** Tarifa de referencia del dominio (OSINERGMIN BT5B residencial): S/ 0.70 por kWh */
+  readonly rate = signal<number>(ELECTRICITY_TARIFF_PER_KWH);
 
   readonly applied = signal<FilterRange>({ start: '', end: '' });
   readonly error = signal<string>('');
   readonly isLoading = signal<boolean>(false);
+
+  /** Días máximos de historial según el plan (Starter 7, Plus 30, Pro ilimitado) */
+  readonly historyLimitDays = this.iamStore.historyDaysLimit;
+
+  /** Plan actual del usuario (para mensajes de la vista) */
+  readonly currentPlan = this.iamStore.currentPlan;
 
   // Registros filtrados reactivamente por el rango aplicado
   readonly filtered = computed(() => {
@@ -39,32 +50,23 @@ export class ReportsStore {
 
   readonly peak = computed(() => {
     const list = this.filtered();
-    if (!list.length) return 1;
+    if (!list.length) return 0;
     return Math.max(...list.map((r) => r.consumptionKwh));
   });
 
   loadInitialData(): void {
     this.isLoading.set(true);
 
-    this.api.getConfig().subscribe({
-      next: (cfg) => {
-        if (cfg?.kwhRate) this.rate.set(cfg.kwhRate);
-      },
-      error: () => console.warn('Usando tarifa default (0.85)')
-    });
-
     this.api.getConsumptionRecords().subscribe({
       next: (data) => {
-        // Ordenar cronológicamente
+        // Ordenar cronológicamente (fechas ISO)
         const sorted = [...data].sort((a, b) => a.date.localeCompare(b.date));
         this._records.set(sorted);
         this.isLoading.set(false);
 
-        // Por defecto, aplicar últimos 30 días según los datos recibidos
+        // Por defecto, aplicar el rango máximo permitido por el plan del usuario
         if (sorted.length > 0) {
-          const lastDate = sorted[sorted.length - 1].date;
-          const firstDate = sorted[Math.max(0, sorted.length - 30)].date;
-          this.applied.set({ start: firstDate, end: lastDate });
+          this.resetToDefault();
         }
       },
       error: () => {
@@ -84,8 +86,18 @@ export class ReportsStore {
       return false;
     }
 
+    // El rango nunca puede exceder los días de historial que permite el plan
+    const limit = this.historyLimitDays();
+    let effectiveStart = start;
+    if (Number.isFinite(limit)) {
+      const minStart = this.subtractDays(end, limit - 1);
+      if (effectiveStart < minStart) {
+        effectiveStart = minStart;
+      }
+    }
+
     this.error.set('');
-    this.applied.set({ start, end });
+    this.applied.set({ start: effectiveStart, end });
     return true;
   }
 
@@ -93,8 +105,11 @@ export class ReportsStore {
     const list = this._records();
     if (!list.length) return;
 
+    const limit = this.historyLimitDays();
+    const effectiveDays = Number.isFinite(limit) ? Math.min(days, limit) : days;
+
     const maxDate = list[list.length - 1].date;
-    const startIndex = Math.max(0, list.length - days);
+    const startIndex = Math.max(0, list.length - effectiveDays);
     const minDate = list[startIndex].date;
 
     this.error.set('');
@@ -105,9 +120,14 @@ export class ReportsStore {
     const list = this._records();
     if (!list.length) return;
 
+    const limit = this.historyLimitDays();
     const last = list[list.length - 1].date;
     const currentYearMonth = last.slice(0, 7); // ej: "2026-10"
-    const monthRecords = list.filter((r) => r.date.startsWith(currentYearMonth));
+    let monthRecords = list.filter((r) => r.date.startsWith(currentYearMonth));
+
+    if (Number.isFinite(limit) && monthRecords.length > limit) {
+      monthRecords = monthRecords.slice(monthRecords.length - limit);
+    }
 
     if (monthRecords.length) {
       this.error.set('');
@@ -119,6 +139,13 @@ export class ReportsStore {
   }
 
   resetToDefault(): void {
-    this.applyDaysPreset(30);
+    const limit = this.historyLimitDays();
+    this.applyDaysPreset(Number.isFinite(limit) ? limit : 30);
+  }
+
+  private subtractDays(isoDate: string, days: number): string {
+    const d = new Date(`${isoDate}T00:00:00`);
+    d.setDate(d.getDate() - days);
+    return d.toISOString().slice(0, 10);
   }
 }

@@ -60,3 +60,9 @@
   color: #15803d;
   font-weight: 700;
 }
+
+.widget-empty {
+  color: #64748b;
+  font-size: 0.85rem;
+  padding: 8px 4px;
+}

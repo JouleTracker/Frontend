@@ -24,8 +24,8 @@
       </div>
       <div class="metric-info">
         <span class="metric-number">{{ store.resolvedCount() }}</span>
-        <span class="metric-label">Alertas resueltas</span>
-        <span class="metric-sub">Últimos 30 días</span>
+        <span class="metric-label">Alertas leídas</span>
+        <span class="metric-sub">Informativas</span>
       </div>
     </article>
 
@@ -36,18 +36,7 @@
       <div class="metric-info">
         <span class="metric-number">{{ store.totalCount() }}</span>
         <span class="metric-label">Total de alertas</span>
-        <span class="metric-sub">Este mes</span>
-      </div>
-    </article>
-
-    <article class="metric-card">
-      <div class="icon-box icon-arrow">
-        <mat-icon>arrow_downward</mat-icon>
-      </div>
-      <div class="metric-info">
-        <span class="metric-number">↓ {{ store.reductionPercentage() }}%</span>
-        <span class="metric-label">Reducción de alertas</span>
-        <span class="metric-sub">{{ store.reductionLabel() }}</span>
+        <span class="metric-sub">De tu cuenta</span>
       </div>
     </article>
   </section>
@@ -55,27 +44,7 @@
   <!-- Main table container -->
   <section class="main-card">
     <div class="table-header">
-      <!-- Interactive Navigation Tabs -->
-      <nav class="tabs-nav" aria-label="Filtro de categorías">
-        @for (category of categories; track category) {
-          <button
-            type="button"
-            class="tab-btn"
-            [class.active]="store.selectedCategory() === category"
-            (click)="selectCategory(category)">
-            {{ category }}
-          </button>
-        }
-      </nav>
-
-      <div class="filter-dropdown">
-        <select
-          aria-label="Ordenar alertas"
-          [ngModel]="store.selectedSort()"
-          (ngModelChange)="onSortChange($event)">
-          <option value="recent">Más recientes</option>
-        </select>
-      </div>
+      <h2>Mis alertas</h2>
     </div>
 
     <!-- Async loading states -->
@@ -89,45 +58,38 @@
         <table class="alerts-table">
           <thead>
             <tr>
-              <th>Tipo</th>
-              <th>Dispositivo</th>
-              <th>Mensaje</th>
-              <th>Fecha y hora</th>
+              <th>Alerta</th>
+              <th>Fecha</th>
               <th>Estado</th>
               <th class="text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            @for (alert of store.filteredAlerts(); track alert.id) {
+            @for (alert of store.alerts(); track alert.id) {
               <tr>
                 <td>
-                  <span class="type-tag" [ngClass]="getTypeClass(alert.category)">
-                    {{ alert.category }}
-                  </span>
-                </td>
-                <td>
-                  <div class="device-cell">
-                    <strong>{{ alert.deviceName }}</strong>
-                    <span>{{ alert.location }}</span>
+                  <div class="alert-cell">
+                    <mat-icon class="alert-severity-icon">{{ getSeverityIcon(alert.severity) }}</mat-icon>
+                    <div>
+                      <strong>{{ alert.title }}</strong>
+                      <span class="alert-message-text">{{ alert.description }}</span>
+                    </div>
                   </div>
                 </td>
-                <td>
-                  <span class="alert-message-text">{{ alert.dynamicMessage }}</span>
-                </td>
-                <td class="text-muted"><time>{{ alert.timestamp }}</time></td>
+                <td class="text-muted"><time>{{ alert.timeAgo }}</time></td>
                 <td>
                   <span class="pill" [ngClass]="getPillClass(alert.status)">
                     {{ alert.status }}
                   </span>
                 </td>
                 <td class="text-right">
-                  <button class="btn-dots" aria-label="Más opciones">⋮</button>
+                  <a class="alert-action-link" [routerLink]="alert.actionUrl">Ver detalle</a>
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="message">
-                  No hay alertas disponibles en esta categoría.
+                <td colspan="4" class="message">
+                  No hay alertas disponibles.
                 </td>
               </tr>
             }

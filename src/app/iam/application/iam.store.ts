@@ -22,6 +22,9 @@ export class IamStore {
   readonly isSignedIn = computed(() => this._currentUser() !== null);
   readonly isAuthenticated = this.isSignedIn;
 
+  /** ID del usuario autenticado (cada usuario trabaja únicamente con sus propios datos) */
+  readonly currentUserId = computed(() => this._currentUser()?.id ?? null);
+
   // ── Gestión de Planes y Permisos ──────────────────────────────
   readonly currentPlan = computed<SubscriptionPlan>(
     () => this._currentUser()?.plan ?? 'starter'
@@ -45,6 +48,17 @@ export class IamStore {
     const plan = this.currentPlan();
     if (plan === 'starter') return 0;
     if (plan === 'plus') return 3;
+    return Infinity;
+  });
+
+  /** Acceso al módulo de Sensores IoT (Starter lo tiene bloqueado) */
+  readonly canAccessSensors = computed(() => this.sensorLimit() > 0);
+
+  /** Historial y reportes: Starter 7 días, Plus 30 días, Pro completo */
+  readonly historyDaysLimit = computed(() => {
+    const plan = this.currentPlan();
+    if (plan === 'starter') return 7;
+    if (plan === 'plus') return 30;
     return Infinity;
   });
 
@@ -102,6 +116,24 @@ export class IamStore {
     }
   }
 
+  // Actualiza el perfil en memoria, en localStorage y en db.json
+  updateProfile(changes: Partial<User>): void {
+    const current = this._currentUser();
+    if (!current) return;
+
+    const updatedUser: User = { ...current, ...changes };
+    this._currentUser.set(updatedUser);
+    this.persistSession(updatedUser);
+
+    if (current.id) {
+      this.iamApi.updateUserProfile(current.id, changes).subscribe({
+        error: (err) => {
+          console.error('Error al persistir perfil en el servidor:', err);
+        }
+      });
+    }
+  }
+
   // ── Persistencia Local ────────────────────────────────────────
   private persistSession(user: User): void {
     localStorage.setItem(this.storageKey, JSON.stringify(user));
@@ -115,6 +147,4 @@ export class IamStore {
       return null;
     }
   }
-
-
 }

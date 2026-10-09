@@ -13,7 +13,7 @@ import { DeviceDistribution } from '../../../domain/model/device-distribution.en
 })
 export class DeviceDistributionChartComponent implements OnChanges {
   @Input() items: DeviceDistribution[] = [];
-  @Input() totalKwh: number = 82.4;
+  @Input() totalKwh: number = 0;
 
   @ViewChild(BaseChartDirective) chartDirective?: BaseChartDirective;
 

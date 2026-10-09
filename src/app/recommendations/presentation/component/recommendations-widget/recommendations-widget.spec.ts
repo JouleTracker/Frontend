@@ -1,18 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
 
-import { RecommendationsWidget } from './recommendations-widget';
+import { RecommendationsWidgetComponent } from './recommendations-widget';
+import { RecommendationsStore } from '../../../application/recommendations.store';
 
-describe('RecommendationsWidget', () => {
-  let component: RecommendationsWidget;
-  let fixture: ComponentFixture<RecommendationsWidget>;
+describe('RecommendationsWidgetComponent', () => {
+  let component: RecommendationsWidgetComponent;
+  let fixture: ComponentFixture<RecommendationsWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecommendationsWidget]
-    })
-    .compileComponents();
+      imports: [RecommendationsWidgetComponent],
+      providers: [
+        {
+          provide: RecommendationsStore,
+          useValue: {
+            filteredRecommendations: signal([]),
+          },
+        },
+        provideRouter([])
+      ]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(RecommendationsWidget);
+    fixture = TestBed.createComponent(RecommendationsWidgetComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

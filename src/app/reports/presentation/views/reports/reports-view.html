@@ -8,6 +8,13 @@
     Tarifa estimada: S/ {{ rate | number:'1.2-2' }} por kWh. El costo es una estimación sin cargos adicionales.
   </p>
 
+  @if (hasHistoryLimit()) {
+    <p class="plan-note">
+      Tu plan {{ currentPlan() | uppercase }} incluye historial de los últimos {{ historyLimitDays() }} días.
+      <a routerLink="/inicio">Mejora tu plan</a> para ver el historial completo.
+    </p>
+  }
+
   <section class="panel" aria-labelledby="filters-title">
     <h2 id="filters-title">Filtrar historial</h2>
     <form (ngSubmit)="applyFilters()" novalidate>

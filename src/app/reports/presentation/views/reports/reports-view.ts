@@ -1,13 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ReportsStore } from '../../../application/reports.store';
-import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-reports-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, DecimalPipe],
+  imports: [CommonModule, FormsModule, RouterModule, DatePipe, DecimalPipe],
   templateUrl: './reports-view.html',
   styleUrl: './reports-view.css',
 })
@@ -25,29 +25,42 @@ export class ReportsViewComponent implements OnInit {
   readonly peak = this.store.peak;
   readonly error = this.store.error;
 
+  /** Límite de días de historial según el plan (Starter 7, Plus 30, Pro ilimitado) */
+  readonly historyLimitDays = this.store.historyLimitDays;
+  readonly currentPlan = this.store.currentPlan;
+
+  /** Indica si el plan permite ver más de 7 días de historial */
+  readonly canView30Days = computed(() => this.historyLimitDays() >= 30);
+
+  /** Indica si el plan tiene un tope de días de historial (Starter 7, Plus 30) */
+  readonly hasHistoryLimit = computed(() => Number.isFinite(this.historyLimitDays()));
+
+  constructor() {
+    // Sincroniza los inputs de fecha cada vez que cambia el rango aplicado
+    effect(() => {
+      const range = this.store.applied();
+      this.startDate = range.start;
+      this.endDate = range.end;
+    });
+  }
+
   get rate(): number {
     return this.store.rate();
   }
 
   ngOnInit(): void {
+    // Período por defecto según el plan del usuario
+    this.period = this.canView30Days() ? '30' : '7';
     this.store.loadInitialData();
-
-    // Sincronizar fechas en los inputs del formulario
-    setTimeout(() => {
-      this.syncInputsWithApplied();
-    }, 300);
   }
 
   selectPeriod(): void {
     if (this.period === '7') {
       this.store.applyDaysPreset(7);
-      this.syncInputsWithApplied();
     } else if (this.period === '30') {
       this.store.applyDaysPreset(30);
-      this.syncInputsWithApplied();
     } else if (this.period === 'month') {
       this.store.applyCurrentMonthPreset();
-      this.syncInputsWithApplied();
     }
   }
 
@@ -56,14 +69,7 @@ export class ReportsViewComponent implements OnInit {
   }
 
   reset(): void {
-    this.period = '30';
+    this.period = this.canView30Days() ? '30' : '7';
     this.store.resetToDefault();
-    this.syncInputsWithApplied();
-  }
-
-  private syncInputsWithApplied(): void {
-    const range = this.store.applied();
-    this.startDate = range.start;
-    this.endDate = range.end;
   }
 }

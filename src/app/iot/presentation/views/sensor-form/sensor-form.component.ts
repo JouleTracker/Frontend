@@ -163,6 +163,14 @@ export class SensorFormComponent implements OnInit {
       return;
     }
 
+    // Límite de sensores según el plan (Starter 0, Plus 3, Pro ilimitado)
+    if (!this.isEditMode && !this.store.canAddSensor()) {
+      this.errorMessage.set(
+        `Has alcanzado el límite de ${this.store.sensorLimit()} sensores de tu plan. Mejora tu plan para agregar más.`
+      );
+      return;
+    }
+
     this.submitting.set(true);
     this.errorMessage.set(null);
 

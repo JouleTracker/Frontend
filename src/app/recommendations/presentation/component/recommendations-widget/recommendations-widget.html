@@ -12,9 +12,11 @@
       <div class="widget-item">
         <div class="item-info">
           <strong>{{ rec.title }}</strong>
-          <span class="item-saving">{{ rec.savings }}</span>
+          <span class="item-saving">{{ rec.potentialSaving }}</span>
         </div>
       </div>
+    } @empty {
+      <p class="widget-empty">No hay recomendaciones recientes.</p>
     }
   </div>
 </div>

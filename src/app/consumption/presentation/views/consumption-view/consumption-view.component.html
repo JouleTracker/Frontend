@@ -47,8 +47,8 @@
       label="Consumo del período"
       [value]="store.periodConsumption()"
       unit="kwh"
-      [diff]="store.summary()?.periodConsumptionDiff ?? -12"
-      subtext="vs semana anterior">
+      [diff]="store.summary()?.periodConsumptionDiff"
+      [subtext]="store.summary()?.totalConsumptionDiffLabel ?? ''">
     </app-metric-card>
 
     <app-metric-card

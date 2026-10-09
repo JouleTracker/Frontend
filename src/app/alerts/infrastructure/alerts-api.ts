@@ -1,29 +1,36 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import { environment } from '../../../environments/environment';
-import { AlertResource, AlertSummaryResource } from './alert-response';
-import { AlertAssembler, AlertSummaryAssembler } from './alert-assembler';
+import { AlertResource } from './alert-response';
+import { AlertAssembler } from './alert-assembler';
 import { Alert } from '../domain/model/alert.entity';
-import { AlertSummary } from '../domain/model/alert-summary.entity';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertsApi extends BaseApi {
   private readonly alertAssembler = new AlertAssembler();
-  private readonly summaryAssembler = new AlertSummaryAssembler();
+  private readonly http = inject(HttpClient);
+  private readonly iamStore = inject(IamStore);
 
-  constructor(private http: HttpClient) {
-    super();
+  /**
+   * Cada usuario consulta únicamente sus propias alertas (filtro por userId en db.json).
+   */
+  private get userQuery(): string {
+    const userId = this.iamStore.currentUserId();
+    return userId ? `?userId=${userId}` : '';
   }
 
   /**
-   * Obtiene la lista completa de alertas registradas.
+   * Obtiene la lista de alertas registradas por el usuario autenticado.
    */
   getAlerts(): Observable<Alert[]> {
-    return this.http.get<AlertResource[]>(`${this.baseUrl}${environment.alertsEndpointPath}`).pipe(
+    return this.http.get<AlertResource[]>(
+      `${this.baseUrl}${environment.alertsEndpointPath}${this.userQuery}`
+    ).pipe(
       map(res => this.alertAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar alertas: ' + err.message)))
     );
@@ -34,20 +41,5 @@ export class AlertsApi extends BaseApi {
    */
   getRecentAlerts(): Observable<Alert[]> {
     return this.getAlerts();
-  }
-
-  /**
-   * Obtiene las métricas agregadas del resumen de alertas.
-   */
-  getSummary(): Observable<AlertSummary> {
-    return this.http.get<AlertSummaryResource[] | AlertSummaryResource>(
-      `${this.baseUrl}${environment.alertSummariesEndpointPath}`
-    ).pipe(
-      map(res => {
-        const item = Array.isArray(res) ? res[0] : res;
-        return this.summaryAssembler.toEntity(item);
-      }),
-      catchError(err => throwError(() => new Error('Error al cargar resumen de alertas: ' + err.message)))
-    );
   }
 }

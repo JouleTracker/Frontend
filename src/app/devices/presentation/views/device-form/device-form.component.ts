@@ -132,6 +132,14 @@ export class DeviceFormComponent implements OnInit {
       return;
     }
 
+    // Límite de dispositivos según el plan (Starter 5, Plus 15, Pro ilimitado)
+    if (!this.isEditMode && !this.store.canAddDevice()) {
+      this.errorMessage.set(
+        `Has alcanzado el límite de ${this.store.deviceLimit()} dispositivos de tu plan. Mejora tu plan para agregar más.`
+      );
+      return;
+    }
+
     this.submitting.set(true);
     this.errorMessage.set(null);
 

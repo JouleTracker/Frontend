@@ -322,3 +322,18 @@
     overflow-x: auto;
   }
 }
+
+/* Icono de recomendación (en lugar de imagen) */
+.rec-image-box .rec-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #16a34a;
+}
+
+.empty-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #64748b;
+  padding: 24px;
+}

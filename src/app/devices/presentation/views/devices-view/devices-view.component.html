@@ -20,10 +20,19 @@
       </div>
 
       <!-- Add Device CTA Button -->
-      <button type="button" class="btn-primary" (click)="addDevice()">
+      <button type="button" class="btn-primary" (click)="addDevice()" [disabled]="!canAddDevice()">
         <mat-icon class="btn-icon">add</mat-icon> Agregar dispositivo
       </button>
     </div>
+
+    @if (!canAddDevice()) {
+      <p class="limit-note">
+        Alcanzaste el límite de dispositivos de tu plan ({{ deviceLimitLabel }}).
+        <a routerLink="/inicio">Mejora tu plan</a> para agregar más.
+      </p>
+    } @else {
+      <p class="limit-note subtle">Dispositivos registrados: {{ deviceLimitLabel }}</p>
+    }
   </header>
 
   <!-- TOP SUMMARY METRIC CARDS -->

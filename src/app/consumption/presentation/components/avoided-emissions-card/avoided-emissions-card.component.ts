@@ -10,6 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './avoided-emissions-card.component.css'
 })
 export class AvoidedEmissionsCardComponent {
-  @Input() kg: number = 28.6;
-  @Input() equivalence: string = 'Equivale a plantar 1 árbol al mes';
+  @Input() kg: number = 0;
+  @Input() equivalence: string = '';
 }

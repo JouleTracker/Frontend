@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
@@ -22,6 +22,7 @@ import { EnergyReading } from '../domain/model/energy-reading.entity';
 import { DeviceDistribution } from '../domain/model/device-distribution.entity';
 import { ComparativeConsumption } from '../domain/model/comparative-consumption.entity';
 import { ConsumptionHistory } from '../domain/model/consumption-history.entity';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
@@ -32,18 +33,30 @@ export class ConsumptionApi extends BaseApi {
   private readonly distributionAssembler = new DeviceDistributionAssembler();
   private readonly comparativeAssembler = new ComparativeConsumptionAssembler();
   private readonly historyAssembler = new ConsumptionHistoryAssembler();
+  private readonly http = inject(HttpClient);
+  private readonly iamStore = inject(IamStore);
 
-  constructor(private http: HttpClient) {
-    super();
+  /**
+   * Cada usuario consulta únicamente sus propios datos (filtro por userId en db.json).
+   */
+  private get userQuery(): string {
+    const userId = this.iamStore.currentUserId();
+    return userId ? `userId=${userId}` : '';
   }
 
-  getSummary(): Observable<ConsumptionSummary> {
+  private withUser(endpoint: string, extraQuery = ''): string {
+    const parts = [this.userQuery, extraQuery].filter(Boolean);
+    const query = parts.length ? `?${parts.join('&')}` : '';
+    return `${this.baseUrl}${endpoint}${query}`;
+  }
+
+  getSummary(): Observable<ConsumptionSummary | null> {
     return this.http.get<ConsumptionSummaryResource[] | ConsumptionSummaryResource>(
-      `${this.baseUrl}${environment.consumptionSummariesEndpointPath}`
+      this.withUser(environment.consumptionSummariesEndpointPath)
     ).pipe(
       map(res => {
         const item = Array.isArray(res) ? res[0] : res;
-        return this.summaryAssembler.toEntity(item);
+        return item ? this.summaryAssembler.toEntity(item) : null;
       }),
       catchError(err => throwError(() => new Error('Error al cargar resumen de consumo: ' + err.message)))
     );
@@ -51,7 +64,7 @@ export class ConsumptionApi extends BaseApi {
 
   getEnergyReadings(period: 'dia' | 'semana' | 'mes' | 'ano' = 'semana'): Observable<EnergyReading> {
     return this.http.get<EnergyReadingResource[]>(
-      `${this.baseUrl}${environment.energyReadingsEndpointPath}?period=${period}`
+      this.withUser(environment.energyReadingsEndpointPath, `period=${period}`)
     ).pipe(
       map(res => {
         const item = res && res.length > 0 ? res[0] : { id: 0, period, labels: [], values: [] };
@@ -63,7 +76,7 @@ export class ConsumptionApi extends BaseApi {
 
   getDeviceDistribution(): Observable<DeviceDistribution[]> {
     return this.http.get<DeviceDistributionResource[]>(
-      `${this.baseUrl}${environment.deviceDistributionsEndpointPath}`
+      this.withUser(environment.deviceDistributionsEndpointPath)
     ).pipe(
       map(res => this.distributionAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar distribución por dispositivos: ' + err.message)))
@@ -72,7 +85,7 @@ export class ConsumptionApi extends BaseApi {
 
   getComparativeConsumption(): Observable<ComparativeConsumption[]> {
     return this.http.get<ComparativeConsumptionResource[]>(
-      `${this.baseUrl}${environment.comparativeConsumptionsEndpointPath}`
+      this.withUser(environment.comparativeConsumptionsEndpointPath)
     ).pipe(
       map(res => this.comparativeAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar comparativa de consumo: ' + err.message)))
@@ -81,7 +94,7 @@ export class ConsumptionApi extends BaseApi {
 
   getConsumptionHistory(): Observable<ConsumptionHistory[]> {
     return this.http.get<ConsumptionHistoryResource[]>(
-      `${this.baseUrl}${environment.consumptionHistoriesEndpointPath}`
+      this.withUser(environment.consumptionHistoriesEndpointPath)
     ).pipe(
       map(res => this.historyAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar historial de consumo: ' + err.message)))

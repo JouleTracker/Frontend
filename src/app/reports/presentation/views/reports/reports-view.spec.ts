@@ -1,45 +1,58 @@
 import { TestBed } from '@angular/core/testing';
-import { ReportsView } from './reports-view';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
+import { ReportsStore } from '../../../application/reports.store';
+import { ReportsApi } from '../../../infrastructure/reports-api';
+import { IamStore } from '../../../../iam/application/iam.store';
 
-describe('ReportsView', () => {
-  it('filters inclusively and calculates the summary from the selected records', () => {
-    const page = new ReportsView();
-    page.records.set([{ date: '2026-10-01', consumptionKwh: 4 }, { date: '2026-10-02', consumptionKwh: 8 }, { date: '2026-10-03', consumptionKwh: 20 }]);
-    page.startDate = '2026-10-01';
-    page.endDate = '2026-10-02';
-    page.applyFilters();
-    expect(page.filtered().length).toBe(2);
-    expect(page.total()).toBe(12);
-    expect(page.average()).toBe(6);
-    expect(page.peak()).toBe(8);
-    expect(page.total() * page.rate).toBe(9);
+describe('ReportsStore', () => {
+  const records = [
+    { id: 3, date: '2026-10-03', consumptionKwh: 20 },
+    { id: 1, date: '2026-10-01', consumptionKwh: 4 },
+    { id: 2, date: '2026-10-02', consumptionKwh: 8 },
+  ];
+
+  function setup(historyLimit: number): ReportsStore {
+    TestBed.configureTestingModule({
+      providers: [
+        ReportsStore,
+        { provide: ReportsApi, useValue: { getConsumptionRecords: () => of(records) } },
+        {
+          provide: IamStore,
+          useValue: { historyDaysLimit: signal(historyLimit), currentPlan: signal('plus') },
+        },
+      ],
+    });
+    return TestBed.inject(ReportsStore);
+  }
+
+  it('carga los registros del usuario y calcula las métricas desde los datos reales', () => {
+    const store = setup(30);
+    store.loadInitialData();
+
+    expect(store.total()).toBe(32);
+    expect(store.average()).toBeCloseTo(32 / 3);
+    expect(store.peak()).toBe(20);
+    expect(store.rate()).toBe(0.7);
   });
 
-  it('preserves the applied range when invalid dates are submitted', () => {
-    const page = new ReportsView();
-    const previous = page.applied();
-    page.startDate = '2026-10-10';
-    page.endDate = '2026-10-01';
-    page.applyFilters();
-    expect(page.error()).toContain('posterior');
-    expect(page.applied()).toEqual(previous);
-    page.startDate = '';
-    page.applyFilters();
-    expect(page.error()).toContain('válidas');
+  it('aplica por defecto el rango máximo permitido por el plan', () => {
+    const store = setup(7);
+    store.loadInitialData();
+
+    expect(store.applied().start).toBe('2026-10-01');
+    expect(store.applied().end).toBe('2026-10-03');
+    expect(store.filtered().length).toBe(3);
   });
 
-  it('renders an empty history and resets to seven days', async () => {
-    await TestBed.configureTestingModule({ imports: [ReportsView] }).compileComponents();
-    const fixture = TestBed.createComponent(ReportsView);
-    fixture.componentInstance.startDate = '2000-01-01';
-    fixture.componentInstance.endDate = '2000-01-02';
-    fixture.componentInstance.applyFilters();
-    fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('No hay datos de consumo disponibles para el periodo seleccionado.');
-    expect(fixture.componentInstance.average()).toBe(0);
-    fixture.componentInstance.reset();
-    fixture.detectChanges();
-    expect(fixture.componentInstance.filtered().length).toBe(7);
-    expect((fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr').length).toBe(7);
+  it('rechaza rangos de fechas inválidos', () => {
+    const store = setup(30);
+    store.loadInitialData();
+
+    expect(store.applyCustomRange('2026-10-10', '2026-10-01')).toBe(false);
+    expect(store.error()).toContain('posterior');
+
+    expect(store.applyCustomRange('', '')).toBe(false);
+    expect(store.error()).toContain('ambas fechas');
   });
 });

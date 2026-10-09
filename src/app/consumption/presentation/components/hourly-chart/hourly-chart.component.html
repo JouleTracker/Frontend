@@ -1,7 +1,7 @@
 <div class="chart-card">
   <div class="chart-header">
     <h3 class="chart-title">{{ title }}</h3>
-    <div *ngIf="showRealtimeHeader" class="realtime-header">
+    <div *ngIf="showRealtimeHeader && realtimeKw !== undefined" class="realtime-header">
       <span class="kw-val">{{ realtimeKw }} kW</span>
       <span class="kw-sub">Ahora mismo</span>
     </div>

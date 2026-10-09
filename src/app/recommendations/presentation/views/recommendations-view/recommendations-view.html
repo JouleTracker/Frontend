@@ -2,9 +2,9 @@
   <div class="recommendations-container">
 
     @if (!iamStore.hasPlusAccess()) {
-      <!-- Paywall Reciclable cuando no tiene Plan Plus o Pro -->
+      <!-- Paywall cuando no tiene Plan Plus o Pro -->
       <app-plan-upgrade-required
-        featureName="Recomendaciones Personalizadas"
+        featureName="Recomendaciones Inteligentes"
         requiredPlan="Plus">
       </app-plan-upgrade-required>
     } @else {
@@ -14,7 +14,7 @@
         <p class="page-subtitle">Sugerencias personalizadas para reducir tu consumo y ahorrar energía</p>
       </header>
 
-      <!-- Metric / KPI Cards -->
+      <!-- Metric / KPI Cards (derivadas de tus datos reales de db.json) -->
       <section class="kpi-grid">
         <!-- 1. Ahorro potencial -->
         <div class="kpi-card">
@@ -23,7 +23,7 @@
           </div>
           <div class="kpi-data">
             <span class="kpi-title">Ahorro potencial</span>
-            <strong class="kpi-main-stat">{{ store.metrics()?.potentialSavings || 'S/18.50' }}</strong>
+            <strong class="kpi-main-stat">{{ store.metrics().potentialSavings }}</strong>
             <span class="kpi-foot">al mes</span>
           </div>
         </div>
@@ -35,7 +35,7 @@
           </div>
           <div class="kpi-data">
             <span class="kpi-title">Reducción estimada</span>
-            <strong class="kpi-main-stat">{{ store.metrics()?.estimatedReduction || '15%' }}</strong>
+            <strong class="kpi-main-stat">{{ store.metrics().estimatedReduction }}</strong>
             <span class="kpi-foot">en tu consumo</span>
           </div>
         </div>
@@ -47,7 +47,7 @@
           </div>
           <div class="kpi-data">
             <div class="kpi-combined">
-              <strong class="kpi-main-stat">{{ store.metrics()?.co2Avoided || '28.6 Kg' }}</strong>
+              <strong class="kpi-main-stat">{{ store.metrics().co2Avoided }}</strong>
             </div>
             <span class="kpi-foot">de CO₂ evitados al mes</span>
           </div>
@@ -59,7 +59,7 @@
             <mat-icon class="kpi-icon">notifications_none</mat-icon>
           </div>
           <div class="kpi-data">
-            <strong class="kpi-main-stat">{{ store.metrics()?.activeCount || '6' }}</strong>
+            <strong class="kpi-main-stat">{{ store.metrics().activeCount }}</strong>
             <span class="kpi-foot">recomendaciones activas</span>
           </div>
         </div>
@@ -68,14 +68,14 @@
       <!-- Filter & Sort Bar -->
       <div class="filter-row">
         <nav class="filter-tabs" aria-label="Categorías de recomendaciones">
-          @for (cat of categories; track cat) {
+          @for (cat of categories; track cat.value) {
             <button
               type="button"
               class="tab-btn"
-              [class.active]="(cat === 'Por dispositivos' && store.selectedCategory() === 'Dispositivos') || store.selectedCategory() === cat"
-              (click)="onSelectCategory(cat)"
+              [class.active]="store.selectedCategory() === cat.value"
+              (click)="onSelectCategory(cat.value)"
             >
-              {{ cat }}
+              {{ cat.label }}
             </button>
           }
         </nav>
@@ -91,12 +91,12 @@
         </div>
       </div>
 
-      <!-- Recommendations Cards Grid (4 columnas) -->
+      <!-- Recommendations Cards Grid -->
       <section class="recommendations-grid">
         @for (rec of store.filteredRecommendations(); track rec.id) {
           <article class="rec-card">
             <div class="rec-image-box">
-              <img [src]="rec.imageUrl" [alt]="rec.title" class="rec-thumbnail" loading="lazy" />
+              <mat-icon class="rec-icon">{{ rec.icon }}</mat-icon>
             </div>
 
             <div class="rec-body">
@@ -104,15 +104,13 @@
               <p class="rec-card-desc">{{ rec.description }}</p>
 
               <div class="rec-pill">
-                <span class="pill-label">
-                  {{ rec.savingsType === 'eco' ? 'Impacto ambiental' : 'Ahorro estimado' }}
-                </span>
-                <span class="pill-amount">{{ rec.savings }}</span>
+                <span class="pill-label">{{ rec.category }}</span>
+                <span class="pill-amount">{{ rec.potentialSaving }}</span>
               </div>
-
-              <button type="button" class="btn-action">Ver detalles</button>
             </div>
           </article>
+        } @empty {
+          <p class="empty-message">No hay recomendaciones disponibles en esta categoría.</p>
         }
       </section>
     }

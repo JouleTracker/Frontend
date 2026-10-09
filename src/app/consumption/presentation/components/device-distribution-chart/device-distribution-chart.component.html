@@ -10,7 +10,7 @@
         [type]="doughnutChartType">
       </canvas>
       <div class="center-label">
-        <span class="center-value">{{ totalKwh || '82.4' }} kwh</span>
+        <span class="center-value">{{ totalKwh | number:'1.1-1' }} kWh</span>
         <span class="center-sub">Total</span>
       </div>
     </div>

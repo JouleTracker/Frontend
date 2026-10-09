@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PlanUpgradeRequired } from './plan-upgrade-required';
+import { provideRouter } from '@angular/router';
+import { PlanUpgradeRequiredComponent } from './plan-upgrade-required';
 
-describe('PlanUpgradeRequired', () => {
-  let component: PlanUpgradeRequired;
-  let fixture: ComponentFixture<PlanUpgradeRequired>;
+describe('PlanUpgradeRequiredComponent', () => {
+  let component: PlanUpgradeRequiredComponent;
+  let fixture: ComponentFixture<PlanUpgradeRequiredComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlanUpgradeRequired],
+      imports: [PlanUpgradeRequiredComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PlanUpgradeRequired);
+    fixture = TestBed.createComponent(PlanUpgradeRequiredComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

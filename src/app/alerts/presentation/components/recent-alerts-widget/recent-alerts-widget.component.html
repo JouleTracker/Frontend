@@ -9,7 +9,7 @@
       <div class="alert-item" [ngClass]="alert.severity">
         <div class="alert-icon-wrapper">
           <mat-icon class="alert-icon">
-            {{ alert.severity === 'warning' ? 'warning_amber' : 'info_outline' }}
+            {{ alert.severity === 'error' ? 'error_outline' : alert.severity === 'warning' ? 'warning_amber' : 'info_outline' }}
           </mat-icon>
         </div>
         <div class="alert-content">
@@ -17,10 +17,12 @@
             <span class="alert-title">{{ alert.title }}</span>
             <span class="alert-time">{{ alert.timeAgo }}</span>
           </div>
-          <p class="alert-desc">{{ alert.dynamicMessage }}</p>
+          <p class="alert-desc">{{ alert.description }}</p>
         </div>
         <mat-icon class="chevron-icon">chevron_right</mat-icon>
       </div>
+    } @empty {
+      <p class="alert-empty">No tienes alertas recientes.</p>
     }
   </div>
 </div>

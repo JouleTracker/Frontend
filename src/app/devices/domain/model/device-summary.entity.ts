@@ -16,6 +16,7 @@ export interface DeviceSummaryProps {
 
 /**
  * Domain entity for aggregated device metrics displayed in header metric cards.
+ * Solo utiliza los datos entregados por la colección `device-summaries` de db.json.
  */
 export class DeviceSummary implements BaseEntity {
   readonly id: number;
@@ -34,24 +35,23 @@ export class DeviceSummary implements BaseEntity {
     this.connectedDevices = props.connectedDevices;
     this.waitingDevices = props.waitingDevices;
     this.totalPowerKw = props.totalPowerKw;
-    this.powerDiffVsYesterday = props.powerDiffVsYesterday ?? -12;
-    this.powerDiffVsYesterdayLabel = props.powerDiffVsYesterdayLabel ?? '12% vs ayer';
-    this.costDiffVsMonth = props.costDiffVsMonth ?? -8;
-    this.costDiffVsMonthLabel = props.costDiffVsMonthLabel ?? '8% vs mes anterior';
-    this.savedKwhMonthly = props.savedKwhMonthly ?? 114.4;
+    this.powerDiffVsYesterday = props.powerDiffVsYesterday ?? 0;
+    this.powerDiffVsYesterdayLabel = props.powerDiffVsYesterdayLabel ?? '';
+    this.costDiffVsMonth = props.costDiffVsMonth ?? 0;
+    this.costDiffVsMonthLabel = props.costDiffVsMonthLabel ?? '';
+    this.savedKwhMonthly = props.savedKwhMonthly ?? 0;
     this._estimatedCostSoles = props.estimatedCostSoles;
   }
 
   /**
-   * Costo mensual estimado en Soles (S/): si viene fijado del backend o calculado.
+   * Costo mensual estimado en Soles (S/): el valor de db.json si existe, o 0.
    */
   get estimatedCostSoles(): number {
-    return this._estimatedCostSoles ?? 35.20;
+    return this._estimatedCostSoles ?? 0;
   }
 
   /**
    * Emisiones evitadas de CO2 (kg): kWh_ahorrado * 0.25 kg CO2/kWh
-   * Para 114.4 kWh -> 28.6 kg CO2
    */
   get co2AvoidedKg(): number {
     return EnergyCalculationService.calculateAvoidedEmissions(this.savedKwhMonthly);

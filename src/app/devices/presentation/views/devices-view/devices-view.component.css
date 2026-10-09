@@ -297,3 +297,29 @@
   .header-actions { width: 100%; flex-direction: column; }
   .search-box, .search-box input, .btn-primary { width: 100%; }
 }
+
+/* Nota de límite de dispositivos según el plan */
+.limit-note {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #b45309;
+}
+
+.limit-note.subtle {
+  color: #64748b;
+}
+
+.limit-note a {
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.limit-note a:hover {
+  text-decoration: underline;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

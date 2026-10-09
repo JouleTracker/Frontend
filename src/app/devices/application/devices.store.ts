@@ -1,9 +1,11 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Observable, tap, catchError } from 'rxjs';
 import { DevicesApi } from '../infrastructure/devices-api';
 import { Device } from '../domain/model/device.entity';
 import { DeviceSummary } from '../domain/model/device-summary.entity';
 import { DeviceResource } from '../infrastructure/devices-response';
+import { IamStore } from '../../iam/application/iam.store';
+import { EnergyCalculationService } from '../../shared/domain/model/energy-calculation.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,9 @@ export class DevicesStore {
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
 
-  // === COMPUTED SIGNALS ===
+  private readonly iamStore = inject(IamStore);
+
+  // === COMPUTED SIGNALS (Solo datos reales de db.json; sin valores inventados) ===
 
   /** Dispositivos filtrados por búsqueda y categoría, ordenados según criterio */
   readonly filteredDevices = computed(() => {
@@ -65,18 +69,18 @@ export class DevicesStore {
     return result;
   });
 
-  /** Conteo de dispositivos conectados */
+  /** Conteo de dispositivos conectados (desde el resumen real o la lista real) */
   readonly connectedDevices = computed(() => {
     const sum = this.summarySignal();
     if (sum) return sum.connectedDevices;
-    return this.devicesSignal().filter(d => d.status === 'En línea').length || 8;
+    return this.devicesSignal().filter(d => d.status === 'En línea').length;
   });
 
   /** Conteo de dispositivos en espera */
   readonly waitingDevices = computed(() => {
     const sum = this.summarySignal();
     if (sum) return sum.waitingDevices;
-    return this.devicesSignal().filter(d => d.status === 'En espera').length || 4;
+    return this.devicesSignal().filter(d => d.status === 'En espera').length;
   });
 
   /** Potencia total actual en kW */
@@ -84,36 +88,59 @@ export class DevicesStore {
     const sum = this.summarySignal();
     if (sum) return sum.totalPowerKw;
     const total = this.devicesSignal().reduce((acc, d) => acc + d.currentPowerKw, 0);
-    return Number(total.toFixed(2)) || 1.2;
+    return Number(total.toFixed(2));
   });
 
   /** Etiqueta de variación vs ayer */
   readonly powerDiffVsYesterdayLabel = computed(() => {
-    return this.summarySignal()?.powerDiffVsYesterdayLabel ?? '12% vs ayer';
+    return this.summarySignal()?.powerDiffVsYesterdayLabel ?? '';
   });
 
-  /** Costo estimado en el mes (S/) */
+  /**
+   * Costo estimado del mes (S/): si db.json lo trae en `device-summaries` se usa ese valor;
+   * si no, se proyecta desde el consumo diario real de los dispositivos (kWh hoy * 30 días * tarifa).
+   */
   readonly estimatedCostSoles = computed(() => {
-    return this.summarySignal()?.estimatedCostSoles ?? 35.20;
+    const sum = this.summarySignal();
+    if (sum && sum.estimatedCostSoles > 0) return sum.estimatedCostSoles;
+    const dailyKwh = this.devicesSignal().reduce((acc, d) => acc + d.todayKwh, 0);
+    return EnergyCalculationService.calculateCost(dailyKwh * 30);
   });
 
   /** Etiqueta de variación del costo vs mes anterior */
   readonly costDiffVsMonthLabel = computed(() => {
-    return this.summarySignal()?.costDiffVsMonthLabel ?? '8% vs mes anterior';
+    return this.summarySignal()?.costDiffVsMonthLabel ?? '';
   });
 
   /** Emisiones evitadas de CO2 (kg) */
   readonly co2AvoidedKg = computed(() => {
-    return this.summarySignal()?.co2AvoidedKg ?? 28.6;
+    return this.summarySignal()?.co2AvoidedKg ?? 0;
   });
 
   /** Equivalencia ecológica en árboles */
   readonly treeEquivalence = computed(() => {
-    return this.summarySignal()?.treeEquivalence ?? 'Equivale a 1 árbol';
+    return this.summarySignal()?.treeEquivalence ?? '';
   });
 
+  // === LÍMITES DEL PLAN ===
+
+  /** Límite de dispositivos según el plan (Starter 5, Plus 15, Pro ilimitado) */
+  readonly deviceLimit = this.iamStore.deviceLimit;
+
+  /** Dispositivos usados actualmente por el usuario */
+  readonly deviceCount = computed(() => this.devicesSignal().length);
+
+  /** Indica si el usuario puede registrar un dispositivo más */
+  readonly canAddDevice = computed(() => this.deviceCount() < this.deviceLimit());
+
   constructor(private api: DevicesApi) {
-    this.loadAll();
+    // Recarga los dispositivos cuando cambia el usuario autenticado (datos propios por usuario)
+    effect(() => {
+      const userId = this.iamStore.currentUserId();
+      if (userId) {
+        this.loadAll();
+      }
+    });
   }
 
   loadAll(): void {
@@ -208,4 +235,3 @@ export class DevicesStore {
     );
   }
 }
-

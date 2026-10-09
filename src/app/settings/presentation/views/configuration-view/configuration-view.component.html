@@ -4,7 +4,7 @@
   <main class="content-container">
     <header class="page-header">
       <h1 class="page-title">Configuración</h1>
-      <p class="page-subtitle">Personaliza tu cuenta, tus preferencias y la configuración de tu hogar.</p>
+      <p class="page-subtitle">Personaliza tu cuenta y la configuración de tu hogar.</p>
     </header>
 
     <div class="cards-grid">
@@ -12,10 +12,9 @@
       <section class="config-card">
         <div class="card-header">
           <div class="avatar-container">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=JouleUser" alt="Avatar" class="user-avatar" />
-            <button type="button" class="avatar-edit-badge" aria-label="Cambiar foto">
-              <mat-icon>photo_camera</mat-icon>
-            </button>
+            <div class="user-avatar">
+              <mat-icon class="avatar-icon">person_outline</mat-icon>
+            </div>
           </div>
           <div class="header-texts">
             <h2 class="card-title">Información personal</h2>
@@ -39,13 +38,44 @@
             <input type="tel" formControlName="phone" placeholder="Número de contacto" />
           </div>
 
+          @if (profileMessage()) {
+            <p class="form-message success">{{ profileMessage() }}</p>
+          }
+          @if (profileError()) {
+            <p class="form-message error">{{ profileError() }}</p>
+          }
+
           <div class="action-btn-row">
-            <button type="submit" class="btn-primary">Guardar cambios</button>
+            <button type="submit" class="btn-primary" [disabled]="savingProfile()">
+              {{ savingProfile() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
           </div>
         </form>
       </section>
 
-      <!-- 2. Cambiar contraseña -->
+      <!-- 2. Mi plan -->
+      <section class="config-card">
+        <div class="card-header">
+          <div class="icon-badge">
+            <mat-icon>workspace_premium</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title">Mi plan</h2>
+            <p class="card-subtitle">Consulta y cambia tu suscripción.</p>
+          </div>
+        </div>
+
+        <div class="plan-info">
+          <span class="plan-label">Plan actual: </span>
+          <span class="plan-value">{{ currentPlan() | uppercase }}</span>
+        </div>
+
+        <div class="action-btn-row">
+          <button type="button" class="btn-primary" (click)="goToPlans()">Gestionar plan</button>
+        </div>
+      </section>
+
+      <!-- 3. Cambiar contraseña -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -91,13 +121,22 @@
             </div>
           </div>
 
+          @if (passwordMessage()) {
+            <p class="form-message success">{{ passwordMessage() }}</p>
+          }
+          @if (passwordError()) {
+            <p class="form-message error">{{ passwordError() }}</p>
+          }
+
           <div class="action-btn-row">
-            <button type="submit" class="btn-primary">Actualizar contraseña</button>
+            <button type="submit" class="btn-primary" [disabled]="savingPassword()">
+              {{ savingPassword() ? 'Actualizando...' : 'Actualizar contraseña' }}
+            </button>
           </div>
         </form>
       </section>
 
-      <!-- 3. Mi hogar -->
+      <!-- 4. Mi hogar -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -109,7 +148,7 @@
           </div>
         </div>
 
-        <form [formGroup]="homeForm" class="card-form">
+        <form [formGroup]="homeForm" (ngSubmit)="saveHome()" class="card-form">
           <div class="form-row-2">
             <div class="form-group">
               <label>Tipo de vivienda</label>
@@ -124,7 +163,7 @@
               <label>Número de habitantes</label>
               <div class="input-with-icon">
                 <mat-icon class="leading-icon">group</mat-icon>
-                <input type="number" formControlName="occupants" />
+                <input type="number" min="1" formControlName="occupants" />
               </div>
             </div>
           </div>
@@ -141,63 +180,19 @@
             </div>
           </div>
 
-          <div class="link-action-row">
-            <a href="javascript:void(0)" class="link-action">Editar detalles de mi hogar</a>
+          @if (homeMessage()) {
+            <p class="form-message success">{{ homeMessage() }}</p>
+          }
+
+          <div class="action-btn-row">
+            <button type="submit" class="btn-primary" [disabled]="savingHome()">
+              {{ savingHome() ? 'Guardando...' : 'Guardar información del hogar' }}
+            </button>
           </div>
         </form>
       </section>
 
-      <!-- 4. Preferencias de consumo -->
-      <section class="config-card">
-        <div class="card-header">
-          <div class="icon-badge">
-            <mat-icon>bar_chart</mat-icon>
-          </div>
-          <div class="header-texts">
-            <h2 class="card-title">Preferencias de consumo</h2>
-            <p class="card-subtitle">Personaliza cómo quieres ver tu información</p>
-          </div>
-        </div>
-
-        <form [formGroup]="preferencesForm" class="card-form preferences-list">
-          <div class="preference-item">
-            <span class="pref-label">Unidad de energía</span>
-            <select formControlName="energyUnit" class="pref-select">
-              <option value="kWh">kWh</option>
-              <option value="Wh">Wh</option>
-              <option value="MWh">MWh</option>
-            </select>
-          </div>
-
-          <div class="preference-item">
-            <span class="pref-label">Moneda</span>
-            <select formControlName="currency" class="pref-select">
-              <option value="Soles(S/)">Soles(S/)</option>
-              <option value="USD($)">Dólares ($)</option>
-              <option value="EUR(€)">Euros (€)</option>
-            </select>
-          </div>
-
-          <div class="preference-item">
-            <span class="pref-label">Formato de fecha</span>
-            <select formControlName="dateFormat" class="pref-select">
-              <option value="dd/mm/aaaa">dd/mm/aaaa</option>
-              <option value="mm/dd/aaaa">mm/dd/aaaa</option>
-              <option value="aaaa-mm-dd">aaaa-mm-dd</option>
-            </select>
-          </div>
-
-          <div class="preference-item">
-            <span class="pref-label">Formato de hora</span>
-            <select formControlName="timeFormat" class="pref-select">
-              <option value="24 horas">24 horas</option>
-              <option value="12 horas">12 horas (AM/PM)</option>
-            </select>
-          </div>
-        </form>
-      </section>
-
-      <!-- 5. Notificaciones (Centrada en la parte inferior) -->
+      <!-- 5. Notificaciones -->
       <section class="config-card notification-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -218,7 +213,11 @@
                 <p class="notif-desc">Te avisamos cuando detectemos un consumo inusual.</p>
               </div>
             </div>
-            <mat-slide-toggle [(ngModel)]="highConsumptionAlerts" color="primary"></mat-slide-toggle>
+            <mat-slide-toggle
+              color="primary"
+              [ngModel]="highConsumptionAlerts()"
+              (ngModelChange)="highConsumptionAlerts.set($event)">
+            </mat-slide-toggle>
           </div>
 
           <div class="notification-item">
@@ -229,7 +228,11 @@
                 <p class="notif-desc">Recibe sugerencias para el cuidado de tus dispositivos.</p>
               </div>
             </div>
-            <mat-slide-toggle [(ngModel)]="maintenanceReminders" color="primary"></mat-slide-toggle>
+            <mat-slide-toggle
+              color="primary"
+              [ngModel]="maintenanceReminders()"
+              (ngModelChange)="maintenanceReminders.set($event)">
+            </mat-slide-toggle>
           </div>
 
           <div class="notification-item">
@@ -240,8 +243,20 @@
                 <p class="notif-desc">Consejos para ahorrar energía.</p>
               </div>
             </div>
-            <mat-slide-toggle [(ngModel)]="personalizedTips" color="primary"></mat-slide-toggle>
+            <mat-slide-toggle
+              color="primary"
+              [ngModel]="personalizedTips()"
+              (ngModelChange)="personalizedTips.set($event)">
+            </mat-slide-toggle>
           </div>
+        </div>
+
+        @if (notificationsMessage()) {
+          <p class="form-message success">{{ notificationsMessage() }}</p>
+        }
+
+        <div class="action-btn-row">
+          <button type="button" class="btn-primary" (click)="saveNotifications()">Guardar preferencias</button>
         </div>
       </section>
     </div>

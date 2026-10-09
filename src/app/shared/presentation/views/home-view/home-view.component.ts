@@ -31,48 +31,47 @@ export class HomeViewComponent {
     {
       id: 'starter',
       name: 'Starter',
-      description: 'Para comenzar a conocer y organizar el consumo.',
+      description: 'Monitoreo básico y organización del hogar.',
       price: 19,
       originalPrice: 29,
       discountBadge: 'Ahorra 34%',
       highlightText: 'Menos de S/ 1 al día',
       features: [
-        'Monitoreo básico',
-        'Gestión de espacios',
-        'Visualización de consumo',
-        'Historial básico'
+        'Hasta 5 dispositivos',
+        'Módulo de sensores bloqueado',
+        'Recomendaciones inteligentes bloqueadas',
+        'Historial básico (últimos 7 días)'
       ]
     },
     {
       id: 'plus',
       name: 'Plus',
       badge: 'Más elegido',
-      description: 'Para usuarios que buscan un análisis más completo.',
+      description: 'Optimización y análisis para oficinas o negocios.',
       price: 39,
       originalPrice: 59,
       discountBadge: 'Ahorra 34%',
       highlightText: 'Ideal para oficinas y negocios',
       features: [
-        'Todo lo de Starter',
-        'Análisis de tendencias',
-        'Gestión ampliada de dispositivos',
-        'Recomendaciones',
-        'Historial ampliado'
+        'Hasta 15 dispositivos',
+        'Hasta 3 sensores IoT',
+        'Recomendaciones inteligentes desbloqueadas',
+        'Historial ampliado (últimos 30 días)'
       ]
     },
     {
       id: 'pro',
       name: 'Pro',
-      description: 'Para una experiencia más completa de monitoreo y análisis.',
+      description: 'Monitoreo avanzado integral con alta demanda.',
       price: 79,
       originalPrice: 119,
       discountBadge: 'Ahorra 34%',
       highlightText: 'Soporte prioritario incluido',
       features: [
-        'Todo lo de Plus',
-        'Mayor capacidad de seguimiento',
-        'Análisis más detallado',
-        'Gestión avanzada de información',
+        'Dispositivos ilimitados',
+        'Sensores IoT ilimitados',
+        'Recomendaciones inteligentes desbloqueadas',
+        'Historial completo y análisis detallado',
         'Soporte prioritario'
       ]
     }

@@ -1,18 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
-import { SignInForm } from './sign-in-form';
+import { SignInFormComponent } from './sign-in-form';
 
-describe('SignInForm', () => {
-  let component: SignInForm;
-  let fixture: ComponentFixture<SignInForm>;
+describe('SignInFormComponent', () => {
+  let component: SignInFormComponent;
+  let fixture: ComponentFixture<SignInFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignInForm]
+      imports: [SignInFormComponent],
+      providers: [provideRouter([]), provideHttpClient()]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SignInForm);
+    fixture = TestBed.createComponent(SignInFormComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

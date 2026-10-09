@@ -55,19 +55,20 @@ export class ComparisonChartComponent implements OnChanges {
     }
   };
 
+  // Inicia vacío: solo se dibuja con los datos reales de `comparative-consumptions` (db.json)
   public barChartData: ChartData<'bar'> = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May'],
+    labels: [],
     datasets: [
       {
         label: 'Período anterior',
-        data: [45, 70, 135, 60, 80],
+        data: [],
         backgroundColor: '#e2e8f0',
         borderRadius: 4,
         barPercentage: 0.65
       },
       {
         label: 'Período actual',
-        data: [55, 140, 145, 140, 65],
+        data: [],
         backgroundColor: '#86efac',
         borderRadius: 4,
         barPercentage: 0.65
@@ -76,20 +77,21 @@ export class ComparisonChartComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['items'] && this.items && this.items.length > 0) {
+    if (changes['items']) {
+      const hasData = this.items && this.items.length > 0;
       this.barChartData = {
-        labels: this.items.map(i => i.month),
+        labels: hasData ? this.items.map(i => i.month) : [],
         datasets: [
           {
             label: 'Período anterior',
-            data: this.items.map(i => i.previousPeriod),
+            data: hasData ? this.items.map(i => i.previousPeriod) : [],
             backgroundColor: '#e2e8f0',
             borderRadius: 4,
             barPercentage: 0.65
           },
           {
             label: 'Período actual',
-            data: this.items.map(i => i.currentPeriod),
+            data: hasData ? this.items.map(i => i.currentPeriod) : [],
             backgroundColor: '#86efac',
             borderRadius: 4,
             barPercentage: 0.65
@@ -99,4 +101,5 @@ export class ComparisonChartComponent implements OnChanges {
       this.chartDirective?.update();
     }
   }
+
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
@@ -8,6 +8,7 @@ import { SensorAssembler, ApplianceProfileAssembler, SensorSummaryAssembler } fr
 import { Sensor } from '../domain/model/sensor.entity';
 import { ApplianceProfile } from '../domain/model/appliance-profile.entity';
 import { SensorSummary } from '../domain/model/sensor-summary.entity';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
@@ -16,17 +17,23 @@ export class SensorsApi extends BaseApi {
   private readonly sensorAssembler = new SensorAssembler();
   private readonly profileAssembler = new ApplianceProfileAssembler();
   private readonly summaryAssembler = new SensorSummaryAssembler();
+  private readonly http = inject(HttpClient);
+  private readonly iamStore = inject(IamStore);
 
-  constructor(private http: HttpClient) {
-    super();
+  /**
+   * Cada usuario consulta únicamente sus propios sensores (filtro por userId en db.json).
+   */
+  private get userQuery(): string {
+    const userId = this.iamStore.currentUserId();
+    return userId ? `?userId=${userId}` : '';
   }
 
   /**
-   * Obtiene la lista completa de sensores IoT registrados.
+   * Obtiene la lista de sensores IoT registrados por el usuario autenticado.
    */
   getSensors(): Observable<Sensor[]> {
     return this.http.get<SensorResource[]>(
-      `${this.baseUrl}${environment.sensorsEndpointPath}`
+      `${this.baseUrl}${environment.sensorsEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => this.sensorAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar sensores: ' + err.message)))
@@ -46,12 +53,14 @@ export class SensorsApi extends BaseApi {
   }
 
   /**
-   * Registra un nuevo sensor IoT en el sistema.
+   * Registra un nuevo sensor IoT en el sistema (queda asociado al usuario autenticado).
    */
   createSensor(sensor: Partial<SensorResource>): Observable<Sensor> {
+    const userId = this.iamStore.currentUserId();
+    const payload = userId ? { ...sensor, userId } : sensor;
     return this.http.post<SensorResource>(
       `${this.baseUrl}${environment.sensorsEndpointPath}`,
-      sensor
+      payload
     ).pipe(
       map(res => this.sensorAssembler.toEntity(res)),
       catchError(err => throwError(() => new Error('Error al registrar nuevo sensor: ' + err.message)))
@@ -73,6 +82,7 @@ export class SensorsApi extends BaseApi {
 
   /**
    * Obtiene el catálogo de perfiles recomendados de electrodomésticos recurrentes.
+   * (Catálogo global compartido por todos los usuarios.)
    */
   getApplianceProfiles(): Observable<ApplianceProfile[]> {
     return this.http.get<ApplianceProfileResource[]>(
@@ -84,15 +94,15 @@ export class SensorsApi extends BaseApi {
   }
 
   /**
-   * Obtiene las métricas agregadas de los sensores IoT.
+   * Obtiene las métricas agregadas de los sensores IoT del usuario autenticado.
    */
-  getSensorSummary(): Observable<SensorSummary> {
+  getSensorSummary(): Observable<SensorSummary | null> {
     return this.http.get<SensorSummaryResource[] | SensorSummaryResource>(
-      `${this.baseUrl}${environment.sensorSummariesEndpointPath}`
+      `${this.baseUrl}${environment.sensorSummariesEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => {
         const item = Array.isArray(res) ? res[0] : res;
-        return this.summaryAssembler.toEntity(item);
+        return item ? this.summaryAssembler.toEntity(item) : null;
       }),
       catchError(err => throwError(() => new Error('Error al cargar resumen de sensores: ' + err.message)))
     );
@@ -110,4 +120,3 @@ export class SensorsApi extends BaseApi {
     );
   }
 }
-

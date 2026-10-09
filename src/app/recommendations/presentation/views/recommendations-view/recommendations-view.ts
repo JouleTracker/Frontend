@@ -8,6 +8,11 @@ import {
   PlanUpgradeRequiredComponent
 } from '../../../../shared/presentation/components/plan-upgrade-required/plan-upgrade-required';
 
+interface CategoryOption {
+  label: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-recommendations-view',
   standalone: true,
@@ -24,12 +29,11 @@ export class RecommendationsViewComponent implements OnInit {
   readonly store = inject(RecommendationsStore);
   readonly iamStore = inject(IamStore);
 
-  readonly categories = [
-    'Todas',
-    'Ahorro en casa',
-    'Por dispositivos',
-    'Hábitos',
-    'Medio ambiente',
+  /** Categorías reales de la colección `recommendations` en db.json */
+  readonly categories: CategoryOption[] = [
+    { label: 'Todas', value: 'Todas' },
+    { label: 'Climatización', value: 'climatizacion' },
+    { label: 'Iluminación', value: 'iluminacion' },
   ];
 
   selectedSort = 'impact';
@@ -40,9 +44,8 @@ export class RecommendationsViewComponent implements OnInit {
     }
   }
 
-  onSelectCategory(category: string): void {
-    const mapped = category === 'Por dispositivos' ? 'Dispositivos' : category;
-    this.store.setCategory(mapped);
+  onSelectCategory(value: string): void {
+    this.store.setCategory(value);
   }
 
   onSortChange(event: Event): void {

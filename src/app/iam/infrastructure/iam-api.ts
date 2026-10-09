@@ -26,11 +26,10 @@ export class IamApi {
           throw new Error('Credenciales incorrectas');
         }
         const user = users[0];
+        // Nunca se expone la contraseña en la sesión del cliente
+        const { password: _password, verificationCode: _code, ...userWithoutSecrets } = user;
         return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
+          ...userWithoutSecrets,
           token: user.token || `token-${user.id}`,
           plan: user.plan || 'starter'
         };
@@ -48,7 +47,18 @@ export class IamApi {
     return this.http.post<SignUpResponse>(SignUpApiEndpoint.getEndpoint(), newUser);
   }
 
+  getUserById(userId: number): Observable<User & { password?: string }> {
+    return this.http.get<User & { password?: string }>(`${this.baseUrl}/users/${userId}`);
+  }
+
   updateUserPlan(userId: number, plan: SubscriptionPlan): Observable<User> {
     return this.http.patch<User>(`${this.baseUrl}/users/${userId}`, { plan });
+  }
+
+  updateUserProfile(
+    userId: number,
+    changes: Partial<User> & { password?: string }
+  ): Observable<User> {
+    return this.http.patch<User>(`${this.baseUrl}/users/${userId}`, changes);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DevicesStore } from '../../../application/devices.store';
 import { SensorsStore } from '../../../../iot/application/sensors.store';
@@ -24,6 +24,18 @@ export class DevicesViewComponent {
   private readonly router = inject(Router);
   readonly store = inject(DevicesStore);
   readonly sensorsStore = inject(SensorsStore);
+
+  /** Límite de dispositivos del plan actual (Starter 5, Plus 15, Pro ilimitado) */
+  readonly deviceLimit = this.store.deviceLimit;
+  readonly deviceCount = this.store.deviceCount;
+  readonly canAddDevice = this.store.canAddDevice;
+
+  /** Texto legible del límite alcanzado (ej. "5 de 15" o "3 de ilimitados") */
+  get deviceLimitLabel(): string {
+    const limit = this.deviceLimit();
+    const count = this.deviceCount();
+    return Number.isFinite(limit) ? `${count} de ${limit}` : `${count} de ilimitados`;
+  }
 
   readonly categories: string[] = [
     'Todos',

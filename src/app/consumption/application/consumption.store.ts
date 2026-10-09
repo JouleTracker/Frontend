@@ -1,10 +1,11 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { ConsumptionApi } from '../infrastructure/consumption-api';
 import { ConsumptionSummary } from '../domain/model/consumption-summary.entity';
 import { EnergyReading } from '../domain/model/energy-reading.entity';
 import { DeviceDistribution } from '../domain/model/device-distribution.entity';
 import { ComparativeConsumption } from '../domain/model/comparative-consumption.entity';
 import { ConsumptionHistory } from '../domain/model/consumption-history.entity';
+import { IamStore } from '../../iam/application/iam.store';
 
 @Injectable({
   providedIn: 'root'
@@ -37,32 +38,32 @@ export class ConsumptionStore {
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
 
-  // === COMPUTED DOMAIN SIGNALS (Calculados con las reglas de negocio) ===
+  // === COMPUTED DOMAIN SIGNALS (Solo datos reales de db.json; sin valores inventados) ===
 
   /** Total de consumo en kWh */
-  readonly totalConsumption = computed(() => this.summary()?.totalConsumption ?? 82.4);
+  readonly totalConsumption = computed(() => this.summary()?.totalConsumption ?? 0);
 
   /** Consumo del período en kWh */
-  readonly periodConsumption = computed(() => this.summary()?.periodConsumption ?? 82.4);
+  readonly periodConsumption = computed(() => this.summary()?.periodConsumption ?? 0);
 
   /** Potencia en tiempo real en kW */
-  readonly currentPower = computed(() => this.summary()?.currentPower ?? 1.24);
+  readonly currentPower = computed(() => this.summary()?.currentPower ?? 0);
 
   /** Costo total calculado: kWh * S/ 0.70 */
-  readonly estimatedCost = computed(() => this.summary()?.estimatedCost ?? 57.68);
+  readonly estimatedCost = computed(() => this.summary()?.estimatedCost ?? 0);
 
   /** Costo del período calculado: kWh * S/ 0.70 */
-  readonly periodEstimatedCost = computed(() => this.summary()?.periodEstimatedCost ?? 57.68);
+  readonly periodEstimatedCost = computed(() => this.summary()?.periodEstimatedCost ?? 0);
 
   /** Ahorro económico calculado: kWh_ahorrado * S/ 0.70 */
-  readonly estimatedSavings = computed(() => this.summary()?.estimatedSavings ?? 6.80);
+  readonly estimatedSavings = computed(() => this.summary()?.estimatedSavings ?? 0);
 
   /** Emisiones de CO2 evitadas calculadas: kWh_ahorrado * 0.25 kg CO2/kWh */
-  readonly avoidedEmissionsKg = computed(() => this.summary()?.avoidedEmissionsKg ?? 28.6);
+  readonly avoidedEmissionsKg = computed(() => this.summary()?.avoidedEmissionsKg ?? 0);
 
   /** Equivalencia ecológica en árboles */
   readonly avoidedEmissionsEquivalence = computed(() => {
-    return this.summary()?.avoidedEmissionsEquivalence ?? 'Equivale a plantar 1 árbol al mes';
+    return this.summary()?.avoidedEmissionsEquivalence ?? '';
   });
 
   /** Strings formateados para la presentación */
@@ -75,8 +76,14 @@ export class ConsumptionStore {
     return this.deviceDistributions().reduce((acc, curr) => acc + curr.kwh, 0);
   });
 
-  constructor(private api: ConsumptionApi) {
-    this.loadAll();
+  constructor(private api: ConsumptionApi, iamStore: IamStore) {
+    // Recarga el consumo cuando cambia el usuario autenticado (datos propios por usuario)
+    effect(() => {
+      const userId = iamStore.currentUserId();
+      if (userId) {
+        this.loadAll();
+      }
+    });
   }
 
   loadAll(): void {

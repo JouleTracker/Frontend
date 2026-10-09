@@ -64,11 +64,12 @@ export class HourlyChartComponent implements OnChanges {
     }
   };
 
+  // Inicia vacío: solo se dibuja con los datos reales de `energy-readings` (db.json)
   public lineChartData: ChartData<'line'> = {
-    labels: ['00:00', '03:00', '06:00', '10:00', '13:00', '16:00', '18:00', '21:00', '23:00'],
+    labels: [],
     datasets: [
       {
-        data: [0.8, 0.6, 1.2, 2.1, 1.9, 2.9, 3.8, 2.4, 1.3],
+        data: [],
         fill: true,
         borderColor: '#22c55e',
         backgroundColor: 'rgba(34, 197, 94, 0.28)',
@@ -78,12 +79,13 @@ export class HourlyChartComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['reading'] && this.reading && this.reading.labels.length > 0) {
+    if (changes['reading']) {
+      const hasData = this.reading && this.reading.labels && this.reading.labels.length > 0;
       this.lineChartData = {
-        labels: this.reading.labels,
+        labels: hasData ? this.reading!.labels : [],
         datasets: [
           {
-            data: this.reading.values,
+            data: hasData ? this.reading!.values : [],
             fill: true,
             borderColor: '#22c55e',
             backgroundColor: 'rgba(34, 197, 94, 0.28)',

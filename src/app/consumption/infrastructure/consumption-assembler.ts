@@ -22,9 +22,9 @@ export class ConsumptionSummaryAssembler {
       periodConsumptionDiff: resource.periodConsumptionDiff,
       currentPower: resource.currentPower,
       activeDevicesCount: resource.activeDevicesCount,
-      baselineMonthlyKwh: resource.baselineMonthlyKwh ?? 196.8,
-      savedKwhWeekly: resource.savedKwhWeekly ?? 9.71,
-      savedKwhMonthly: resource.savedKwhMonthly ?? 114.4
+      baselineMonthlyKwh: resource.baselineMonthlyKwh,
+      savedKwhWeekly: resource.savedKwhWeekly,
+      savedKwhMonthly: resource.savedKwhMonthly
     });
   }
 }

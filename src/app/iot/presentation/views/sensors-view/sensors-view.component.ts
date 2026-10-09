@@ -1,22 +1,39 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SensorsStore } from '../../../application/sensors.store';
 import { Sensor } from '../../../domain/model/sensor.entity';
-import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
+import { IamStore } from '../../../../iam/application/iam.store';
+import {
+  PlanUpgradeRequiredComponent
+} from '../../../../shared/presentation/components/plan-upgrade-required/plan-upgrade-required';
 
 @Component({
   selector: 'app-sensors-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, PlanUpgradeRequiredComponent],
   templateUrl: './sensors-view.component.html',
   styleUrls: ['./sensors-view.component.css'],
 })
 export class SensorsViewComponent {
   private readonly router = inject(Router);
   readonly store = inject(SensorsStore);
+  private readonly iamStore = inject(IamStore);
+
+  /** Módulo de sensores bloqueado para el plan Starter */
+  readonly canAccessSensors = this.iamStore.canAccessSensors;
+
+  /** Límite de sensores del plan actual (Starter 0, Plus 3, Pro ilimitado) */
+  readonly sensorLimit = this.store.sensorLimit;
+  readonly canAddSensor = this.store.canAddSensor;
+
+  readonly sensorLimitLabel = computed(() => {
+    const limit = this.sensorLimit();
+    const count = this.store.sensorCount();
+    return Number.isFinite(limit) ? `${count} de ${limit}` : `${count} de ilimitados`;
+  });
 
   readonly filters: string[] = ['Todos', 'Monitoreando', 'Sin asignar', 'En línea'];
 
