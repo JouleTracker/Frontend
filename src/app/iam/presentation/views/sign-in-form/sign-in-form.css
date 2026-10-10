@@ -388,4 +388,35 @@
   .login-promo {
     display: none;
   }
+
+  .demo-details {
+    margin-bottom: 16px;
+    font-size: 11px;
+    color: #4b5563;
+  }
+
+  .demo-summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #193826;
+    user-select: none;
+    outline: none;
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: #dbe4df;
+    border-radius: 6px;
+  }
+
+  .demo-content {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background-color: #ffffff;
+    border: 1px solid #dbe4df;
+    border-radius: 6px;
+  }
+
+  .demo-content p {
+    margin: 2px 0;
+    line-height: 1.4;
+  }
 }
