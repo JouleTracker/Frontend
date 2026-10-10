@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { SubscriptionPlan, User } from '../domain/model/user.entity';
 import { SignInCommand } from '../domain/model/sign-in.command';
 import { SignUpCommand } from '../domain/model/sign-up.command';
@@ -22,7 +22,11 @@ export class IamStore {
   readonly isSignedIn = computed(() => this._currentUser() !== null);
   readonly isAuthenticated = this.isSignedIn;
 
-  /** ID del usuario autenticado (cada usuario trabaja únicamente con sus propios datos) */
+  /** Roles y permisos especiales */
+  readonly isAdmin = computed(() => this._currentUser()?.role === 'admin');
+  readonly isBanned = computed(() => !!this._currentUser()?.banned);
+
+  /** ID del usuario autenticado */
   readonly currentUserId = computed(() => this._currentUser()?.id ?? null);
 
   // ── Gestión de Planes y Permisos ──────────────────────────────
@@ -30,18 +34,16 @@ export class IamStore {
     () => this._currentUser()?.plan ?? 'starter'
   );
 
-  // Permisos por nivel
   readonly hasPlusAccess = computed(() =>
     ['plus', 'pro'].includes(this.currentPlan())
   );
   readonly hasProAccess = computed(() => this.currentPlan() === 'pro');
 
-  // Límites según suscripción
   readonly deviceLimit = computed(() => {
     const plan = this.currentPlan();
     if (plan === 'starter') return 5;
     if (plan === 'plus') return 15;
-    return Infinity; // Pro sin límite
+    return Infinity;
   });
 
   readonly sensorLimit = computed(() => {
@@ -51,10 +53,8 @@ export class IamStore {
     return Infinity;
   });
 
-  /** Acceso al módulo de Sensores IoT (Starter lo tiene bloqueado) */
   readonly canAccessSensors = computed(() => this.sensorLimit() > 0);
 
-  /** Historial y reportes: Starter 7 días, Plus 30 días, Pro completo */
   readonly historyDaysLimit = computed(() => {
     const plan = this.currentPlan();
     if (plan === 'starter') return 7;
@@ -68,10 +68,18 @@ export class IamStore {
     return this.iamApi.signIn(request).pipe(
       tap((response) => {
         const user = SignInAssembler.toEntityFromResponse(response);
+
+        // Bloqueo de acceso si el usuario está baneado
+        if (user.banned) {
+          throw new Error('Tu cuenta se encuentra suspendida temporalmente por un administrador.');
+        }
+
         this._currentUser.set(user);
         this.persistSession(user);
 
-        this.router.navigate(['/inicio']).catch((err) => {
+        // Redirección condicionada por rol
+        const targetRoute = user.role === 'admin' ? '/admin' : '/inicio';
+        this.router.navigate([targetRoute]).catch((err) => {
           console.error('Error al navegar:', err);
         });
       })
@@ -93,17 +101,14 @@ export class IamStore {
     this.router.navigate(['/login']);
   }
 
-  // Actualiza el plan en memoria, en localStorage y en db.json
   updatePlan(newPlan: SubscriptionPlan): void {
     const current = this._currentUser();
     if (!current) return;
 
-    // Actualización optimista inmediata
     const updatedUser: User = { ...current, plan: newPlan };
     this._currentUser.set(updatedUser);
     this.persistSession(updatedUser);
 
-    // Persistencia en el backend (json-server)
     if (current.id) {
       this.iamApi.updateUserPlan(current.id, newPlan).subscribe({
         next: (savedUser) => {
@@ -116,7 +121,6 @@ export class IamStore {
     }
   }
 
-  // Actualiza el perfil en memoria, en localStorage y en db.json
   updateProfile(changes: Partial<User>): void {
     const current = this._currentUser();
     if (!current) return;
@@ -134,7 +138,6 @@ export class IamStore {
     }
   }
 
-  // ── Persistencia Local ────────────────────────────────────────
   private persistSession(user: User): void {
     localStorage.setItem(this.storageKey, JSON.stringify(user));
   }

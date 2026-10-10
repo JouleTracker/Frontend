@@ -1,0 +1,189 @@
+<div class="admin-wrapper">
+  <header class="admin-header">
+    <h2>{{ 'ADMIN.USERS_TITLE' | translate }}</h2>
+    <div class="tabs-nav">
+      <button
+        type="button"
+        [class.active]="selectedTab === 'users'"
+        (click)="selectedTab = 'users'">
+        {{ 'ADMIN.USERS_TITLE' | translate }}
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedTab === 'alert'"
+        (click)="selectedTab = 'alert'">
+        {{ 'ADMIN.ALERTS_TITLE' | translate }}
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedTab === 'recommendation'"
+        (click)="selectedTab = 'recommendation'">
+        {{ 'ADMIN.REC_TITLE' | translate }}
+      </button>
+    </div>
+  </header>
+
+  @if (notificationMessage) {
+    <div class="toast-banner">
+      {{ notificationMessage }}
+    </div>
+  }
+
+  <!-- TAB 1: Gestión de Usuarios y Baneos -->
+  @if (selectedTab === 'users') {
+    <section class="admin-card">
+      <h3>{{ 'ADMIN.USERS_TITLE' | translate }}</h3>
+      <div class="table-container">
+        <table class="table-users">
+          <thead>
+          <tr>
+            <th>{{ 'ADMIN.COL_ID' | translate }}</th>
+            <th>{{ 'ADMIN.COL_NAME' | translate }}</th>
+            <th>{{ 'ADMIN.COL_EMAIL' | translate }}</th>
+            <th>{{ 'ADMIN.COL_PLAN' | translate }}</th>
+            <th>{{ 'ADMIN.COL_STATUS' | translate }}</th>
+            <th>{{ 'ADMIN.COL_ACTION' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (u of users; track u.id) {
+              <tr>
+                <td>#{{ u.id }}</td>
+                <td><strong>{{ u.name }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td><span class="plan-pill">{{ u.plan | uppercase }}</span></td>
+                <td>
+                  <span class="badge" [class.badge-banned]="u.banned" [class.badge-active]="!u.banned">
+                    {{ (u.banned ? 'ADMIN.STATUS_BANNED' : 'ADMIN.STATUS_ACTIVE') | translate }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    [class.btn-danger]="!u.banned"
+                    [class.btn-success]="u.banned"
+                    (click)="toggleBan(u)">
+                    {{ (u.banned ? 'ADMIN.BTN_UNBAN' : 'ADMIN.BTN_BAN') | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  <!-- TAB 2: Enviar Alerta -->
+  @if (selectedTab === 'alert') {
+    <section class="admin-card form-card">
+      <h3>{{ 'ADMIN.ALERTS_TITLE' | translate }}</h3>
+      <form (ngSubmit)="submitAlert()">
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_TARGET_USER' | translate }}:</label>
+          <select [(ngModel)]="alertForm.userId" name="alertUser" required>
+            @for (u of users; track u.id) {
+              <option [value]="u.id">{{ u.name }} ({{ u.email }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_TITLE' | translate }}:</label>
+          <input
+            type="text"
+            [(ngModel)]="alertForm.title"
+            name="alertTitle"
+            required
+            placeholder="Pico de consumo anómalo" />
+        </div>
+
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_SEVERITY' | translate }}:</label>
+          <select [(ngModel)]="alertForm.severity" name="alertSeverity">
+            <option value="info">Info</option>
+            <option value="warning">Warning</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_MESSAGE' | translate }}:</label>
+          <textarea
+            [(ngModel)]="alertForm.description"
+            name="alertDesc"
+            rows="4"
+            required
+            placeholder="Escribe el detalle de la alerta que recibirá el usuario..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          {{ 'ADMIN.BTN_SEND_ALERT' | translate }}
+        </button>
+      </form>
+    </section>
+  }
+
+  <!-- TAB 3: Enviar Recomendación -->
+  @if (selectedTab === 'recommendation') {
+    <section class="admin-card form-card">
+      <h3>{{ 'ADMIN.REC_TITLE' | translate }}</h3>
+      <form (ngSubmit)="submitRecommendation()">
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_TARGET_USER' | translate }}:</label>
+          <select [(ngModel)]="recForm.userId" name="recUser" required>
+            @for (u of users; track u.id) {
+              <option [value]="u.id">{{ u.name }} ({{ u.email }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_TITLE' | translate }}:</label>
+          <input
+            type="text"
+            [(ngModel)]="recForm.title"
+            name="recTitle"
+            required
+            placeholder="Optimización de temperatura nocturna" />
+        </div>
+
+        <div class="form-row">
+          <div class="field col">
+            <label>{{ 'ADMIN.FIELD_CATEGORY' | translate }}:</label>
+            <input
+              type="text"
+              [(ngModel)]="recForm.category"
+              name="recCategory"
+              required
+              placeholder="Climatización / Cocina" />
+          </div>
+
+          <div class="field col">
+            <label>{{ 'ADMIN.FIELD_SAVINGS' | translate }}:</label>
+            <input
+              type="number"
+              step="0.1"
+              [(ngModel)]="recForm.estimatedSavingsKwh"
+              name="recSavings"
+              required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>{{ 'ADMIN.FIELD_DESCRIPTION' | translate }}:</label>
+          <textarea
+            [(ngModel)]="recForm.description"
+            name="recDesc"
+            rows="4"
+            required
+            placeholder="Describe la recomendación técnica para reducir el consumo..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          {{ 'ADMIN.BTN_SEND_REC' | translate }}
+        </button>
+      </form>
+    </section>
+  }
+</div>

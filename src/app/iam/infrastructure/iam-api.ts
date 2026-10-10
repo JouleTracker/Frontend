@@ -16,17 +16,20 @@ export class IamApi {
   private readonly baseUrl = environment.apiBaseUrl;
 
   signIn(request: SignInRequest): Observable<SignInResponse> {
-    const url = `${SignInApiEndpoint.getEndpoint()}?email=${encodeURIComponent(
-      request.email
-    )}&password=${encodeURIComponent(request.password)}`;
+    const url = `${this.baseUrl}/users?email=${encodeURIComponent(
+      request.email.trim().toLowerCase()
+    )}&password=${encodeURIComponent(request.password.trim())}`;
+
+    console.log('IamApi URL solicitada:', url);
 
     return this.http.get<any[]>(url).pipe(
       map((users) => {
+        console.log('Respuesta recibida de json-server:', users);
+
         if (!users || users.length === 0) {
           throw new Error('Credenciales incorrectas');
         }
         const user = users[0];
-        // Nunca se expone la contraseña en la sesión del cliente
         const { password: _password, verificationCode: _code, ...userWithoutSecrets } = user;
         return {
           ...userWithoutSecrets,

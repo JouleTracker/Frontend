@@ -50,6 +50,18 @@
         "location": "Santiago de Surco",
         "tariff": "BT5B"
       }
+    },
+    {
+      "name": "Administrador",
+      "email": "admin@jouletracker.com",
+      "password": "Admin2026",
+      "role": "admin",
+      "plan": "pro",
+      "verified": true,
+      "verificationCode": null,
+      "banned": false,
+      "id": 99,
+      "phone": "999888777"
     }
   ],
   "consumption-summaries": [

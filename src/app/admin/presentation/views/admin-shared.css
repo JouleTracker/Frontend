@@ -1,0 +1,212 @@
+/* ── Reset General y Contenedor JouleTracker ── */
+.admin-wrapper,
+.admin-page {
+  padding: 32px 40px;
+  background-color: #eef3f0;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.admin-header h1,
+.admin-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+/* ── Pestañas (Sin azul activo) ── */
+.tabs,
+.tabs-nav {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #dbe4df;
+  margin-top: 16px;
+  padding-bottom: 2px;
+}
+
+.tabs button,
+.tabs-nav button {
+  background: transparent !important;
+  border: none !important;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280 !important;
+  padding: 8px 4px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent !important;
+}
+
+.tabs button.active,
+.tabs-nav button.active {
+  color: #111827 !important;
+  font-weight: 700;
+  border-bottom: 2px solid #0c2014 !important;
+}
+
+/* ── Tarjeta Contenedora ── */
+.admin-card,
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+  margin-top: 20px;
+  max-width: 800px;
+}
+
+/* ── Tabla ── */
+.admin-table,
+.table-users {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-table th,
+.table-users th {
+  background: #f4f5f6;
+  color: #374151;
+  font-size: 12px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.admin-table td,
+.table-users td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+/* ── Badges Estado ── */
+.badge,
+.tag-active,
+.tag-banned {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-active,
+.tag-active {
+  background-color: #c7e5cf !important;
+  color: #193826 !important;
+}
+
+.badge-banned,
+.tag-banned {
+  background-color: #e5e7eb !important;
+  color: #4b5563 !important;
+}
+
+/* ── Inputs y Formularios ── */
+.field,
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label,
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.field input,
+.field select,
+.field textarea,
+.form-group input,
+.form-group select,
+.form-group textarea {
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #0c2014 !important;
+  box-shadow: 0 0 0 2px rgba(12, 32, 20, 0.12) !important;
+}
+
+/* ── ELIMINACIÓN DE AZULES: Botones de Enviar Alerta / Recomendación ── */
+button.btn-primary,
+button[type="submit"],
+.btn-action {
+  background-color: #0c2014 !important; /* Verde oscuro bosque JouleTracker */
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+button.btn-primary:hover,
+button[type="submit"]:hover {
+  opacity: 0.9 !important;
+}
+
+/* ── ELIMINACIÓN DE ROJOS: Botón Banear ── */
+button.btn-danger {
+  background-color: #1f2937 !important; /* Grafito neutro */
+  color: #ffffff !important;
+  border: 1px solid #111827 !important;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.btn-danger:hover {
+  background-color: #111827 !important;
+}
+
+/* ── Botón Desbanear ── */
+button.btn-success,
+button.btn-restore {
+  background-color: #c7e5cf !important; /* Salvia JouleTracker */
+  color: #193826 !important;
+  border: 1px solid #b2d8bc !important;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.btn-success:hover {
+  background-color: #b7ddbf !important;
+}
+
+/* ── Toast de confirmación ── */
+.toast-banner,
+.toast-success {
+  background-color: #c7e5cf;
+  color: #193826;
+  border: 1px solid #b2d8bc;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}

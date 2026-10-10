@@ -10,7 +10,10 @@
     "SETTINGS": "Configuración",
     "ECO_TITLE": "Pequeñas acciones, grandes cambios",
     "ECO_DESC": "Un hogar más eficiente también cuida el planeta",
-    "LOGOUT": "Cerrar sesión"
+    "LOGOUT": "Cerrar sesión",
+    "ADMIN_USERS": "Gestión de Usuarios",
+    "ADMIN_ALERTS": "Enviar Alertas",
+    "ADMIN_RECOMMENDATIONS": "Enviar Recomendaciones"
   },
   "COMMON": {
     "SEARCH": "Buscar...",
@@ -221,5 +224,32 @@
     "REGISTER_LINK": "Regístrate aquí",
     "LOGIN_LINK": "Inicia sesión",
     "TERMS_AGREE": "Acepto los términos y condiciones del servicio"
+  },
+  "ADMIN": {
+    "USERS_TITLE": "Gestión de Usuarios",
+    "USERS_SUBTITLE": "Administra las cuentas registradas y restringe accesos a la plataforma",
+    "COL_ID": "ID",
+    "COL_NAME": "Nombre",
+    "COL_EMAIL": "Correo Electrónico",
+    "COL_PLAN": "Plan",
+    "COL_STATUS": "Estado",
+    "COL_ACTION": "Acción",
+    "STATUS_ACTIVE": "Activo",
+    "STATUS_BANNED": "Baneado",
+    "BTN_BAN": "Banear",
+    "BTN_UNBAN": "Desbanear",
+    "ALERTS_TITLE": "Emitir Alertas",
+    "ALERTS_SUBTITLE": "Envía advertencias y avisos de consumo directamente a los clientes",
+    "FIELD_TARGET_USER": "Usuario Destino",
+    "FIELD_TITLE": "Título",
+    "FIELD_SEVERITY": "Severidad",
+    "FIELD_MESSAGE": "Mensaje / Detalle",
+    "BTN_SEND_ALERT": "Emitir Alerta",
+    "REC_TITLE": "Enviar Recomendaciones",
+    "REC_SUBTITLE": "Genera consejos de ahorro energético personalizados para cada usuario",
+    "FIELD_CATEGORY": "Categoría",
+    "FIELD_SAVINGS": "Ahorro Estimado (kWh)",
+    "FIELD_DESCRIPTION": "Descripción",
+    "BTN_SEND_REC": "Enviar Recomendación"
   }
 }

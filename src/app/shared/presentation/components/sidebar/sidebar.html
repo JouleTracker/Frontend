@@ -1,4 +1,3 @@
-<!-- Mobile Top Header Bar (solo visible en <= 768px) -->
 <header class="mobile-top-bar" aria-label="Encabezado móvil">
   <button
     type="button"
@@ -69,7 +68,7 @@
   </div>
 
   <div class="sidebar-top">
-    <!-- JouleTracker Brand Logo & Language Switcher (Visible en Desktop) -->
+    <!-- JouleTracker Brand Logo & Language Switcher (Desktop) -->
     <div class="sidebar-header desktop-only">
       <a routerLink="/inicio" class="logo-link" aria-label="JouleTracker Home">
         <img
@@ -99,14 +98,14 @@
       </div>
     </div>
 
-    <!-- Navigation List with Angular Material -->
+    <!-- Navegación con Angular Material -->
     <nav class="sidebar-nav">
       <mat-nav-list class="nav-list">
-        @for (item of navItems; track item.link) {
+        @for (item of navItems(); track item.translationKey) {
           <a mat-list-item
              [routerLink]="item.link"
              routerLinkActive="active"
-             [routerLinkActiveOptions]="{ exact: item.link === '/inicio' }"
+             [routerLinkActiveOptions]="{ exact: item.link === '/inicio' || item.link === '/admin' }"
              class="nav-item"
              [class.locked-item]="isLocked(item.minPlan)"
              (click)="closeMobileDrawer()">
@@ -125,16 +124,18 @@
     </nav>
   </div>
 
-  <!-- Eco banner card -->
-  <div class="sidebar-eco-card">
-    <div class="eco-icon-wrapper">
-      <mat-icon class="eco-icon">eco</mat-icon>
+  <!-- Eco banner card (oculto para administradores) -->
+  @if (!iamStore.isAdmin()) {
+    <div class="sidebar-eco-card">
+      <div class="eco-icon-wrapper">
+        <mat-icon class="eco-icon">eco</mat-icon>
+      </div>
+      <strong class="eco-title">{{ 'SIDEBAR.ECO_TITLE' | translate }}</strong>
+      <p class="eco-desc">{{ 'SIDEBAR.ECO_DESC' | translate }}</p>
     </div>
-    <strong class="eco-title">{{ 'SIDEBAR.ECO_TITLE' | translate }}</strong>
-    <p class="eco-desc">{{ 'SIDEBAR.ECO_DESC' | translate }}</p>
-  </div>
+  }
 
-  <!-- User Profile Section at Bottom -->
+  <!-- Perfil de usuario en el pie -->
   <div class="sidebar-footer">
     <div class="user-card">
       <div class="user-info-wrapper">
@@ -144,7 +145,7 @@
         <div class="user-details">
           <div class="name-plan-row">
             <span class="user-name">{{ user().name }}</span>
-            <span class="user-plan-pill">{{ user().plan | uppercase }}</span>
+            <span class="user-plan-pill">{{ user().role === 'admin' ? 'ADMIN' : (user().plan | uppercase) }}</span>
           </div>
           <span class="user-email">{{ user().email }}</span>
         </div>

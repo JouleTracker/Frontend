@@ -20,6 +20,7 @@ export interface User {
   role?: string;
   token?: string;
   verified?: boolean;
+  banned?: boolean;
   plan?: SubscriptionPlan;
   phone?: string;
   home?: UserHome;

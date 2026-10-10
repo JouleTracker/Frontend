@@ -34,15 +34,13 @@ export interface NavItem {
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  private readonly iamStore = inject(IamStore);
+  readonly iamStore = inject(IamStore);
   private readonly translate = inject(TranslateService);
 
-  // Idioma actual detectado de localStorage o por defecto 'es'
   readonly currentLang = signal<string>(
     localStorage.getItem('joule_lang') || 'es'
   );
 
-  // Control del drawer/sidenav en versión mobile
   readonly isMobileDrawerOpen = signal<boolean>(false);
 
   toggleMobileDrawer(): void {
@@ -53,21 +51,32 @@ export class Sidebar {
     this.isMobileDrawerOpen.set(false);
   }
 
-  readonly navItems: NavItem[] = [
-    { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
-    { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
-    { link: '/dispositivos', translationKey: 'SIDEBAR.DEVICES', icon: 'devices' },
-    { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
-    { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
-    { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },
-    {
-      link: '/recomendaciones',
-      translationKey: 'SIDEBAR.RECOMMENDATIONS',
-      icon: 'favorite_border',
-      minPlan: 'plus',
-    },
-    { link: '/configuracion', translationKey: 'SIDEBAR.SETTINGS', icon: 'settings' },
-  ];
+  // Lista calculada: Si es admin, solo muestra las 3 herramientas de gestión
+  readonly navItems = computed<NavItem[]>(() => {
+    if (this.iamStore.isAdmin()) {
+      return [
+        { link: '/admin/usuarios', translationKey: 'SIDEBAR.ADMIN_USERS', icon: 'manage_accounts' },
+        { link: '/admin/alertas', translationKey: 'SIDEBAR.ADMIN_ALERTS', icon: 'notification_add' },
+        { link: '/admin/recomendaciones', translationKey: 'SIDEBAR.ADMIN_RECOMMENDATIONS', icon: 'tips_and_updates' }
+      ];
+    }
+
+    return [
+      { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
+      { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
+      { link: '/dispositivos', translationKey: 'SIDEBAR.DEVICES', icon: 'devices' },
+      { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
+      { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
+      { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },
+      {
+        link: '/recomendaciones',
+        translationKey: 'SIDEBAR.RECOMMENDATIONS',
+        icon: 'favorite_border',
+        minPlan: 'plus',
+      },
+      { link: '/configuracion', translationKey: 'SIDEBAR.SETTINGS', icon: 'settings' },
+    ];
+  });
 
   readonly currentPlan = this.iamStore.currentPlan;
 
@@ -76,6 +85,7 @@ export class Sidebar {
     return {
       name: currentUser?.name || 'Usuario',
       email: currentUser?.email || 'sin-correo@jouletracker.com',
+      role: currentUser?.role || 'homeowner',
       plan: this.currentPlan(),
     };
   });

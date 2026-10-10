@@ -10,7 +10,10 @@
     "SETTINGS": "Settings",
     "ECO_TITLE": "Small actions, big changes",
     "ECO_DESC": "A more efficient home also cares for the planet",
-    "LOGOUT": "Log out"
+    "LOGOUT": "Log out",
+    "ADMIN_USERS": "User Management",
+    "ADMIN_ALERTS": "Send Alerts",
+    "ADMIN_RECOMMENDATIONS": "Send Recommendations"
   },
   "COMMON": {
     "SEARCH": "Search...",
@@ -221,5 +224,32 @@
     "REGISTER_LINK": "Register here",
     "LOGIN_LINK": "Log in",
     "TERMS_AGREE": "I agree to the terms and conditions of service"
+  },
+  "ADMIN": {
+    "USERS_TITLE": "User Management",
+    "USERS_SUBTITLE": "Manage registered accounts and restrict platform access",
+    "COL_ID": "ID",
+    "COL_NAME": "Name",
+    "COL_EMAIL": "Email",
+    "COL_PLAN": "Plan",
+    "COL_STATUS": "Status",
+    "COL_ACTION": "Action",
+    "STATUS_ACTIVE": "Active",
+    "STATUS_BANNED": "Banned",
+    "BTN_BAN": "Ban User",
+    "BTN_UNBAN": "Unban User",
+    "ALERTS_TITLE": "Broadcast Alerts",
+    "ALERTS_SUBTITLE": "Send operational warnings and notifications directly to homeowners",
+    "FIELD_TARGET_USER": "Target User",
+    "FIELD_TITLE": "Title",
+    "FIELD_SEVERITY": "Severity",
+    "FIELD_MESSAGE": "Message / Details",
+    "BTN_SEND_ALERT": "Send Alert",
+    "REC_TITLE": "Send Recommendations",
+    "REC_SUBTITLE": "Create customized energy saving tips for specific clients",
+    "FIELD_CATEGORY": "Category",
+    "FIELD_SAVINGS": "Estimated Savings (kWh)",
+    "FIELD_DESCRIPTION": "Description",
+    "BTN_SEND_REC": "Send Recommendation"
   }
 }
