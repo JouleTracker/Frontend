@@ -1,0 +1,296 @@
+<div class="areas-container">
+
+  <!-- Header Section -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">{{ 'AREAS.TITLE' | translate }}</h1>
+      <p class="page-subtitle">{{ 'AREAS.SUBTITLE' | translate }}</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-primary" (click)="openCreateModal()">
+        <mat-icon>add</mat-icon>
+        <span>{{ 'AREAS.ADD_AREA' | translate }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metric Cards Row -->
+  <section class="summary-cards" aria-label="Métricas de áreas del negocio">
+    <article class="metric-card">
+      <div class="card-icon icon-bg-gray">
+        <mat-icon>domain</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">{{ 'AREAS.TOTAL_AREAS' | translate }}</span>
+        <div class="card-value">{{ store.totalAreas() }}</div>
+        <span class="card-subtext">{{ 'AREAS.ZONES_COUNT' | translate }}</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>bolt</mat-icon>
+      </div>
+      <div class="card-content">
+        <div class="card-value">{{ store.totalPowerKw() }} kW</div>
+        <span class="card-label">{{ 'CONSUMPTION.CURRENT_POWER' | translate }}</span>
+        <span class="card-subtext">{{ 'CONSUMPTION.REAL_TIME' | translate }}</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="card-icon icon-bg-green">
+        <mat-icon>bar_chart</mat-icon>
+      </div>
+      <div class="card-content">
+        <div class="card-value">{{ store.totalTodayKwh() }} kWh</div>
+        <span class="card-label">{{ 'AREAS.TOTAL_CONSUMPTION' | translate }}</span>
+        <span class="card-subtext">S/ {{ store.totalTodayCostSoles() | number:'1.2-2' }} hoy</span>
+      </div>
+    </article>
+
+    <article class="metric-card">
+      <div class="card-icon icon-bg-orange">
+        <mat-icon>trending_up</mat-icon>
+      </div>
+      <div class="card-content">
+        <span class="card-label">{{ 'AREAS.HIGHEST_CONSUMPTION' | translate }}</span>
+        <div class="card-value highlight-area">{{ store.topConsumingArea()?.area?.name ?? 'Sin datos' }}</div>
+        <span class="card-subtext">{{ store.topConsumingArea()?.todayKwh ?? 0 }} kWh hoy</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Comparison Chart Section (US-33) -->
+  <section class="chart-section-card">
+    <div class="section-card-header">
+      <div>
+        <h2 class="section-title">{{ 'AREAS.COMPARISON_TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'AREAS.COMPARISON_SUBTITLE' | translate }}</p>
+      </div>
+      <span class="badge-kwh">kWh acumulado hoy</span>
+    </div>
+
+    @if (store.areas().length > 0) {
+      <app-areas-comparison-chart [items]="store.areasWithMetrics()"></app-areas-comparison-chart>
+    } @else {
+      <div class="empty-chart-notice">
+        <mat-icon>info</mat-icon>
+        <p>{{ 'AREAS.NO_AREAS_YET' | translate }}</p>
+      </div>
+    }
+  </section>
+
+  <!-- Areas Grid Section (US-31) -->
+  <section class="areas-grid-section">
+    <div class="grid-header">
+      <h2>{{ 'AREAS.REGISTERED_AREAS' | translate }}</h2>
+      <span class="areas-count-badge">{{ store.totalAreas() }} áreas</span>
+    </div>
+
+    @if (store.loading()) {
+      <div class="loading-state">
+        <mat-icon class="spin-icon">autorenew</mat-icon>
+        <p>{{ 'COMMON.LOADING' | translate }}</p>
+      </div>
+    } @else {
+      <div class="areas-grid">
+        @for (item of store.areasWithMetrics(); track item.area.id) {
+          <article class="area-card" [class.area-no-devices]="!item.hasDevices">
+            <header class="area-card-header">
+              <div class="area-icon-box">
+                <mat-icon>{{ item.area.icon }}</mat-icon>
+              </div>
+              <div class="area-header-info">
+                <div class="area-title-row">
+                  <h3 class="area-name">{{ item.area.name }}</h3>
+                  <span class="floor-badge">{{ item.area.floor }}</span>
+                </div>
+                @if (item.area.description) {
+                  <p class="area-description">{{ item.area.description }}</p>
+                }
+              </div>
+            </header>
+
+            <div class="area-metrics-body">
+              <div class="metric-item">
+                <span class="m-label">{{ 'IOT.COL_TODAY' | translate }}</span>
+                <span class="m-val">{{ item.todayKwh | number:'1.2-2' }} kWh</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">{{ 'CONSUMPTION.CURRENT_POWER' | translate }}</span>
+                <span class="m-val">{{ item.currentPowerKw | number:'1.2-2' }} kW</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">{{ 'CONSUMPTION.ESTIMATED_COST' | translate }}</span>
+                <span class="m-val">S/ {{ item.todayCostSoles | number:'1.2-2' }}</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">{{ 'DEVICES.TITLE' | translate }}</span>
+                <span class="m-val">{{ item.deviceCount }}</span>
+              </div>
+            </div>
+
+            @if (!item.hasDevices) {
+              <div class="no-devices-banner">
+                <mat-icon>info_outline</mat-icon>
+                <span>{{ 'AREAS.NO_DEVICES_LINKED' | translate }}</span>
+              </div>
+            }
+
+            <footer class="area-card-actions">
+              <button
+                type="button"
+                class="btn-card-action btn-edit"
+                (click)="openEditModal(item.area)"
+                [attr.aria-label]="'COMMON.EDIT' | translate">
+                <mat-icon>edit</mat-icon>
+                <span>{{ 'COMMON.EDIT' | translate }}</span>
+              </button>
+              <button
+                type="button"
+                class="btn-card-action btn-delete"
+                (click)="openDeleteModal(item.area)"
+                [attr.aria-label]="'COMMON.DELETE' | translate">
+                <mat-icon>delete_outline</mat-icon>
+                <span>{{ 'COMMON.DELETE' | translate }}</span>
+              </button>
+            </footer>
+          </article>
+        } @empty {
+          <div class="empty-state-box">
+            <mat-icon class="empty-icon">domain_disabled</mat-icon>
+            <h3>{{ 'AREAS.NO_AREAS_YET' | translate }}</h3>
+            <p>{{ 'AREAS.EMPTY_DESC' | translate }}</p>
+            <button type="button" class="btn-primary" (click)="openCreateModal()">
+              <mat-icon>add</mat-icon>
+              <span>{{ 'AREAS.ADD_FIRST_AREA' | translate }}</span>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Modal: Crear / Editar Área (US-31) -->
+  @if (showModal()) {
+    <div class="modal-backdrop" (click)="closeModal()" aria-hidden="true"></div>
+    <div class="modal-container" role="dialog" aria-modal="true" [attr.aria-labelledby]="'modal-title'">
+      <header class="modal-header">
+        <h2 id="modal-title">{{ (isEditing() ? 'AREAS.EDIT_TITLE' : 'AREAS.CREATE_TITLE') | translate }}</h2>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar modal">
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+
+      <form [formGroup]="form" (ngSubmit)="saveArea()" class="modal-form">
+        @if (formError()) {
+          <div class="form-error-banner">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ formError() }}</span>
+          </div>
+        }
+
+        <!-- Nombre del Área (Requerido) -->
+        <div class="form-group">
+          <label for="areaName" class="form-label">
+            {{ 'AREAS.NAME_LABEL' | translate }} <span class="required">*</span>
+          </label>
+          <input
+            id="areaName"
+            type="text"
+            formControlName="name"
+            class="form-input"
+            [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
+            placeholder="Ej. Cocina, Almacén, Zona de Ventas, Terraza"
+          />
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <span class="field-error">{{ 'AREAS.NAME_REQUIRED' | translate }}</span>
+          }
+        </div>
+
+        <!-- Piso / Nivel -->
+        <div class="form-group">
+          <label for="areaFloor" class="form-label">
+            {{ 'AREAS.FLOOR_LABEL' | translate }} <span class="required">*</span>
+          </label>
+          <select id="areaFloor" formControlName="floor" class="form-select">
+            @for (f of availableFloors; track f) {
+              <option [value]="f">{{ f }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+          <label for="areaDesc" class="form-label">
+            {{ 'AREAS.DESC_LABEL' | translate }}
+          </label>
+          <textarea
+            id="areaDesc"
+            formControlName="description"
+            rows="2"
+            class="form-textarea"
+            placeholder="Detalle de actividades o equipos principales en esta zona..."
+          ></textarea>
+        </div>
+
+        <!-- Selector de Ícono -->
+        <div class="form-group">
+          <label class="form-label">{{ 'AREAS.ICON_LABEL' | translate }}</label>
+          <div class="icon-selector-grid">
+            @for (ic of availableIcons; track ic) {
+              <button
+                type="button"
+                class="icon-option-btn"
+                [class.selected]="form.controls.icon.value === ic"
+                (click)="form.controls.icon.setValue(ic)">
+                <mat-icon>{{ ic }}</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="closeModal()" [disabled]="isSubmitting()">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="form.invalid || isSubmitting()">
+            @if (isSubmitting()) {
+              <mat-icon class="spin-icon">autorenew</mat-icon>
+              <span>{{ 'COMMON.LOADING' | translate }}</span>
+            } @else {
+              <mat-icon>check</mat-icon>
+              <span>{{ (isEditing() ? 'COMMON.SAVE' : 'AREAS.ADD_AREA') | translate }}</span>
+            }
+          </button>
+        </footer>
+      </form>
+    </div>
+  }
+
+  <!-- Modal: Confirmar Eliminación -->
+  @if (showDeleteModal()) {
+    <div class="modal-backdrop" (click)="closeDeleteModal()" aria-hidden="true"></div>
+    <div class="modal-container delete-modal" role="dialog" aria-modal="true">
+      <div class="delete-icon-box">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <h3>{{ 'AREAS.DELETE_CONFIRM_TITLE' | translate }}</h3>
+      <p>
+        ¿Estás seguro de que deseas eliminar el área
+        <strong>"{{ areaToDelete()?.name }}"</strong>? Los dispositivos asignados no serán eliminados.
+      </p>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeDeleteModal()">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button" class="btn-danger" (click)="confirmDelete()">
+          {{ 'COMMON.DELETE' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+</div>

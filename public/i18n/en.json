@@ -13,7 +13,8 @@
     "LOGOUT": "Log out",
     "ADMIN_USERS": "User Management",
     "ADMIN_ALERTS": "Send Alerts",
-    "ADMIN_RECOMMENDATIONS": "Send Recommendations"
+    "ADMIN_RECOMMENDATIONS": "Send Recommendations",
+    "AREAS": "Areas"
   },
   "COMMON": {
     "SEARCH": "Search...",
@@ -251,5 +252,29 @@
     "FIELD_SAVINGS": "Estimated Savings (kWh)",
     "FIELD_DESCRIPTION": "Description",
     "BTN_SEND_REC": "Send Recommendation"
+  },
+  "AREAS": {
+    "TITLE": "Business Areas",
+    "SUBTITLE": "Organize your facility into physical zones and analyze electricity consumption by area.",
+    "ADD_AREA": "Add Area",
+    "TOTAL_AREAS": "Registered Areas",
+    "ZONES_COUNT": "Monitored spaces",
+    "TOTAL_CONSUMPTION": "Total Areas Energy",
+    "HIGHEST_CONSUMPTION": "Highest Consuming Area",
+    "COMPARISON_TITLE": "Energy Comparison by Area",
+    "COMPARISON_SUBTITLE": "Compare energy consumed today between the different zones of your business.",
+    "REGISTERED_AREAS": "Zones & Physical Spaces",
+    "NO_AREAS_YET": "No areas registered yet",
+    "EMPTY_DESC": "Register zones for your business (e.g. Kitchen, Warehouse, Sales) to organize appliances and compare energy usage.",
+    "ADD_FIRST_AREA": "Register first area",
+    "NO_DEVICES_LINKED": "No devices linked to this zone (0.00 kWh)",
+    "EDIT_TITLE": "Edit Area",
+    "CREATE_TITLE": "Register New Area",
+    "NAME_LABEL": "Area / Zone Name",
+    "NAME_REQUIRED": "Area name is required (minimum 2 characters).",
+    "FLOOR_LABEL": "Floor / Level",
+    "DESC_LABEL": "Description of activities or equipment",
+    "ICON_LABEL": "Representative Icon",
+    "DELETE_CONFIRM_TITLE": "Delete Area"
   }
 }

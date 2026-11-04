@@ -11,6 +11,9 @@ const consumptionRoutes = () =>
 const devicesRoutes = () =>
   import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
 
+const businessRoutes = () =>
+  import('./business/presentation/business.routes').then((m) => m.businessRoutes);
+
 const iotRoutes = () =>
   import('./iot/presentation/iot.routes').then((m) => m.iotRoutes);
 
@@ -64,16 +67,17 @@ export const routes: Routes = [
   },
 
   // ── Rutas Homeowner ──
-  { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle}Inicio` },
+  { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard, homeownerGuard] },
+  { path: 'areas', loadChildren: businessRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Áreas` },
   { path: 'sensores', loadChildren: iotRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'alertas', loadChildren: alertsRoutes, canActivate: [iamGuard, homeownerGuard] },
-  { path: 'recomendaciones', loadChildren: recommendationsRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle}Recomendaciones` },
+  { path: 'recomendaciones', loadChildren: recommendationsRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Recomendaciones` },
   { path: 'recommendations', redirectTo: 'recomendaciones', pathMatch: 'full' },
-  { path: 'reportes', loadChildren: reportsRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle}Reportes` },
+  { path: 'reportes', loadChildren: reportsRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Reportes` },
   { path: 'reports', redirectTo: 'reportes', pathMatch: 'full' },
-  { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle}Configuración` },
+  { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Configuración` },
 
   // ── IAM ──
   {

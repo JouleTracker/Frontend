@@ -65,6 +65,7 @@ export class Sidebar {
       { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
       { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
       { link: '/dispositivos', translationKey: 'SIDEBAR.DEVICES', icon: 'devices' },
+      { link: '/areas', translationKey: 'SIDEBAR.AREAS', icon: 'domain' },
       { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
       { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
       { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },

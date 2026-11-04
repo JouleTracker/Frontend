@@ -113,85 +113,265 @@
       "id": 1,
       "userId": 1,
       "period": "dia",
-      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
-      "values": [0.45, 0.32, 0.58, 1.25, 0.95, 0.88, 2.1, 1.65, 0.72]
+      "labels": [
+        "00:00",
+        "03:00",
+        "06:00",
+        "09:00",
+        "12:00",
+        "15:00",
+        "18:00",
+        "21:00",
+        "23:00"
+      ],
+      "values": [
+        0.45,
+        0.32,
+        0.58,
+        1.25,
+        0.95,
+        0.88,
+        2.1,
+        1.65,
+        0.72
+      ]
     },
     {
       "id": 2,
       "userId": 1,
       "period": "semana",
-      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-      "values": [5.8, 6.2, 5.4, 6.9, 7.1, 6, 5.2]
+      "labels": [
+        "Lun",
+        "Mar",
+        "Mié",
+        "Jue",
+        "Vie",
+        "Sáb",
+        "Dom"
+      ],
+      "values": [
+        5.8,
+        6.2,
+        5.4,
+        6.9,
+        7.1,
+        6,
+        5.2
+      ]
     },
     {
       "id": 3,
       "userId": 1,
       "period": "mes",
-      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
-      "values": [42.6, 45.1, 47.8, 49]
+      "labels": [
+        "Sem 1",
+        "Sem 2",
+        "Sem 3",
+        "Sem 4"
+      ],
+      "values": [
+        42.6,
+        45.1,
+        47.8,
+        49
+      ]
     },
     {
       "id": 4,
       "userId": 1,
       "period": "ano",
-      "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct"],
-      "values": [195.2, 188, 192.4, 185.1, 180.6, 178.2, 175, 182.4, 181, 184.5]
+      "labels": [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Oct"
+      ],
+      "values": [
+        195.2,
+        188,
+        192.4,
+        185.1,
+        180.6,
+        178.2,
+        175,
+        182.4,
+        181,
+        184.5
+      ]
     },
     {
       "id": 5,
       "userId": 2,
       "period": "dia",
-      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
-      "values": [0.1, 0.1, 0.15, 0.4, 2.2, 0.3, 0.8, 0.2, 0.1]
+      "labels": [
+        "00:00",
+        "03:00",
+        "06:00",
+        "09:00",
+        "12:00",
+        "15:00",
+        "18:00",
+        "21:00",
+        "23:00"
+      ],
+      "values": [
+        0.1,
+        0.1,
+        0.15,
+        0.4,
+        2.2,
+        0.3,
+        0.8,
+        0.2,
+        0.1
+      ]
     },
     {
       "id": 6,
       "userId": 2,
       "period": "semana",
-      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-      "values": [3.2, 3.5, 4, 3.8, 4.5, 4.8, 4.7]
+      "labels": [
+        "Lun",
+        "Mar",
+        "Mié",
+        "Jue",
+        "Vie",
+        "Sáb",
+        "Dom"
+      ],
+      "values": [
+        3.2,
+        3.5,
+        4,
+        3.8,
+        4.5,
+        4.8,
+        4.7
+      ]
     },
     {
       "id": 7,
       "userId": 2,
       "period": "mes",
-      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
-      "values": [25, 28.5, 0, 0]
+      "labels": [
+        "Sem 1",
+        "Sem 2",
+        "Sem 3",
+        "Sem 4"
+      ],
+      "values": [
+        25,
+        28.5,
+        0,
+        0
+      ]
     },
     {
       "id": 8,
       "userId": 2,
       "period": "ano",
-      "labels": ["Ago", "Set", "Oct"],
-      "values": [110, 115.4, 28.5]
+      "labels": [
+        "Ago",
+        "Set",
+        "Oct"
+      ],
+      "values": [
+        110,
+        115.4,
+        28.5
+      ]
     },
     {
       "id": 9,
       "userId": 3,
       "period": "dia",
-      "labels": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"],
-      "values": [0.15, 0.12, 0.18, 1.15, 1.32, 1.28, 1.05, 0.45, 0.22]
+      "labels": [
+        "00:00",
+        "03:00",
+        "06:00",
+        "09:00",
+        "12:00",
+        "15:00",
+        "18:00",
+        "21:00",
+        "23:00"
+      ],
+      "values": [
+        0.15,
+        0.12,
+        0.18,
+        1.15,
+        1.32,
+        1.28,
+        1.05,
+        0.45,
+        0.22
+      ]
     },
     {
       "id": 10,
       "userId": 3,
       "period": "semana",
-      "labels": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-      "values": [6.4, 6.1, 5.9, 6.5, 6.2, 5.8, 6.17]
+      "labels": [
+        "Lun",
+        "Mar",
+        "Mié",
+        "Jue",
+        "Vie",
+        "Sáb",
+        "Dom"
+      ],
+      "values": [
+        6.4,
+        6.1,
+        5.9,
+        6.5,
+        6.2,
+        5.8,
+        6.17
+      ]
     },
     {
       "id": 11,
       "userId": 3,
       "period": "mes",
-      "labels": ["Sem 1", "Sem 2", "Sem 3", "Sem 4"],
-      "values": [41.5, 43.2, 39.8, 40.7]
+      "labels": [
+        "Sem 1",
+        "Sem 2",
+        "Sem 3",
+        "Sem 4"
+      ],
+      "values": [
+        41.5,
+        43.2,
+        39.8,
+        40.7
+      ]
     },
     {
       "id": 12,
       "userId": 3,
       "period": "ano",
-      "labels": ["Jun", "Jul", "Ago", "Set", "Oct"],
-      "values": [172.0, 168.4, 164.5, 161.0, 165.2]
+      "labels": [
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Oct"
+      ],
+      "values": [
+        172,
+        168.4,
+        164.5,
+        161,
+        165.2
+      ]
     }
   ],
   "device-distributions": [
@@ -819,7 +999,7 @@
       "id": 5,
       "name": "Estación de Trabajo / PC",
       "typicalPowerKw": 0.3,
-      "recommendedDailyKwh": 2.0
+      "recommendedDailyKwh": 2
     },
     {
       "id": 6,
@@ -947,7 +1127,7 @@
       "assignedDeviceCategory": "Climatización",
       "applianceProfileId": 2,
       "applianceProfileName": "Aire Acondicionado Inverter 12000BTU",
-      "recommendedDailyKwh": 3.0,
+      "recommendedDailyKwh": 3,
       "currentPowerKw": 0.95,
       "todayKwh": 3.8,
       "todayCostSoles": 2.66,
@@ -965,7 +1145,7 @@
       "assignedDeviceCategory": "Oficina",
       "applianceProfileId": 5,
       "applianceProfileName": "Estación de Trabajo / PC",
-      "recommendedDailyKwh": 2.0,
+      "recommendedDailyKwh": 2,
       "currentPowerKw": 0.25,
       "todayKwh": 1.5,
       "todayCostSoles": 1.05,
@@ -1034,6 +1214,48 @@
       "onlineSensors": 4,
       "offlineSensors": 0,
       "unassignedSensors": 0
+    }
+  ],
+  "areas": [
+    {
+      "id": 1,
+      "name": "Cocina",
+      "description": "Zona de preparación de alimentos, refrigeración y horneado",
+      "floor": "Piso 1",
+      "icon": "restaurant",
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "name": "Sala Principal",
+      "description": "Área de recepción, entretenimiento y climatización central",
+      "floor": "Piso 1",
+      "icon": "living",
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "name": "Oficina",
+      "description": "Estaciones de trabajo, equipos de cómputo y climatización",
+      "floor": "Piso 2",
+      "icon": "business_center",
+      "userId": 1
+    },
+    {
+      "id": 4,
+      "name": "Lavandería",
+      "description": "Zona de lavado, secado y electrodomésticos de limpieza",
+      "floor": "Piso 1",
+      "icon": "local_laundry_service",
+      "userId": 1
+    },
+    {
+      "id": 5,
+      "name": "Baño Principal",
+      "description": "Área sanitaria y calentador de agua / terma",
+      "floor": "Piso 2",
+      "icon": "bathtub",
+      "userId": 1
     }
   ]
 }
