@@ -1,16 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdminAlerts } from './admin-alerts';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { AdminAlertsComponent } from './admin-alerts';
 
-describe('AdminAlerts', () => {
-  let component: AdminAlerts;
-  let fixture: ComponentFixture<AdminAlerts>;
+describe('AdminAlertsComponent', () => {
+  let component: AdminAlertsComponent;
+  let fixture: ComponentFixture<AdminAlertsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminAlerts],
+      imports: [AdminAlertsComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideTranslateService()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminAlerts);
+    fixture = TestBed.createComponent(AdminAlertsComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
