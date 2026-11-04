@@ -13,7 +13,8 @@
     "LOGOUT": "Cerrar sesión",
     "ADMIN_USERS": "Gestión de Usuarios",
     "ADMIN_ALERTS": "Enviar Alertas",
-    "ADMIN_RECOMMENDATIONS": "Enviar Recomendaciones"
+    "ADMIN_RECOMMENDATIONS": "Enviar Recomendaciones",
+    "AREAS": "Áreas"
   },
   "COMMON": {
     "SEARCH": "Buscar...",
@@ -251,5 +252,29 @@
     "FIELD_SAVINGS": "Ahorro Estimado (kWh)",
     "FIELD_DESCRIPTION": "Descripción",
     "BTN_SEND_REC": "Enviar Recomendación"
+  },
+  "AREAS": {
+    "TITLE": "Áreas del Negocio",
+    "SUBTITLE": "Organiza tu establecimiento en zonas físicas y analiza el consumo eléctrico por área.",
+    "ADD_AREA": "Agregar Área",
+    "TOTAL_AREAS": "Zonas Registradas",
+    "ZONES_COUNT": "Espacios monitoreados",
+    "TOTAL_CONSUMPTION": "Consumo por Áreas",
+    "HIGHEST_CONSUMPTION": "Mayor Consumo Hoy",
+    "COMPARISON_TITLE": "Comparativa de Consumo por Área",
+    "COMPARISON_SUBTITLE": "Compara el uso de energía acumulado hoy entre las diferentes zonas de tu negocio.",
+    "REGISTERED_AREAS": "Zonas y Espacios Físicos",
+    "NO_AREAS_YET": "No hay áreas registradas",
+    "EMPTY_DESC": "Registra las diferentes zonas de tu negocio (ej. Cocina, Almacén, Ventas) para organizar tus aparatos y comparar consumos.",
+    "ADD_FIRST_AREA": "Registrar primera área",
+    "NO_DEVICES_LINKED": "Sin dispositivos asignados a esta zona (0.00 kWh)",
+    "EDIT_TITLE": "Editar Área",
+    "CREATE_TITLE": "Registrar Nueva Área",
+    "NAME_LABEL": "Nombre del Área / Zona",
+    "NAME_REQUIRED": "El nombre del área es obligatorio (mínimo 2 caracteres).",
+    "FLOOR_LABEL": "Piso o Nivel",
+    "DESC_LABEL": "Descripción de actividades o equipos",
+    "ICON_LABEL": "Ícono representativo",
+    "DELETE_CONFIRM_TITLE": "Eliminar Área"
   }
 }
