@@ -36,7 +36,7 @@ export const adminGuard: CanActivateFn = () => {
   return router.parseUrl('/inicio');
 };
 
-/** Bloquea al Administrador de las vistas normales de usuario */
+/** Bloquea al Administrador de las vistas normales de usuario (cliente) */
 export const homeownerGuard: CanActivateFn = () => {
   const iamStore = inject(IamStore);
   const router = inject(Router);
@@ -45,4 +45,15 @@ export const homeownerGuard: CanActivateFn = () => {
     return router.parseUrl('/admin');
   }
   return true;
+};
+
+/** Permite acceso al módulo de Áreas exclusivo para cuentas Business (MYPE) o Administradores */
+export const businessGuard: CanActivateFn = () => {
+  const iamStore = inject(IamStore);
+  const router = inject(Router);
+
+  if (iamStore.isAdmin() || iamStore.isBusiness()) {
+    return true;
+  }
+  return router.parseUrl('/dispositivos');
 };

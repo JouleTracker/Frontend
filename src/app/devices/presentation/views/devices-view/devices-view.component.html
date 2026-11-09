@@ -2,8 +2,8 @@
   <!-- HEADER SECTION WITH TITLE AND MAIN SEARCH/ADD ACTIONS -->
   <header class="header-section">
     <div class="title-group">
-      <h1>{{ 'DEVICES.TITLE' | translate }}</h1>
-      <p class="subtitle">{{ 'DEVICES.SUBTITLE' | translate }}</p>
+      <h1>{{ (iamStore.isBusiness() ? 'DEVICES.BUSINESS_TITLE' : 'DEVICES.TITLE') | translate }}</h1>
+      <p class="subtitle">{{ (iamStore.isBusiness() ? 'DEVICES.BUSINESS_SUBTITLE' : 'DEVICES.SUBTITLE') | translate }}</p>
     </div>
 
     <div class="header-actions">
@@ -300,4 +300,3 @@
   }
 
 </div>
-

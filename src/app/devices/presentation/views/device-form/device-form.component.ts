@@ -40,6 +40,8 @@ export class DeviceFormComponent implements OnInit {
     'Iluminación',
     'Entretenimiento',
     'Oficina',
+    'Maquinaria',
+    'Refrigeración',
     'Otros'
   ];
 

@@ -14,7 +14,9 @@
     "ADMIN_USERS": "Gestión de Usuarios",
     "ADMIN_ALERTS": "Enviar Alertas",
     "ADMIN_RECOMMENDATIONS": "Enviar Recomendaciones",
-    "AREAS": "Áreas / Ambientes"
+    "AREAS": "Áreas / Ambientes",
+    "BUSINESS_DEVICES": "Maquinaria y Equipos",
+    "BUSINESS_AREAS": "Áreas del Negocio"
   },
   "COMMON": {
     "SEARCH": "Buscar...",
@@ -58,7 +60,8 @@
     "MONTH": "/ mes",
     "ACTIVE_PLAN_BTN": "✓ Plan Activo",
     "CHANGE_PLAN_BTN": "Cambiar a {{plan}}",
-    "PRICING_FOOTER": "Precios referenciales en soles (S/), facturación mensual. La prueba gratuita de 14 días no requiere tarjeta."
+    "PRICING_FOOTER": "Precios referenciales en soles (S/), facturación mensual. La prueba gratuita de 14 días no requiere tarjeta.",
+    "QUICK_AREAS": "Ver Áreas"
   },
   "CONSUMPTION": {
     "TITLE": "Consumo eléctrico",
@@ -102,7 +105,9 @@
     "FIELD_LOCATION": "Ubicación",
     "FIELD_SENSOR": "Sensor asignado",
     "LIMIT_REACHED": "Alcanzaste el límite de dispositivos de tu plan ({{limit}}).",
-    "REGISTERED_COUNT": "Dispositivos registrados: {{limit}}"
+    "REGISTERED_COUNT": "Dispositivos registrados: {{limit}}",
+    "BUSINESS_TITLE": "Maquinaria y Equipos",
+    "BUSINESS_SUBTITLE": "Gestiona y monitorea la maquinaria y equipos eléctricos de tu establecimiento comercial"
   },
   "IOT": {
     "TITLE": "Sensores IoT",
@@ -224,7 +229,12 @@
     "HAS_ACCOUNT": "¿Ya tienes una cuenta?",
     "REGISTER_LINK": "Regístrate aquí",
     "LOGIN_LINK": "Inicia sesión",
-    "TERMS_AGREE": "Acepto los términos y condiciones del servicio"
+    "TERMS_AGREE": "Acepto los términos y condiciones del servicio",
+    "ACCOUNT_TYPE": "Tipo de Cuenta",
+    "ACCOUNT_HOMEOWNER": "Hogar / Residencial",
+    "ACCOUNT_HOMEOWNER_DESC": "Para casas y familias",
+    "ACCOUNT_BUSINESS": "Negocio / MYPE",
+    "ACCOUNT_BUSINESS_DESC": "Comercios, talleres y locales"
   },
   "ADMIN": {
     "USERS_TITLE": "Gestión de Usuarios",

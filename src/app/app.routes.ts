@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { iamGuard, adminGuard, homeownerGuard } from './iam/infrastructure/iam.guard';
+import { iamGuard, adminGuard, homeownerGuard, businessGuard } from './iam/infrastructure/iam.guard';
 
-// ── Vistas del Homeowner ──
+// ── Vistas del Cliente (Hogar & Negocio) ──
 const homeView = () =>
   import('./shared/presentation/views/home-view/home-view.component').then((m) => m.HomeViewComponent);
 
@@ -42,7 +42,7 @@ const baseTitle = 'JouleTracker';
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
 
-  // ── Módulo de Administración ──
+  // ── Módulo de Administración de Plataforma ──
   { path: 'admin', redirectTo: 'admin/usuarios', pathMatch: 'full' },
   {
     path: 'admin/usuarios',
@@ -66,11 +66,14 @@ export const routes: Routes = [
     title: `${baseTitle} - Emitir Recomendaciones`
   },
 
-  // ── Rutas Homeowner ──
+  // ── Rutas de Clientes (Homeowner & Business) ──
   { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard, homeownerGuard] },
-  { path: 'areas', loadChildren: businessRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Áreas` },
+
+  // ── Exclusivo MYPE: Áreas de Negocio (US-31, US-33) ──
+  { path: 'areas', loadChildren: businessRoutes, canActivate: [iamGuard, businessGuard], title: `${baseTitle} - Áreas del Negocio` },
+
   { path: 'sensores', loadChildren: iotRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'alertas', loadChildren: alertsRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'recomendaciones', loadChildren: recommendationsRoutes, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Recomendaciones` },

@@ -14,7 +14,9 @@
     "ADMIN_USERS": "User Management",
     "ADMIN_ALERTS": "Send Alerts",
     "ADMIN_RECOMMENDATIONS": "Send Recommendations",
-    "AREAS": "Areas / Environments"
+    "AREAS": "Areas / Environments",
+    "BUSINESS_DEVICES": "Machinery & Equipment",
+    "BUSINESS_AREAS": "Business Areas"
   },
   "COMMON": {
     "SEARCH": "Search...",
@@ -58,7 +60,8 @@
     "MONTH": "/ month",
     "ACTIVE_PLAN_BTN": "✓ Active Plan",
     "CHANGE_PLAN_BTN": "Switch to {{plan}}",
-    "PRICING_FOOTER": "Reference prices in soles (S/), billed monthly. The 14-day free trial requires no credit card."
+    "PRICING_FOOTER": "Reference prices in soles (S/), billed monthly. The 14-day free trial requires no credit card.",
+    "QUICK_AREAS": "View Areas"
   },
   "CONSUMPTION": {
     "TITLE": "Electricity Consumption",
@@ -102,7 +105,9 @@
     "FIELD_LOCATION": "Location",
     "FIELD_SENSOR": "Assigned sensor",
     "LIMIT_REACHED": "You have reached your plan device limit ({{limit}}).",
-    "REGISTERED_COUNT": "Registered devices: {{limit}}"
+    "REGISTERED_COUNT": "Registered devices: {{limit}}",
+    "BUSINESS_TITLE": "Machinery & Equipment",
+    "BUSINESS_SUBTITLE": "Manage and monitor electrical machinery and equipment in your commercial facility"
   },
   "IOT": {
     "TITLE": "IoT Sensors",
@@ -224,7 +229,12 @@
     "HAS_ACCOUNT": "Already have an account?",
     "REGISTER_LINK": "Register here",
     "LOGIN_LINK": "Log in",
-    "TERMS_AGREE": "I agree to the terms and conditions of service"
+    "TERMS_AGREE": "I agree to the terms and conditions of service",
+    "ACCOUNT_TYPE": "Account Type",
+    "ACCOUNT_HOMEOWNER": "Home / Residential",
+    "ACCOUNT_HOMEOWNER_DESC": "For homes and families",
+    "ACCOUNT_BUSINESS": "Business / SME",
+    "ACCOUNT_BUSINESS_DESC": "Shops, workshops & venues"
   },
   "ADMIN": {
     "USERS_TITLE": "User Management",

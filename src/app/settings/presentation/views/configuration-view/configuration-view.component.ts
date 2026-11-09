@@ -27,12 +27,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class ConfigurationViewComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly iamStore = inject(IamStore);
+  readonly iamStore = inject(IamStore);
   private readonly iamApi = inject(IamApi);
   private readonly router = inject(Router);
 
   readonly user = this.iamStore.currentUser;
   readonly currentPlan = this.iamStore.currentPlan;
+  readonly isBusiness = this.iamStore.isBusiness;
+  readonly isHomeowner = this.iamStore.isHomeowner;
 
   // Formulario Información Personal (datos reales del usuario en db.json)
   readonly profileForm = this.fb.group({
@@ -48,12 +50,21 @@ export class ConfigurationViewComponent {
     confirmPassword: ['', Validators.required]
   });
 
-  // Formulario Mi Hogar (persistido en el perfil del usuario en db.json)
+  // Formulario Mi Hogar (persistido en el perfil del usuario Homeowner en db.json)
   readonly homeForm = this.fb.group({
     homeType: [this.user()?.home?.homeType ?? 'Casa'],
     occupants: [this.user()?.home?.occupants ?? 1],
     location: [this.user()?.home?.location ?? ''],
     tariff: [this.user()?.home?.tariff ?? '']
+  });
+
+  // Formulario Mi Negocio (persistido en el perfil del usuario Business MYPE en db.json)
+  readonly businessForm = this.fb.group({
+    businessName: [this.user()?.business?.businessName ?? '', Validators.required],
+    taxId: [this.user()?.business?.taxId ?? '', Validators.required],
+    businessType: [this.user()?.business?.businessType ?? 'Restaurante', Validators.required],
+    commercialTariff: [this.user()?.business?.commercialTariff ?? 'BT5B Comercial', Validators.required],
+    address: [this.user()?.business?.address ?? '', Validators.required]
   });
 
   // Notificaciones (preferencias del usuario persistidas en db.json)
@@ -66,11 +77,13 @@ export class ConfigurationViewComponent {
   readonly passwordMessage = signal<string | null>(null);
   readonly passwordError = signal<string | null>(null);
   readonly homeMessage = signal<string | null>(null);
+  readonly businessMessage = signal<string | null>(null);
   readonly notificationsMessage = signal<string | null>(null);
 
   readonly savingProfile = signal<boolean>(false);
   readonly savingPassword = signal<boolean>(false);
   readonly savingHome = signal<boolean>(false);
+  readonly savingBusiness = signal<boolean>(false);
 
   showCurrentPass = false;
   showNewPass = false;
@@ -159,6 +172,28 @@ export class ConfigurationViewComponent {
     });
     this.savingHome.set(false);
     this.homeMessage.set('Información de tu hogar guardada correctamente.');
+  }
+
+  saveBusiness(): void {
+    if (this.businessForm.invalid || this.savingBusiness()) {
+      this.businessForm.markAllAsTouched();
+      return;
+    }
+    this.savingBusiness.set(true);
+    this.businessMessage.set(null);
+
+    const { businessName, taxId, businessType, commercialTariff, address } = this.businessForm.getRawValue();
+    this.iamStore.updateProfile({
+      business: {
+        businessName: (businessName ?? '').trim(),
+        taxId: (taxId ?? '').trim(),
+        businessType: (businessType ?? '').trim(),
+        commercialTariff: (commercialTariff ?? '').trim(),
+        address: (address ?? '').trim()
+      }
+    });
+    this.savingBusiness.set(false);
+    this.businessMessage.set('Información del negocio guardada correctamente.');
   }
 
   saveNotifications(): void {

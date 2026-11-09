@@ -136,61 +136,132 @@
         </form>
       </section>
 
-      <!-- 4. Mi hogar -->
-      <section class="config-card">
-        <div class="card-header">
-          <div class="icon-badge">
-            <mat-icon>home</mat-icon>
-          </div>
-          <div class="header-texts">
-            <h2 class="card-title">Mi hogar</h2>
-            <p class="card-subtitle">Configura la información de tu hogar.</p>
-          </div>
-        </div>
-
-        <form [formGroup]="homeForm" (ngSubmit)="saveHome()" class="card-form">
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Tipo de vivienda</label>
-              <select formControlName="homeType">
-                <option value="Casa">Casa</option>
-                <option value="Departamento">Departamento</option>
-                <option value="Oficina/Local">Oficina/Local</option>
-              </select>
+      <!-- 4. Mi hogar (Sólo para Homeowner) -->
+      @if (isHomeowner()) {
+        <section class="config-card">
+          <div class="card-header">
+            <div class="icon-badge">
+              <mat-icon>home</mat-icon>
             </div>
+            <div class="header-texts">
+              <h2 class="card-title">Mi hogar</h2>
+              <p class="card-subtitle">Configura la información de tu hogar.</p>
+            </div>
+          </div>
 
-            <div class="form-group">
-              <label>Número de habitantes</label>
-              <div class="input-with-icon">
-                <mat-icon class="leading-icon">group</mat-icon>
-                <input type="number" min="1" formControlName="occupants" />
+          <form [formGroup]="homeForm" (ngSubmit)="saveHome()" class="card-form">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Tipo de vivienda</label>
+                <select formControlName="homeType">
+                  <option value="Casa">Casa</option>
+                  <option value="Departamento">Departamento</option>
+                  <option value="Oficina/Local">Oficina/Local</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Número de habitantes</label>
+                <div class="input-with-icon">
+                  <mat-icon class="leading-icon">group</mat-icon>
+                  <input type="number" min="1" formControlName="occupants" />
+                </div>
               </div>
             </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Ubicación</label>
+                <input type="text" formControlName="location" placeholder="Ciudad o distrito" />
+              </div>
+
+              <div class="form-group">
+                <label>Tarifa eléctrica</label>
+                <input type="text" formControlName="tariff" placeholder="Ej. BT5B" />
+              </div>
+            </div>
+
+            @if (homeMessage()) {
+              <p class="form-message success">{{ homeMessage() }}</p>
+            }
+
+            <div class="action-btn-row">
+              <button type="submit" class="btn-primary" [disabled]="savingHome()">
+                {{ savingHome() ? 'Guardando...' : 'Guardar información del hogar' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+
+      <!-- 4. Mi Negocio / MYPE (Sólo para Business) -->
+      @if (isBusiness()) {
+        <section class="config-card">
+          <div class="card-header">
+            <div class="icon-badge">
+              <mat-icon>storefront</mat-icon>
+            </div>
+            <div class="header-texts">
+              <h2 class="card-title">Mi negocio / MYPE</h2>
+              <p class="card-subtitle">Configura los datos comerciales de tu empresa y tarifa.</p>
+            </div>
           </div>
 
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Ubicación</label>
-              <input type="text" formControlName="location" placeholder="Ciudad o distrito" />
+          <form [formGroup]="businessForm" (ngSubmit)="saveBusiness()" class="card-form">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Razón Social o Nombre Comercial</label>
+                <input type="text" formControlName="businessName" placeholder="Ej. Restaurante Don Pepe E.I.R.L." />
+              </div>
+
+              <div class="form-group">
+                <label>RUC (Registro Único de Contribuyente)</label>
+                <input type="text" formControlName="taxId" placeholder="Ej. 20601234567" maxlength="11" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Giro del Negocio</label>
+                <select formControlName="businessType">
+                  <option value="Restaurante">Restaurante / Cafetería</option>
+                  <option value="Panadería">Panadería / Pastelería</option>
+                  <option value="Taller">Taller / Manufactura liviana</option>
+                  <option value="Bodega">Bodega / Minimarket</option>
+                  <option value="Oficina">Oficina Comercial</option>
+                  <option value="Gimnasio">Gimnasio / Spa</option>
+                  <option value="Otro">Otro Comercio</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Tarifa Comercial</label>
+                <select formControlName="commercialTariff">
+                  <option value="BT5B Comercial">BT5B Comercial (Baja Tensión)</option>
+                  <option value="BT2">BT2 (Baja Tensión Simple)</option>
+                  <option value="MT2">MT2 (Media Tensión)</option>
+                  <option value="Otro">Otra Tarifa</option>
+                </select>
+              </div>
             </div>
 
             <div class="form-group">
-              <label>Tarifa eléctrica</label>
-              <input type="text" formControlName="tariff" placeholder="Ej. BT5B" />
+              <label>Dirección del Local</label>
+              <input type="text" formControlName="address" placeholder="Ej. Av. Larco 456, Miraflores" />
             </div>
-          </div>
 
-          @if (homeMessage()) {
-            <p class="form-message success">{{ homeMessage() }}</p>
-          }
+            @if (businessMessage()) {
+              <p class="form-message success">{{ businessMessage() }}</p>
+            }
 
-          <div class="action-btn-row">
-            <button type="submit" class="btn-primary" [disabled]="savingHome()">
-              {{ savingHome() ? 'Guardando...' : 'Guardar información del hogar' }}
-            </button>
-          </div>
-        </form>
-      </section>
+            <div class="action-btn-row">
+              <button type="submit" class="btn-primary" [disabled]="savingBusiness()">
+                {{ savingBusiness() ? 'Guardando...' : 'Guardar información del negocio' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      }
 
       <!-- 5. Notificaciones -->
       <section class="config-card notification-card">
