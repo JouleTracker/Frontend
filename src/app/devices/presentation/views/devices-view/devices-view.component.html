@@ -158,7 +158,13 @@
                     {{ device.status }}
                   </span>
                 </td>
-                <td>{{ formatPower(device.currentPowerKw) }}</td>
+                <td>
+                  @if (hasNoReading(device.id)) {
+                    <span class="no-reading" title="El sensor IoT vinculado está desconectado">Sin lectura</span>
+                  } @else {
+                    {{ formatPower(device.currentPowerKw) }}
+                  }
+                </td>
                 <td>{{ device.todayKwh | number:'1.1-1' }} kWh</td>
                 <td>S/{{ device.todayCostSoles | number:'1.2-2' }}</td>
                 <td class="text-muted">{{ device.lastActivity }}</td>
