@@ -65,8 +65,14 @@ export class ConsumptionStore {
     return this.summary()?.currentPower ?? 0;
   });
 
-  /** Consumo del período en kWh (suma el consumo acumulado hoy de los dispositivos si no hay summary) */
+  /** Consumo del período en kWh (calcula dinámicamente sumando las lecturas del período seleccionado) */
   readonly periodConsumption = computed(() => {
+    const reading = this.energyReadingSignal();
+    if (reading && reading.values && reading.values.length > 0) {
+      const sum = reading.values.reduce((acc, v) => acc + (Number(v) || 0), 0);
+      return Number(sum.toFixed(2));
+    }
+
     const fromSummary = this.summary()?.periodConsumption;
     if (fromSummary !== undefined && fromSummary > 0) return fromSummary;
 

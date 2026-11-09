@@ -1,15 +1,20 @@
 import { AlertResource } from './alert-response';
-import { Alert, AlertSeverity } from '../domain/model/alert.entity';
+import { Alert, AlertSeverity, AlertStatus } from '../domain/model/alert.entity';
 
 export class AlertAssembler {
   toEntity(resource: AlertResource): Alert {
+    const raw = resource as unknown as Record<string, unknown>;
+    const isRead = resource.read === true || raw['status'] === 'Leída';
+    const resolvedStatus: AlertStatus = isRead ? 'Leída' : 'Activa';
+
     return new Alert({
       id: resource.id,
       title: resource.title,
       description: resource.description || resource.message || 'Sin descripción detallada.',
       timeAgo: resource.timeAgo || this.formatTimeAgo(resource.timestamp),
-      severity: (resource.severity as AlertSeverity) || (resource.read ? 'info' : 'warning'),
-      actionUrl: resource.actionUrl || '/dispositivos'
+      severity: (resource.severity as AlertSeverity) || (isRead ? 'info' : 'warning'),
+      actionUrl: resource.actionUrl || '/dispositivos',
+      status: resolvedStatus
     });
   }
 

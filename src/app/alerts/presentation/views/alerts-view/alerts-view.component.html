@@ -45,6 +45,12 @@
   <section class="main-card">
     <div class="table-header">
       <h2>{{ 'ALERTS.TITLE' | translate }}</h2>
+      @if (store.activeCount() > 0) {
+        <button type="button" class="btn-mark-all" (click)="markAllAsRead()">
+          <mat-icon>done_all</mat-icon>
+          <span>Marcar todas como leídas</span>
+        </button>
+      }
     </div>
 
     <!-- Async loading states -->
@@ -83,7 +89,20 @@
                   </span>
                 </td>
                 <td class="text-right">
-                  <a class="alert-action-link" [routerLink]="alert.actionUrl">Ver detalle</a>
+                  <div class="actions-wrapper">
+                    @if (alert.status === 'Activa') {
+                      <button
+                        type="button"
+                        class="btn-mark-read"
+                        (click)="markAsRead(alert.id, $event)"
+                        title="Marcar como leída"
+                      >
+                        <mat-icon>done</mat-icon>
+                        <span>Leída</span>
+                      </button>
+                    }
+                    <a class="alert-action-link" [routerLink]="alert.actionUrl">Ver detalle</a>
+                  </div>
                 </td>
               </tr>
             } @empty {

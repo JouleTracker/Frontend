@@ -86,7 +86,7 @@
           }
         </div>
 
-        <!-- Location Field -->
+        <!-- Location Field con Datalist de Áreas registradas -->
         <div class="form-group">
           <label for="deviceLocation" class="form-label">
             Ubicación <span class="required">*</span>
@@ -96,12 +96,22 @@
             type="text"
             formControlName="location"
             class="form-input"
+            list="areasList"
             [class.input-error]="form.get('location')?.invalid && form.get('location')?.touched"
             placeholder="Ej. Sala principal, Cocina, Habitación 2"
           />
+          <datalist id="areasList">
+            @for (area of areasStore.areas(); track area.id) {
+              <option [value]="area.name">{{ area.floor }} • {{ area.name }}</option>
+            }
+          </datalist>
           @if (form.get('location')?.invalid && form.get('location')?.touched) {
             <span class="field-error">
               La ubicación es obligatoria (mínimo 2 caracteres).
+            </span>
+          } @else {
+            <span class="field-hint">
+              Puedes escribir una ubicación personalizada o autocompletar una de tus Áreas registradas.
             </span>
           }
         </div>
@@ -142,8 +152,8 @@
             <option value="Apagado">Apagado</option>
           </select>
           <span class="field-hint">
-    Define el estado operativo del dispositivo.
-  </span>
+            Define el estado operativo del dispositivo.
+          </span>
         </div>
 
         <!-- IoT Sensor Assignment Section -->

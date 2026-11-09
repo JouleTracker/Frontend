@@ -9,6 +9,7 @@ import { Device, DeviceStatus } from '../../../domain/model/device.entity';
 import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { DeviceResource } from '../../../infrastructure/devices-response';
+import { AreasStore } from '../../../../business/application/areas.store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -30,8 +31,17 @@ export class DeviceFormComponent implements OnInit {
   readonly store = inject(DevicesStore);
   private readonly api = inject(DevicesApi);
   readonly sensorsStore = inject(SensorsStore);
+  readonly areasStore = inject(AreasStore);
 
-  readonly categories: string[] = ['Hogar', 'Cocina', 'Entretenimiento', 'Oficina', 'Otros'];
+  readonly categories: string[] = [
+    'Hogar',
+    'Cocina',
+    'Climatización',
+    'Iluminación',
+    'Entretenimiento',
+    'Oficina',
+    'Otros'
+  ];
 
   isEditMode = false;
   deviceId = 0;

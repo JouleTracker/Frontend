@@ -102,11 +102,13 @@ export class SensorsStore {
       this.summarySignal()?.unassignedSensorsCount || 0;
   });
 
-  /** Potencia total censada en kW */
+  /** Potencia total censada en kW (solo sensores conectados en línea con telemetría activa) */
   readonly totalMonitoredPowerKw = computed(() => {
     const list = this.sensorsSignal();
     if (list.length > 0) {
-      const sum = list.reduce((acc, s) => acc + s.currentPowerKw, 0);
+      const sum = list
+        .filter(s => s.status === 'En línea')
+        .reduce((acc, s) => acc + s.currentPowerKw, 0);
       return Number(sum.toFixed(2));
     }
     return this.summarySignal()?.totalMonitoredPowerKw || 0;
@@ -263,4 +265,3 @@ export class SensorsStore {
     );
   }
 }
-

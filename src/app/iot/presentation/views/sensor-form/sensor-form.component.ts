@@ -69,6 +69,18 @@ export class SensorFormComponent implements OnInit {
     return this.store.profiles().find((p) => p.id === Number(profId));
   });
 
+  /** Dispositivos disponibles para vinculación (sin otro sensor asignado) */
+  readonly availableDevices = computed(() => {
+    const allDevices = this.devicesStore.devices();
+    const allSensors = this.store.sensors();
+
+    return allDevices.filter((dev) => {
+      const assigned = allSensors.find((s) => s.assignedDeviceId === dev.id);
+      if (!assigned) return true;
+      return this.isEditMode && assigned.id === this.sensorId;
+    });
+  });
+
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
 
@@ -108,6 +120,7 @@ export class SensorFormComponent implements OnInit {
 
   private populateForm(s: Sensor): void {
     this.sensor.set(s);
+
     this.form.patchValue({
       name: s.name,
       model: s.model,
@@ -117,10 +130,6 @@ export class SensorFormComponent implements OnInit {
     });
   }
 
-  /**
-   * Cuando se selecciona un dispositivo del inventario, sugiere automáticamente
-   * un perfil de electrodoméstico acorde al nombre o categoría del dispositivo.
-   */
   onDeviceChange(): void {
     const devId = this.form.controls.assignedDeviceId.value;
     if (!devId) {
@@ -162,14 +171,6 @@ export class SensorFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid || this.submitting()) {
       this.form.markAllAsTouched();
-      return;
-    }
-
-    // Límite de sensores según el plan (Starter 0, Plus 3, Pro ilimitado)
-    if (!this.isEditMode && !this.store.canAddSensor()) {
-      this.errorMessage.set(
-        `Has alcanzado el límite de ${this.store.sensorLimit()} sensores de tu plan. Mejora tu plan para agregar más.`
-      );
       return;
     }
 

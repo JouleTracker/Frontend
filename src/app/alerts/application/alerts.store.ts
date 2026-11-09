@@ -62,11 +62,12 @@ export class AlertsStore {
                 dynamicSensorAlerts.push(
                   new Alert({
                     id: 9000 + sensor.id,
-                    title: `Límite diario superado: ${sensor.name} `,
-                    description: ` | El dispositivo ${sensor.assignedDeviceName ?? sensor.name} consumió ${sensor.todayKwh.toFixed(2)} kWh (Límite: ${sensor.recommendedDailyKwh.toFixed(2)} kWh/día).`,
+                    title: `Límite diario superado: ${sensor.name}`,
+                    description: `El electrodoméstico ${sensor.assignedDeviceName ?? sensor.name} consumió ${sensor.todayKwh.toFixed(2)} kWh hoy (límite sugerido: ${sensor.recommendedDailyKwh.toFixed(2)} kWh/día).`,
                     timeAgo: 'Ahora',
                     severity: 'warning',
-                    actionUrl: '/dispositivos'
+                    actionUrl: '/dispositivos',
+                    status: 'Activa'
                   })
                 );
               }
@@ -88,5 +89,45 @@ export class AlertsStore {
         this.loadingSignal.set(false);
       }
     });
+  }
+
+  /**
+   * Marca una alerta como leída / resuelta en la sesión actual.
+   */
+  markAsRead(id: number): void {
+    this.alertsSignal.update(list =>
+      list.map(a =>
+        a.id === id
+          ? new Alert({
+              id: a.id,
+              title: a.title,
+              description: a.description,
+              timeAgo: a.timeAgo,
+              severity: 'info',
+              actionUrl: a.actionUrl,
+              status: 'Leída'
+            })
+          : a
+      )
+    );
+  }
+
+  /**
+   * Marca todas las alertas activas como leídas.
+   */
+  markAllAsRead(): void {
+    this.alertsSignal.update(list =>
+      list.map(a =>
+        new Alert({
+          id: a.id,
+          title: a.title,
+          description: a.description,
+          timeAgo: a.timeAgo,
+          severity: 'info',
+          actionUrl: a.actionUrl,
+          status: 'Leída'
+        })
+      )
+    );
   }
 }

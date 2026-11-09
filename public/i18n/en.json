@@ -14,7 +14,7 @@
     "ADMIN_USERS": "User Management",
     "ADMIN_ALERTS": "Send Alerts",
     "ADMIN_RECOMMENDATIONS": "Send Recommendations",
-    "AREAS": "Areas"
+    "AREAS": "Areas / Environments"
   },
   "COMMON": {
     "SEARCH": "Search...",

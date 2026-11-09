@@ -10,7 +10,8 @@ export class SignUpAssembler {
       name: command.name,
       email: command.email,
       password: command.password,
-      role: command.role || 'homeowner'
+      role: command.role || 'homeowner',
+      plan: command.plan || 'pro'
     };
   }
 
@@ -19,7 +20,8 @@ export class SignUpAssembler {
       id: response.id,
       name: response.name,
       email: response.email,
-      role: response.role
+      role: response.role,
+      plan: response.plan || 'pro'
     };
   }
 }
