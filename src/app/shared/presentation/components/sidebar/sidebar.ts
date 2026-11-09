@@ -51,7 +51,7 @@ export class Sidebar {
     this.isMobileDrawerOpen.set(false);
   }
 
-  // Lista calculada: Si es admin, solo muestra las 3 herramientas de gestión
+  // Lista calculada según el rol del usuario ('admin', 'business' o 'homeowner')
   readonly navItems = computed<NavItem[]>(() => {
     if (this.iamStore.isAdmin()) {
       return [
@@ -61,11 +61,30 @@ export class Sidebar {
       ];
     }
 
+    if (this.iamStore.isBusiness()) {
+      return [
+        { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
+        { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
+        { link: '/dispositivos', translationKey: 'SIDEBAR.BUSINESS_DEVICES', icon: 'precision_manufacturing' },
+        { link: '/areas', translationKey: 'SIDEBAR.BUSINESS_AREAS', icon: 'domain' },
+        { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
+        { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
+        { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },
+        {
+          link: '/recomendaciones',
+          translationKey: 'SIDEBAR.RECOMMENDATIONS',
+          icon: 'favorite_border',
+          minPlan: 'plus',
+        },
+        { link: '/configuracion', translationKey: 'SIDEBAR.SETTINGS', icon: 'settings' },
+      ];
+    }
+
+    // Homeowner (Residencial): interfaz limpia sin carga cognitiva de zonas de negocio
     return [
       { link: '/inicio', translationKey: 'SIDEBAR.HOME', icon: 'home' },
       { link: '/consumo', translationKey: 'SIDEBAR.CONSUMPTION', icon: 'bar_chart' },
       { link: '/dispositivos', translationKey: 'SIDEBAR.DEVICES', icon: 'devices' },
-      { link: '/areas', translationKey: 'SIDEBAR.AREAS', icon: 'domain' },
       { link: '/sensores', translationKey: 'SIDEBAR.SENSORS', icon: 'sensors', minPlan: 'plus' },
       { link: '/alertas', translationKey: 'SIDEBAR.ALERTS', icon: 'notifications_none' },
       { link: '/reportes', translationKey: 'SIDEBAR.REPORTS', icon: 'chat_bubble_outline' },
@@ -83,11 +102,19 @@ export class Sidebar {
 
   readonly user = computed(() => {
     const currentUser = this.iamStore.currentUser();
+    const role = currentUser?.role;
+    let badge = (this.currentPlan() || 'pro').toUpperCase();
+    if (role === 'admin') {
+      badge = 'ADMIN';
+    } else if (role === 'business') {
+      badge = `MYPE · ${badge}`;
+    }
     return {
       name: currentUser?.name || 'Usuario',
       email: currentUser?.email || 'sin-correo@jouletracker.com',
-      role: currentUser?.role || 'homeowner',
+      role: role || 'homeowner',
       plan: this.currentPlan(),
+      badge,
     };
   });
 

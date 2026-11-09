@@ -390,3 +390,75 @@
     display: none;
   }
 }
+
+
+/* ── Selector de Tipo de Cuenta (Hogar vs MYPE) ── */
+.account-type-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.account-type-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #14532d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.account-type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.account-card:hover {
+  border-color: #86efac;
+}
+
+.account-card.selected {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+}
+
+.account-radio {
+  accent-color: #16a34a;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.account-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.account-card-desc {
+  font-size: 0.68rem;
+  color: #64748b;
+  line-height: 1.2;
+}

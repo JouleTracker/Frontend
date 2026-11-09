@@ -24,7 +24,17 @@ export class IamStore {
 
   /** Roles y permisos especiales */
   readonly isAdmin = computed(() => this._currentUser()?.role === 'admin');
+  readonly isBusiness = computed(() => this._currentUser()?.role === 'business');
+  readonly isHomeowner = computed(() => !this.isAdmin() && !this.isBusiness());
   readonly isBanned = computed(() => !!this._currentUser()?.banned);
+
+  /** Rol actual normalizado ('admin' | 'business' | 'homeowner') */
+  readonly currentRole = computed(() => {
+    const role = this._currentUser()?.role;
+    if (role === 'admin') return 'admin';
+    if (role === 'business') return 'business';
+    return 'homeowner';
+  });
 
   /** ID del usuario autenticado */
   readonly currentUserId = computed(() => this._currentUser()?.id ?? null);

@@ -21,7 +21,7 @@
       "name": "Pepe",
       "email": "pepe@gmail.com",
       "password": "Pepe10",
-      "role": "homeowner",
+      "role": "business",
       "plan": "pro",
       "verified": true,
       "verificationCode": null,
@@ -32,6 +32,13 @@
         "occupants": 2,
         "location": "Miraflores",
         "tariff": "BT5B"
+      },
+      "business": {
+        "businessName": "Restaurante Don Pepe E.I.R.L.",
+        "taxId": "20601234567",
+        "businessType": "Restaurante",
+        "commercialTariff": "BT5B Comercial",
+        "address": "Av. Larco 456, Miraflores"
       }
     },
     {

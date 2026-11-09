@@ -8,6 +8,7 @@ import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { Device } from '../../../domain/model/device.entity';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -26,6 +27,7 @@ export class DevicesViewComponent {
   private readonly router = inject(Router);
   readonly store = inject(DevicesStore);
   readonly sensorsStore = inject(SensorsStore);
+  readonly iamStore = inject(IamStore);
 
   /** Límite de dispositivos del plan actual (Starter 5, Plus 15, Pro ilimitado) */
   readonly deviceLimit = this.store.deviceLimit;
@@ -39,16 +41,30 @@ export class DevicesViewComponent {
     return Number.isFinite(limit) ? `${count} de ${limit}` : `${count} de ilimitados`;
   }
 
-  readonly categories: string[] = [
-    'Todos',
-    'Hogar',
-    'Cocina',
-    'Climatización',
-    'Iluminación',
-    'Entretenimiento',
-    'Oficina',
-    'Otros',
-  ];
+  get categories(): string[] {
+    if (this.iamStore.isBusiness()) {
+      return [
+        'Todos',
+        'Maquinaria',
+        'Refrigeración',
+        'Climatización',
+        'Iluminación',
+        'Oficina',
+        'Cocina',
+        'Otros'
+      ];
+    }
+    return [
+      'Todos',
+      'Hogar',
+      'Cocina',
+      'Climatización',
+      'Iluminación',
+      'Entretenimiento',
+      'Oficina',
+      'Otros'
+    ];
+  }
 
   readonly selectedDevice = signal<Device | null>(null);
   readonly showDeleteModal = signal<boolean>(false);

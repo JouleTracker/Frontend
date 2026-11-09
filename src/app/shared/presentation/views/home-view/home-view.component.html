@@ -22,6 +22,11 @@
         <a routerLink="/consumo" class="quick-pill">
           <mat-icon>bar_chart</mat-icon> {{ 'HOME.QUICK_CONSUMPTION' | translate }}
         </a>
+        @if (iamStore.isBusiness()) {
+          <a routerLink="/areas" class="quick-pill">
+            <mat-icon>domain</mat-icon> {{ 'HOME.QUICK_AREAS' | translate }}
+          </a>
+        }
         <a routerLink="/recomendaciones" class="quick-pill">
           <mat-icon>lightbulb</mat-icon> {{ 'HOME.QUICK_RECOMMENDATIONS' | translate }}
         </a>

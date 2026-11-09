@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, Validati
 import { Router, RouterLink } from '@angular/router';
 import { IamStore } from '../../../application/iam.store';
 import { SignUpCommand } from '../../../domain/model/sign-up.command';
+import { UserRole } from '../../../domain/model/user.entity';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -38,7 +39,6 @@ export class SignUpFormComponent {
   private readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
 
-  // 1. Signals declaradas correctamente para coincidir con errorMessage(), isLoading(), etc.
   readonly errorMessage = signal<string | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly showPassword = signal<boolean>(false);
@@ -48,6 +48,7 @@ export class SignUpFormComponent {
     {
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      accountType: ['homeowner', [Validators.required]],
       password: [
         '',
         [
@@ -70,7 +71,6 @@ export class SignUpFormComponent {
     this.showConfirmPassword.update((val) => !val);
   }
 
-  // Getters para no pasar argumentos si los usas en el HTML
   get passwordControl() {
     return this.registerForm.get('password');
   }
@@ -92,7 +92,7 @@ export class SignUpFormComponent {
       name: this.registerForm.value.name!.trim(),
       email: this.registerForm.value.email!.trim().toLowerCase(),
       password: this.registerForm.value.password!,
-      role: 'homeowner',
+      role: (this.registerForm.value.accountType as UserRole) || 'homeowner',
       plan: 'pro'
     };
 

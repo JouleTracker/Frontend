@@ -145,7 +145,7 @@
         <div class="user-details">
           <div class="name-plan-row">
             <span class="user-name">{{ user().name }}</span>
-            <span class="user-plan-pill">{{ user().role === 'admin' ? 'ADMIN' : (user().plan | uppercase) }}</span>
+            <span class="user-plan-pill">{{ user().badge }}</span>
           </div>
           <span class="user-email">{{ user().email }}</span>
         </div>

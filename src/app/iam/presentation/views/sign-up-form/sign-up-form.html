@@ -34,6 +34,27 @@
         />
       </div>
 
+      <!-- Tipo de Cuenta: Hogar vs Negocio / MYPE -->
+      <div class="account-type-box">
+        <label class="account-type-header">{{ 'AUTH.ACCOUNT_TYPE' | translate }}</label>
+        <div class="account-type-cards">
+          <label class="account-card" [class.selected]="registerForm.get('accountType')?.value === 'homeowner'">
+            <input type="radio" formControlName="accountType" value="homeowner" class="account-radio" />
+            <div class="account-card-content">
+              <span class="account-card-title">{{ 'AUTH.ACCOUNT_HOMEOWNER' | translate }}</span>
+              <span class="account-card-desc">{{ 'AUTH.ACCOUNT_HOMEOWNER_DESC' | translate }}</span>
+            </div>
+          </label>
+          <label class="account-card" [class.selected]="registerForm.get('accountType')?.value === 'business'">
+            <input type="radio" formControlName="accountType" value="business" class="account-radio" />
+            <div class="account-card-content">
+              <span class="account-card-title">{{ 'AUTH.ACCOUNT_BUSINESS' | translate }}</span>
+              <span class="account-card-desc">{{ 'AUTH.ACCOUNT_BUSINESS_DESC' | translate }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <!-- Password -->
       <div class="form-field">
         <span class="field-icon">
