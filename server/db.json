@@ -812,7 +812,7 @@
       "name": "Refrigeradora Inverter",
       "location": "Cocina",
       "category": "Cocina",
-      "status": "Encendido",
+      "status": "En línea",
       "currentPowerKw": 0.18,
       "todayKwh": 1.45,
       "lastActivity": "Activo hace 2 min",
@@ -823,7 +823,7 @@
       "name": "Aire Acondicionado",
       "location": "Sala Principal",
       "category": "Climatización",
-      "status": "Encendido",
+      "status": "En línea",
       "currentPowerKw": 0.65,
       "todayKwh": 2.1,
       "lastActivity": "Activo hace 5 min",
@@ -845,7 +845,7 @@
       "name": "Smart TV 55\"",
       "location": "Sala Principal",
       "category": "Entretenimiento",
-      "status": "Encendido",
+      "status": "En línea",
       "currentPowerKw": 0.12,
       "todayKwh": 0.35,
       "lastActivity": "Activo ahora",
@@ -856,7 +856,7 @@
       "name": "Horno Microondas",
       "location": "Cocina",
       "category": "Cocina",
-      "status": "Standby",
+      "status": "En espera",
       "currentPowerKw": 0.01,
       "todayKwh": 0.1,
       "lastActivity": "Usado hoy 13:15",
@@ -867,7 +867,7 @@
       "name": "Luces Sala y Pasillo",
       "location": "Sala Principal",
       "category": "Iluminación",
-      "status": "Encendido",
+      "status": "En línea",
       "currentPowerKw": 0.05,
       "todayKwh": 0.18,
       "lastActivity": "Activo ahora",
@@ -949,7 +949,9 @@
       "activeDevices": 4,
       "standbyDevices": 1,
       "offlineDevices": 2,
-      "totalPowerKw": 1.01
+      "totalPowerKw": 1.01,
+      "connectedDevices": 4,
+      "waitingDevices": 1
     },
     {
       "id": 2,
@@ -958,7 +960,9 @@
       "activeDevices": 1,
       "standbyDevices": 0,
       "offlineDevices": 0,
-      "totalPowerKw": 2.2
+      "totalPowerKw": 2.2,
+      "connectedDevices": 1,
+      "waitingDevices": 0
     },
     {
       "id": 3,
@@ -967,7 +971,9 @@
       "activeDevices": 4,
       "standbyDevices": 0,
       "offlineDevices": 0,
-      "totalPowerKw": 1.32
+      "totalPowerKw": 1.32,
+      "connectedDevices": 4,
+      "waitingDevices": 0
     }
   ],
   "appliance-profiles": [

@@ -123,11 +123,15 @@ export class DeviceFormComponent implements OnInit {
     const linkedSensor = this.sensorsStore.sensors().find(s => s.assignedDeviceId === dev.id);
     this.initialSensorId = linkedSensor?.id ?? null;
 
+    let initialStatus: DeviceStatus = dev.status;
+    if ((initialStatus as unknown as string) === 'Encendido') initialStatus = 'En línea';
+    if ((initialStatus as unknown as string) === 'Standby') initialStatus = 'En espera';
+
     this.form.patchValue({
       name: dev.name,
       location: dev.location,
       category: dev.category,
-      status: dev.status,
+      status: initialStatus,
       assignedSensorId: this.initialSensorId
     });
   }
@@ -152,14 +156,16 @@ export class DeviceFormComponent implements OnInit {
     const sensorId = formValues.assignedSensorId ? Number(formValues.assignedSensorId) : null;
     const selectedSensor = sensorId ? this.sensorsStore.sensors().find(s => s.id === sensorId) : null;
 
+    // Respetar el estado explícitamente seleccionado por el usuario en el formulario
+    const chosenStatus: DeviceStatus = formValues.status;
+
     // Determinar telemetría real: toma los datos del sensor si está vinculado
-    const power = selectedSensor ? selectedSensor.currentPowerKw : (this.device()?.currentPowerKw ?? 0);
+    let power = selectedSensor ? selectedSensor.currentPowerKw : (this.device()?.currentPowerKw ?? 0);
     const kwh = selectedSensor ? selectedSensor.todayKwh : (this.device()?.todayKwh ?? 0);
 
-    // Si hay sensor y tiene potencia > 0, puede ser 'Encendido' o el elegido en el selector
-    let calculatedStatus: DeviceStatus = formValues.status;
-    if (selectedSensor) {
-      calculatedStatus = selectedSensor.currentPowerKw > 0 ? 'En línea' : formValues.status;
+    // Si el usuario marca el dispositivo como 'Apagado', la potencia actual es 0 kW
+    if (chosenStatus === 'Apagado') {
+      power = 0;
     }
 
     if (this.isEditMode) {
@@ -167,10 +173,12 @@ export class DeviceFormComponent implements OnInit {
         name: formValues.name.trim(),
         location: formValues.location.trim(),
         category: formValues.category,
-        status: calculatedStatus,
+        status: chosenStatus,
         currentPowerKw: power,
         todayKwh: kwh,
-        lastActivity: selectedSensor ? 'Telemetría IoT en vivo' : (this.device()?.lastActivity ?? 'Recién actualizado')
+        lastActivity: chosenStatus === 'Apagado'
+          ? 'Apagado manualmente'
+          : (selectedSensor ? 'Telemetría IoT en vivo' : (this.device()?.lastActivity ?? 'Recién actualizado'))
       };
 
       this.store.updateDevice(this.deviceId, changes).subscribe({
@@ -189,10 +197,12 @@ export class DeviceFormComponent implements OnInit {
         name: formValues.name.trim(),
         location: formValues.location.trim(),
         category: formValues.category,
-        status: calculatedStatus,
+        status: chosenStatus,
         currentPowerKw: power,
         todayKwh: kwh,
-        lastActivity: selectedSensor ? 'Telemetría IoT en vivo' : 'Recién registrado'
+        lastActivity: chosenStatus === 'Apagado'
+          ? 'Apagado'
+          : (selectedSensor ? 'Telemetría IoT en vivo' : 'Recién registrado')
       };
 
       this.store.createDevice(newDevice).subscribe({
