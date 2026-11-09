@@ -60,6 +60,11 @@ export class DevicesViewComponent {
     return this.sensorsStore.sensors().find((s) => s.assignedDeviceId === deviceId);
   }
 
+  /** True si el dispositivo tiene un sensor vinculado que está desconectado (sin telemetría). */
+  hasNoReading(deviceId: number): boolean {
+    return this.getSensorForDevice(deviceId)?.status === 'Desconectado';
+  }
+
   openDeleteModal(device: Device): void {
     this.selectedDevice.set(device);
     this.showDeleteModal.set(true);
