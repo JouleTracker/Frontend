@@ -22,15 +22,15 @@ export class IamStore {
   readonly isSignedIn = computed(() => this._currentUser() !== null);
   readonly isAuthenticated = this.isSignedIn;
 
-  /** Roles y permisos especiales */
-  readonly isAdmin = computed(() => this._currentUser()?.role === 'admin');
-  readonly isBusiness = computed(() => this._currentUser()?.role === 'business');
+  /** Roles y permisos especiales (normalizados en minúsculas y sin espacios) */
+  readonly isAdmin = computed(() => this._currentUser()?.role?.toString().toLowerCase().trim() === 'admin');
+  readonly isBusiness = computed(() => this._currentUser()?.role?.toString().toLowerCase().trim() === 'business');
   readonly isHomeowner = computed(() => !this.isAdmin() && !this.isBusiness());
   readonly isBanned = computed(() => !!this._currentUser()?.banned);
 
   /** Rol actual normalizado ('admin' | 'business' | 'homeowner') */
   readonly currentRole = computed(() => {
-    const role = this._currentUser()?.role;
+    const role = this._currentUser()?.role?.toString().toLowerCase().trim();
     if (role === 'admin') return 'admin';
     if (role === 'business') return 'business';
     return 'homeowner';
@@ -71,6 +71,36 @@ export class IamStore {
     if (plan === 'plus') return 30;
     return Infinity;
   });
+
+  constructor() {
+    this.refreshSessionFromBackend();
+  }
+
+  /**
+   * Sincroniza la sesión almacenada localmente con los datos más recientes del backend
+   * (actualiza de inmediato rol, datos comerciales o cambios de plan).
+   */
+  private refreshSessionFromBackend(): void {
+    const session = this._currentUser();
+    if (session?.id) {
+      this.iamApi.getUserById(session.id).subscribe({
+        next: (freshUser) => {
+          if (freshUser) {
+            const merged: User = {
+              ...session,
+              ...freshUser,
+              token: session.token
+            };
+            this._currentUser.set(merged);
+            this.persistSession(merged);
+          }
+        },
+        error: () => {
+          // Si no hay conexión con el backend, se mantiene la sesión guardada localmente
+        }
+      });
+    }
+  }
 
   // ── Métodos de Autenticación ──────────────────────────────────
   signIn(command: SignInCommand): Observable<any> {
