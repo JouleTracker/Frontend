@@ -25,7 +25,11 @@ export class SignInAssembler {
       email: response.email,
       role: response.role,
       plan: response.plan ?? 'starter',
-      token: response.token ?? `token-${response.id}`
+      token: response.token ?? `token-${response.id}`,
+      phone: response.phone,
+      home: response.home,
+      business: response.business,
+      notifications: response.notifications
     };
   }
 }
