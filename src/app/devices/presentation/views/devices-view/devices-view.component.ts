@@ -43,6 +43,8 @@ export class DevicesViewComponent {
     'Todos',
     'Hogar',
     'Cocina',
+    'Climatización',
+    'Iluminación',
     'Entretenimiento',
     'Oficina',
     'Otros',

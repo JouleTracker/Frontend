@@ -132,14 +132,14 @@
             class="form-select"
           >
             <option [ngValue]="null">-- Ninguno (Sensor disponible / Sin asignar) --</option>
-            @for (dev of devicesStore.devices(); track dev.id) {
+            @for (dev of availableDevices(); track dev.id) {
               <option [ngValue]="dev.id">
                 {{ dev.name }} ({{ dev.location }} • {{ dev.category }})
               </option>
             }
           </select>
           <span class="field-hint">
-            Selecciona el electrodoméstico enchufado físicamente a este medidor.
+            Solo se listan los electrodomésticos sin otro sensor vinculado.
           </span>
         </div>
 

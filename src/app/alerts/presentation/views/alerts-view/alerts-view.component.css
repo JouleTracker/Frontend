@@ -228,3 +228,58 @@
   .filter-dropdown select { width: 100%; }
   .btn-action { width: 100%; }
 }
+
+.actions-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-mark-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1fae5;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-mark-read:hover {
+  background: #d1fae5;
+  color: #047857;
+}
+.btn-mark-read mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.btn-mark-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-mark-all:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+.btn-mark-all mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #059669;
+}

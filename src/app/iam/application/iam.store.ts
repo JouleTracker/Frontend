@@ -29,9 +29,9 @@ export class IamStore {
   /** ID del usuario autenticado */
   readonly currentUserId = computed(() => this._currentUser()?.id ?? null);
 
-  // ── Gestión de Planes y Permisos ──────────────────────────────
+  // ── Gestión de Planes y Permisos (Por defecto todos cuentan con plan Pro) ──
   readonly currentPlan = computed<SubscriptionPlan>(
-    () => this._currentUser()?.plan ?? 'starter'
+    () => this._currentUser()?.plan ?? 'pro'
   );
 
   readonly hasPlusAccess = computed(() =>

@@ -34,6 +34,15 @@ export class AlertsViewComponent {
     return status === 'Activa' ? 'pill-active' : 'pill-resolved';
   }
 
+  markAsRead(id: number, event?: Event): void {
+    if (event) event.stopPropagation();
+    this.store.markAsRead(id);
+  }
+
+  markAllAsRead(): void {
+    this.store.markAllAsRead();
+  }
+
   goToSettings(): void {
     this.router.navigate(['/configuracion']);
   }

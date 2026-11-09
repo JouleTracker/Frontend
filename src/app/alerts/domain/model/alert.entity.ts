@@ -10,11 +10,11 @@ export interface AlertProps {
   timeAgo: string;
   severity: AlertSeverity;
   actionUrl: string;
+  status?: AlertStatus;
 }
 
 /**
  * Domain entity representing an alert notification in JouleTracker.
- * Solo contiene los datos reales entregados por la colección `alerts` de db.json.
  */
 export class Alert implements BaseEntity {
   readonly id: number;
@@ -23,6 +23,7 @@ export class Alert implements BaseEntity {
   readonly timeAgo: string;
   readonly severity: AlertSeverity;
   readonly actionUrl: string;
+  readonly status: AlertStatus;
 
   constructor(props: AlertProps) {
     this.id = props.id;
@@ -31,14 +32,6 @@ export class Alert implements BaseEntity {
     this.timeAgo = props.timeAgo;
     this.severity = props.severity;
     this.actionUrl = props.actionUrl;
-  }
-
-  /**
-   * Estado derivado de la severidad (regla de dominio):
-   * las alertas de advertencia o error requieren atención ('Activa'),
-   * las informativas se consideran leídas.
-   */
-  get status(): AlertStatus {
-    return this.severity === 'info' ? 'Leída' : 'Activa';
+    this.status = props.status ?? (props.severity === 'info' ? 'Leída' : 'Activa');
   }
 }

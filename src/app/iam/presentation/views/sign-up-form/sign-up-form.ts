@@ -92,7 +92,8 @@ export class SignUpFormComponent {
       name: this.registerForm.value.name!.trim(),
       email: this.registerForm.value.email!.trim().toLowerCase(),
       password: this.registerForm.value.password!,
-      role: 'homeowner'
+      role: 'homeowner',
+      plan: 'pro'
     };
 
     this.iamStore.signUp(command).subscribe({
