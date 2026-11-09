@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecommendationsViewComponent } from './recommendations-view';
 import { RecommendationsStore } from '../../../application/recommendations.store';
 import { IamStore } from '../../../../iam/application/iam.store';
@@ -13,6 +13,7 @@ describe('RecommendationsViewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [RecommendationsViewComponent],
       providers: [
+        provideTranslateService(),
         {
           provide: RecommendationsStore,
           useValue: {
@@ -20,6 +21,7 @@ describe('RecommendationsViewComponent', () => {
             setCategory: () => {},
             setSort: () => {},
             selectedCategory: signal('Todas'),
+            availableCategories: signal(['Todas']),
             filteredRecommendations: signal([]),
             metrics: signal({
               potentialSavings: 'S/ 0.00',
