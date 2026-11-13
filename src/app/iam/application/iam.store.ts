@@ -7,6 +7,7 @@ import { SignUpCommand } from '../domain/model/sign-up.command';
 import { IamApi } from '../infrastructure/iam-api';
 import { SignInAssembler } from '../infrastructure/sign-in-assembler';
 import { SignUpAssembler } from '../infrastructure/sign-up-assembler';
+import { saveLocalUserPreferences } from '../infrastructure/user-mapper.util';
 
 @Injectable({ providedIn: 'root' })
 export class IamStore {
@@ -88,7 +89,17 @@ export class IamStore {
           if (freshUser) {
             const merged: User = {
               ...session,
-              ...freshUser,
+              id: freshUser.id ?? session.id,
+              name: freshUser.name || session.name,
+              email: freshUser.email || session.email,
+              role: freshUser.role || session.role,
+              verified: freshUser.verified ?? session.verified,
+              banned: freshUser.banned ?? session.banned,
+              plan: freshUser.plan ?? session.plan ?? 'pro',
+              phone: freshUser.phone ?? session.phone,
+              home: freshUser.home ?? session.home,
+              business: freshUser.business ?? session.business,
+              notifications: freshUser.notifications ?? session.notifications,
               token: session.token
             };
             this._currentUser.set(merged);
@@ -96,7 +107,7 @@ export class IamStore {
           }
         },
         error: () => {
-          // Si no hay conexión con el backend, se mantiene la sesión guardada localmente
+          // Si no hay conexión con el backend o el token expiró, se mantiene la sesión guardada localmente
         }
       });
     }
@@ -127,6 +138,10 @@ export class IamStore {
   }
 
   signUp(command: SignUpCommand): Observable<any> {
+    saveLocalUserPreferences(command.email, {
+      role: command.role || 'homeowner',
+      plan: command.plan || 'pro'
+    });
     const request = SignUpAssembler.toRequestFromCommand(command);
     return this.iamApi.signUp(request).pipe(
       tap((response) => {
@@ -150,12 +165,12 @@ export class IamStore {
     this.persistSession(updatedUser);
 
     if (current.id) {
-      this.iamApi.updateUserPlan(current.id, newPlan).subscribe({
+      this.iamApi.updateUserPlan(current.id, newPlan, current.email).subscribe({
         next: (savedUser) => {
-          console.log('Plan persistido con éxito en backend:', savedUser.plan);
+          console.log('Plan actualizado:', savedUser.plan);
         },
         error: (err) => {
-          console.error('Error al persistir plan en el servidor:', err);
+          console.error('Error al actualizar plan:', err);
         }
       });
     }
@@ -170,9 +185,9 @@ export class IamStore {
     this.persistSession(updatedUser);
 
     if (current.id) {
-      this.iamApi.updateUserProfile(current.id, changes).subscribe({
+      this.iamApi.updateUserProfile(current.id, { email: current.email, ...changes }).subscribe({
         error: (err) => {
-          console.error('Error al persistir perfil en el servidor:', err);
+          console.error('Error al actualizar perfil:', err);
         }
       });
     }

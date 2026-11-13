@@ -53,8 +53,9 @@ export class SignUpFormComponent {
         '',
         [
           Validators.required,
-          Validators.minLength(6),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
+          Validators.minLength(8),
+          Validators.maxLength(64),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S+$/)
         ]
       ],
       confirmPassword: ['', [Validators.required]],
@@ -99,7 +100,9 @@ export class SignUpFormComponent {
     this.iamStore.signUp(command).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], {
+          queryParams: { registered: '1', email: command.email }
+        });
       },
       error: (err: Error) => {
         this.isLoading.set(false);

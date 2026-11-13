@@ -1,27 +1,21 @@
-// src/app/iam/infrastructure/sign-up-assembler.ts
 import { SignUpCommand } from '../domain/model/sign-up.command';
 import { SignUpRequest } from './sign-up.request';
 import { SignUpResponse } from './sign-up-response';
 import { User } from '../domain/model/user.entity';
+import { mapBackendUserToEntity, splitFullName } from './user-mapper.util';
 
 export class SignUpAssembler {
   static toRequestFromCommand(command: SignUpCommand): SignUpRequest {
+    const { firstName, lastName } = splitFullName(command.name);
     return {
-      name: command.name,
-      email: command.email,
+      email: command.email.trim().toLowerCase(),
       password: command.password,
-      role: command.role || 'homeowner',
-      plan: command.plan || 'pro'
+      firstName,
+      lastName
     };
   }
 
   static toEntityFromResponse(response: SignUpResponse): User {
-    return {
-      id: response.id,
-      name: response.name,
-      email: response.email,
-      role: response.role,
-      plan: response.plan || 'pro'
-    };
+    return mapBackendUserToEntity(response);
   }
 }

@@ -46,26 +46,10 @@ export class ForgotPasswordViewComponent {
       return;
     }
 
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    const email = this.emailForm.value.email!.trim().toLowerCase();
-
-    this.http.get<any[]>(`${this.usersUrl}?email=${email}`).subscribe({
-      next: (users) => {
-        this.isLoading.set(false);
-        if (users.length > 0) {
-          this.userId = users[0].id;
-          this.step.set('new-password');
-        } else {
-          this.errorMessage.set('No encontramos ninguna cuenta con ese correo.');
-        }
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.errorMessage.set('Error de conexión con el servidor.');
-      }
-    });
+    this.isLoading.set(false);
+    this.errorMessage.set(
+      'La recuperación de contraseña por correo estará disponible próximamente. Si necesitas ayuda, contacta al administrador.'
+    );
   }
 
   onResetPassword(): void {
@@ -74,23 +58,9 @@ export class ForgotPasswordViewComponent {
       return;
     }
 
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    const newPassword = this.resetForm.value.newPassword!;
-
-    this.http.patch(`${this.usersUrl}/${this.userId}`, { password: newPassword }).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-        this.step.set('success');
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.errorMessage.set('No se pudo actualizar la contraseña.');
-      }
-    });
+    this.isLoading.set(false);
+    this.errorMessage.set(
+      'El restablecimiento directo no está habilitado desde el navegador por seguridad.'
+    );
   }
 }

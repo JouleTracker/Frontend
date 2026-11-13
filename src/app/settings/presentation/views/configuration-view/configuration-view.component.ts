@@ -5,7 +5,6 @@ import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { IamStore } from '../../../../iam/application/iam.store';
-import { IamApi } from '../../../../iam/infrastructure/iam-api';
 import { UserNotifications } from '../../../../iam/domain/model/user.entity';
 
 import { TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +27,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class ConfigurationViewComponent {
   private readonly fb = inject(FormBuilder);
   readonly iamStore = inject(IamStore);
-  private readonly iamApi = inject(IamApi);
   private readonly router = inject(Router);
 
   readonly user = this.iamStore.currentUser;
@@ -116,7 +114,7 @@ export class ConfigurationViewComponent {
     const userId = this.user()?.id;
     if (!userId) return;
 
-    const { currentPassword, newPassword, confirmPassword } = this.passwordForm.getRawValue();
+    const { newPassword, confirmPassword } = this.passwordForm.getRawValue();
     this.passwordMessage.set(null);
     this.passwordError.set(null);
 
@@ -125,32 +123,10 @@ export class ConfigurationViewComponent {
       return;
     }
 
-    this.savingPassword.set(true);
-    // Verifica la contraseña actual contra db.json antes de actualizarla
-    this.iamApi.getUserById(userId).subscribe({
-      next: (dbUser) => {
-        if (dbUser?.password !== currentPassword) {
-          this.savingPassword.set(false);
-          this.passwordError.set('La contraseña actual es incorrecta.');
-          return;
-        }
-        this.iamApi.updateUserProfile(userId, { password: newPassword ?? '' }).subscribe({
-          next: () => {
-            this.savingPassword.set(false);
-            this.passwordMessage.set('Contraseña actualizada correctamente.');
-            this.passwordForm.reset();
-          },
-          error: () => {
-            this.savingPassword.set(false);
-            this.passwordError.set('No se pudo actualizar la contraseña.');
-          }
-        });
-      },
-      error: () => {
-        this.savingPassword.set(false);
-        this.passwordError.set('No se pudo verificar la contraseña actual.');
-      }
-    });
+    this.savingPassword.set(false);
+    this.passwordError.set(
+      'El cambio de contraseña en línea estará disponible próximamente en una actualización del servidor.'
+    );
   }
 
   saveHome(): void {
