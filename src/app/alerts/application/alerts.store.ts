@@ -50,18 +50,24 @@ export class AlertsStore {
     // 1. Cargar las alertas guardadas en la API
     this.api.getAlerts().subscribe({
       next: dbAlerts => {
-        // 2. Consultar los sensores del usuario para evaluar excesos en tiempo real
-        const sensorsEndpoint = `${environment.apiBaseUrl}/sensors?userId=${userId}`;
+        // 2. Consultar los sensores del usuario para evaluar excesos en tiempo real si el backend no los emitió aún
+        const sensorsEndpoint = `${environment.apiBaseUrl}${environment.sensorsEndpointPath}?userId=${userId}`;
         this.http.get<SensorItem[]>(sensorsEndpoint).subscribe({
           next: sensors => {
             const dynamicSensorAlerts: Alert[] = [];
 
-            // Detectar cualquier sensor que supere su límite recomendado
+            // Detectar cualquier sensor que supere su límite recomendado sin duplicar alertas ya generadas por el backend
             sensors.forEach(sensor => {
-              if (sensor.recommendedDailyKwh && sensor.todayKwh > sensor.recommendedDailyKwh) {
+              const alreadyInBackend = dbAlerts.some(
+                a =>
+                  a.sensorId === sensor.id ||
+                  (a.status === 'Activa' && a.title.toLowerCase().includes(sensor.name.toLowerCase()))
+              );
+              if (!alreadyInBackend && sensor.recommendedDailyKwh && sensor.todayKwh > sensor.recommendedDailyKwh) {
                 dynamicSensorAlerts.push(
                   new Alert({
                     id: 9000 + sensor.id,
+                    sensorId: sensor.id,
                     title: `Límite diario superado: ${sensor.name}`,
                     description: `El electrodoméstico ${sensor.assignedDeviceName ?? sensor.name} consumió ${sensor.todayKwh.toFixed(2)} kWh hoy (límite sugerido: ${sensor.recommendedDailyKwh.toFixed(2)} kWh/día).`,
                     timeAgo: 'Ahora',
@@ -92,7 +98,7 @@ export class AlertsStore {
   }
 
   /**
-   * Marca una alerta como leída / resuelta en la sesión actual.
+   * Marca una alerta como leída / resuelta en el backend y en la sesión actual.
    */
   markAsRead(id: number): void {
     this.alertsSignal.update(list =>
@@ -100,6 +106,8 @@ export class AlertsStore {
         a.id === id
           ? new Alert({
               id: a.id,
+              sensorId: a.sensorId,
+              deviceId: a.deviceId,
               title: a.title,
               description: a.description,
               timeAgo: a.timeAgo,
@@ -110,16 +118,30 @@ export class AlertsStore {
           : a
       )
     );
+
+    if (id < 9000) {
+      this.api.markAsRead(id).subscribe({
+        error: () => {
+          // Local state stays responsive if offline
+        }
+      });
+    }
   }
 
   /**
    * Marca todas las alertas activas como leídas.
    */
   markAllAsRead(): void {
+    const activePersisted = this.alertsSignal().filter(
+      a => a.status === 'Activa' && a.id < 9000
+    );
+
     this.alertsSignal.update(list =>
       list.map(a =>
         new Alert({
           id: a.id,
+          sensorId: a.sensorId,
+          deviceId: a.deviceId,
           title: a.title,
           description: a.description,
           timeAgo: a.timeAgo,
@@ -129,5 +151,13 @@ export class AlertsStore {
         })
       )
     );
+
+    activePersisted.forEach(alert => {
+      this.api.markAsRead(alert.id).subscribe({
+        error: () => {
+          // Ignore individual failures during bulk read
+        }
+      });
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 import { RecommendationItem } from '../domain/model/recommendation.entity';
 import { RecommendationResource } from './recommendations-response';
@@ -22,7 +22,8 @@ export class RecommendationsApi {
     return this.http.get<RecommendationResource[]>(
       `${this.baseUrl}${environment.recommendationsEndpointPath}${query}`
     ).pipe(
-      map(resources => (resources ?? []).map(r => this.toItem(r)))
+      map(resources => (resources ?? []).map(r => this.toItem(r))),
+      catchError(() => of([]))
     );
   }
 

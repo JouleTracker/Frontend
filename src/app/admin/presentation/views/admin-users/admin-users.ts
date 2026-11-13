@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
+import { IamApi } from '../../../../iam/infrastructure/iam-api';
+import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
 
 @Component({
   selector: 'app-admin-users',
@@ -14,26 +16,35 @@ import { User } from '../../../../iam/domain/model/user.entity';
 })
 export class AdminUsersComponent implements OnInit {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl || 'http://localhost:3000';
+  private readonly iamApi = inject(IamApi);
+  private readonly baseUrl = environment.apiBaseUrl;
 
   users: User[] = [];
   toastMsg: string | null = null;
 
   ngOnInit(): void {
-    this.http.get<User[]>(`${this.baseUrl}/users`).subscribe({
+    this.iamApi.getUsers().subscribe({
       next: (data) => (this.users = data.filter((u) => u.role !== 'admin')),
-      error: (err) => console.error(err)
+      error: (err) => {
+        this.toastMsg = extractHttpErrorMessage(err, 'No se pudieron cargar los usuarios.');
+      }
     });
   }
 
   toggleBan(user: User): void {
     const updated = !user.banned;
-    this.http.patch<User>(`${this.baseUrl}/users/${user.id}`, { banned: updated }).subscribe({
-      next: () => {
-        user.banned = updated;
-        this.toastMsg = `Usuario ${user.name} ${updated ? 'baneado' : 'desbaneado'}.`;
-        setTimeout(() => (this.toastMsg = null), 3000);
-      }
-    });
+    this.http
+      .patch<User>(`${this.baseUrl}${environment.usersEndpointPath}/${user.id}`, { banned: updated })
+      .subscribe({
+        next: () => {
+          user.banned = updated;
+          this.toastMsg = `Usuario ${user.name} ${updated ? 'baneado' : 'desbaneado'}.`;
+          setTimeout(() => (this.toastMsg = null), 3000);
+        },
+        error: () => {
+          this.toastMsg = 'La suspensión administrativa de cuentas estará disponible en el próximo sprint del backend.';
+          setTimeout(() => (this.toastMsg = null), 4000);
+        }
+      });
   }
 }

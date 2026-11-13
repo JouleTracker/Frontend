@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
+import { IamApi } from '../../../../iam/infrastructure/iam-api';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -17,6 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class AdminDashboardComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
+  private readonly iamApi = inject(IamApi);
 
   // Usar apiBaseUrl directamente desde environment
   private readonly baseUrl = environment.apiBaseUrl;
@@ -51,8 +53,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadUsers(): void {
-    const url = `${this.baseUrl}${environment.usersEndpointPath || '/users'}`;
-    this.http.get<User[]>(url).subscribe({
+    this.iamApi.getUsers().subscribe({
       next: (data) => {
         this.users = data.filter((u) => u.role !== 'admin');
         if (this.users.length > 0) {
@@ -66,13 +67,14 @@ export class AdminDashboardComponent implements OnInit {
 
   toggleBan(user: User): void {
     const updatedStatus = !user.banned;
-    const url = `${this.baseUrl}${environment.usersEndpointPath || '/users'}/${user.id}`;
+    const url = `${this.baseUrl}${environment.usersEndpointPath}/${user.id}`;
     this.http.patch<User>(url, { banned: updatedStatus }).subscribe({
       next: () => {
         user.banned = updatedStatus;
         this.notify(`Usuario ${user.name} ${updatedStatus ? 'baneado' : 'desbaneado'}.`);
       },
-      error: (err) => console.error('Error al actualizar estado:', err),
+      error: () =>
+        this.notify('La suspensión administrativa de cuentas estará disponible en el próximo sprint.'),
     });
   }
 
