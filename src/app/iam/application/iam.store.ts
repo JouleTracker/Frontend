@@ -106,8 +106,11 @@ export class IamStore {
             this.persistSession(merged);
           }
         },
-        error: () => {
-          // Si no hay conexión con el backend o el token expiró, se mantiene la sesión guardada localmente
+        error: (err) => {
+          // Si el token ya no es válido o el usuario no existe en el backend actual, limpiar la sesión
+          if (err?.status === 401 || err?.status === 403 || err?.status === 404) {
+            this.clearSessionOnly();
+          }
         }
       });
     }
@@ -151,9 +154,13 @@ export class IamStore {
   }
 
   signOut(): void {
+    this.clearSessionOnly();
+    this.router.navigate(['/login']);
+  }
+
+  private clearSessionOnly(): void {
     this._currentUser.set(null);
     localStorage.removeItem(this.storageKey);
-    this.router.navigate(['/login']);
   }
 
   updatePlan(newPlan: SubscriptionPlan): void {
@@ -200,9 +207,32 @@ export class IamStore {
   private restoreSession(): User | null {
     try {
       const raw = localStorage.getItem(this.storageKey);
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+
+      const parsed = JSON.parse(raw) as User;
+      if (!parsed?.token || !this.isValidJwtToken(parsed.token)) {
+        localStorage.removeItem(this.storageKey);
+        return null;
+      }
+      return parsed;
     } catch {
+      localStorage.removeItem(this.storageKey);
       return null;
+    }
+  }
+
+  private isValidJwtToken(token: string): boolean {
+    const parts = token.split('.');
+    if (parts.length !== 3) return false;
+    try {
+      const payloadJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(payloadJson) as { exp?: number };
+      if (typeof payload.exp === 'number' && payload.exp * 1000 < Date.now()) {
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
     }
   }
 }

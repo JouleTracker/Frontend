@@ -40,7 +40,7 @@ const adminDashboardView = () =>
 const baseTitle = 'JouleTracker';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // ── Módulo de Administración de Plataforma ──
   { path: 'admin', redirectTo: 'admin/usuarios', pathMatch: 'full' },
@@ -88,5 +88,5 @@ export const routes: Routes = [
     loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)
   },
 
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
