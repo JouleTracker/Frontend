@@ -3,16 +3,26 @@ import { Alert, AlertSeverity, AlertStatus } from '../domain/model/alert.entity'
 
 export class AlertAssembler {
   toEntity(resource: AlertResource): Alert {
-    const raw = resource as unknown as Record<string, unknown>;
-    const isRead = resource.read === true || raw['status'] === 'Leída';
+    const isRead = resource.read === true || resource.status === 'Leída';
     const resolvedStatus: AlertStatus = isRead ? 'Leída' : 'Activa';
+    const rawSeverity = String(resource.severity ?? '').toLowerCase();
+    let severity: AlertSeverity = isRead ? 'info' : 'warning';
+    if (rawSeverity === 'critical' || rawSeverity === 'error') {
+      severity = 'error';
+    } else if (rawSeverity === 'info') {
+      severity = 'info';
+    } else if (rawSeverity === 'warning') {
+      severity = 'warning';
+    }
 
     return new Alert({
       id: resource.id,
+      sensorId: resource.sensorId,
+      deviceId: resource.deviceId,
       title: resource.title,
       description: resource.description || resource.message || 'Sin descripción detallada.',
       timeAgo: resource.timeAgo || this.formatTimeAgo(resource.timestamp),
-      severity: (resource.severity as AlertSeverity) || (isRead ? 'info' : 'warning'),
+      severity,
       actionUrl: resource.actionUrl || '/dispositivos',
       status: resolvedStatus
     });

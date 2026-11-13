@@ -5,6 +5,8 @@ export type AlertStatus = 'Activa' | 'Leída';
 
 export interface AlertProps {
   id: number;
+  sensorId?: number;
+  deviceId?: number;
   title: string;
   description: string;
   timeAgo: string;
@@ -18,6 +20,8 @@ export interface AlertProps {
  */
 export class Alert implements BaseEntity {
   readonly id: number;
+  readonly sensorId?: number;
+  readonly deviceId?: number;
   readonly title: string;
   readonly description: string;
   readonly timeAgo: string;
@@ -27,6 +31,8 @@ export class Alert implements BaseEntity {
 
   constructor(props: AlertProps) {
     this.id = props.id;
+    this.sensorId = props.sensorId;
+    this.deviceId = props.deviceId;
     this.title = props.title;
     this.description = props.description;
     this.timeAgo = props.timeAgo;

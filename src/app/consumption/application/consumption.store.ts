@@ -132,32 +132,33 @@ export class ConsumptionStore {
   }
 
   loadAll(): void {
+    const period = this.selectedPeriodSignal();
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.api.getSummary().subscribe({
+    this.api.getSummary(period).subscribe({
       next: data => this.summarySignal.set(data),
       error: err => this.errorSignal.set(err.message)
     });
 
-    this.loadEnergyReadings(this.selectedPeriodSignal());
+    this.loadEnergyReadings(period);
 
     this.api.getEnergyReadings('dia').subscribe({
       next: data => this.hourlyReadingSignal.set(data),
       error: err => this.errorSignal.set(err.message)
     });
 
-    this.api.getDeviceDistribution().subscribe({
+    this.api.getDeviceDistribution(period).subscribe({
       next: data => this.deviceDistributionsSignal.set(data),
       error: err => this.errorSignal.set(err.message)
     });
 
-    this.api.getComparativeConsumption().subscribe({
+    this.api.getComparativeConsumption(period).subscribe({
       next: data => this.comparativeConsumptionsSignal.set(data),
       error: err => this.errorSignal.set(err.message)
     });
 
-    this.api.getConsumptionHistory().subscribe({
+    this.api.getConsumptionHistory(period).subscribe({
       next: data => {
         this.consumptionHistoriesSignal.set(data);
         this.loadingSignal.set(false);
@@ -172,6 +173,12 @@ export class ConsumptionStore {
   setPeriod(period: 'dia' | 'semana' | 'mes' | 'ano'): void {
     this.selectedPeriodSignal.set(period);
     this.loadEnergyReadings(period);
+    this.api.getSummary(period).subscribe({
+      next: data => this.summarySignal.set(data),
+      error: () => {
+        // Keep current summary if period refresh fails
+      }
+    });
   }
 
   loadEnergyReadings(period: 'dia' | 'semana' | 'mes' | 'ano'): void {

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
+import { IamApi } from '../../../../iam/infrastructure/iam-api';
 
 @Component({
   selector: 'app-admin-alerts',
@@ -15,7 +16,8 @@ import { User } from '../../../../iam/domain/model/user.entity';
 })
 export class AdminAlertsComponent implements OnInit {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl || 'http://localhost:3000';
+  private readonly iamApi = inject(IamApi);
+  private readonly baseUrl = environment.apiBaseUrl;
 
   users: User[] = [];
   toastMsg: string | null = null;
@@ -28,7 +30,7 @@ export class AdminAlertsComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.http.get<User[]>(`${this.baseUrl}/users`).subscribe({
+    this.iamApi.getUsers().subscribe({
       next: (data) => {
         this.users = data.filter((u) => u.role !== 'admin');
         if (this.users.length > 0) this.form.userId = this.users[0].id;
@@ -50,12 +52,16 @@ export class AdminAlertsComponent implements OnInit {
       read: false
     };
 
-    this.http.post(`${this.baseUrl}/alerts`, payload).subscribe({
+    this.http.post(`${this.baseUrl}${environment.alertsEndpointPath}`, payload).subscribe({
       next: () => {
         this.toastMsg = 'Alerta emitida con éxito.';
         this.form.title = '';
         this.form.description = '';
         setTimeout(() => (this.toastMsg = null), 3000);
+      },
+      error: () => {
+        this.toastMsg = 'La emisión manual de alertas administrativas estará disponible en el próximo sprint del backend.';
+        setTimeout(() => (this.toastMsg = null), 4000);
       }
     });
   }
