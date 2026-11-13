@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { SignInRequest } from './sign-in.request';
 import { SignInResponse } from './sign-in-response';
 import { SignUpRequest } from './sign-up.request';
@@ -9,6 +9,12 @@ import { SignInApiEndpoint } from './sign-in-api-endpoint';
 import { SignUpApiEndpoint } from './sign-up-api-endpoint';
 import { SubscriptionPlan, User } from '../domain/model/user.entity';
 import { environment } from '../../../environments/environment';
+import { extractHttpErrorMessage } from '../../shared/infrastructure/http-error.util';
+import {
+  BackendUserResource,
+  mapBackendUserToEntity,
+  saveLocalUserPreferences
+} from './user-mapper.util';
 
 @Injectable({ providedIn: 'root' })
 export class IamApi {
@@ -16,52 +22,69 @@ export class IamApi {
   private readonly baseUrl = environment.apiBaseUrl;
 
   signIn(request: SignInRequest): Observable<SignInResponse> {
-    const url = `${this.baseUrl}/users?email=${encodeURIComponent(
-      request.email.trim().toLowerCase()
-    )}&password=${encodeURIComponent(request.password.trim())}`;
+    const payload: SignInRequest = {
+      email: request.email.trim().toLowerCase(),
+      password: request.password
+    };
 
-    console.log('IamApi URL solicitada:', url);
-
-    return this.http.get<any[]>(url).pipe(
-      map((users) => {
-        console.log('Respuesta recibida de json-server:', users);
-
-        if (!users || users.length === 0) {
-          throw new Error('Credenciales incorrectas');
-        }
-        const user = users[0];
-        const { password: _password, verificationCode: _code, ...userWithoutSecrets } = user;
-        return {
-          ...userWithoutSecrets,
-          token: user.token || `token-${user.id}`,
-          plan: user.plan || 'starter'
-        };
-      })
+    return this.http.post<SignInResponse>(SignInApiEndpoint.getEndpoint(), payload).pipe(
+      catchError((err) =>
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Credenciales incorrectas.')))
+      )
     );
   }
 
   signUp(request: SignUpRequest): Observable<SignUpResponse> {
-    const newUser = {
-      ...request,
-      plan: 'starter',
-      verified: true,
-      verificationCode: null
-    };
-    return this.http.post<SignUpResponse>(SignUpApiEndpoint.getEndpoint(), newUser);
+    return this.http.post<SignUpResponse>(SignUpApiEndpoint.getEndpoint(), request).pipe(
+      catchError((err) =>
+        throwError(() => new Error(extractHttpErrorMessage(err, 'No se pudo completar el registro.')))
+      )
+    );
   }
 
-  getUserById(userId: number): Observable<User & { password?: string }> {
-    return this.http.get<User & { password?: string }>(`${this.baseUrl}/users/${userId}`);
+  verifyEmail(token: string): Observable<User> {
+    const url = `${this.baseUrl}${environment.verifyEmailEndpointPath}?token=${encodeURIComponent(token.trim())}`;
+    return this.http.get<BackendUserResource>(url).pipe(
+      map((res) => mapBackendUserToEntity(res)),
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(err, 'El enlace de verificación es inválido o ha expirado.')
+            )
+        )
+      )
+    );
   }
 
-  updateUserPlan(userId: number, plan: SubscriptionPlan): Observable<User> {
-    return this.http.patch<User>(`${this.baseUrl}/users/${userId}`, { plan });
+  getUsers(): Observable<User[]> {
+    return this.http
+      .get<BackendUserResource[]>(`${this.baseUrl}${environment.usersEndpointPath}`)
+      .pipe(map((users) => (users ?? []).map((u) => mapBackendUserToEntity(u))));
+  }
+
+  getUserById(userId: number): Observable<User> {
+    return this.http
+      .get<BackendUserResource>(`${this.baseUrl}${environment.usersEndpointPath}/${userId}`)
+      .pipe(map((res) => mapBackendUserToEntity(res)));
+  }
+
+  updateUserPlan(userId: number, plan: SubscriptionPlan, email?: string): Observable<Partial<User>> {
+    saveLocalUserPreferences(email, { plan });
+    return of({ id: userId, plan });
   }
 
   updateUserProfile(
     userId: number,
     changes: Partial<User> & { password?: string }
-  ): Observable<User> {
-    return this.http.patch<User>(`${this.baseUrl}/users/${userId}`, changes);
+  ): Observable<Partial<User>> {
+    const { password: _password, ...safeChanges } = changes;
+    saveLocalUserPreferences(safeChanges.email, {
+      phone: safeChanges.phone,
+      home: safeChanges.home,
+      business: safeChanges.business,
+      notifications: safeChanges.notifications
+    });
+    return of({ id: userId, ...safeChanges });
   }
 }

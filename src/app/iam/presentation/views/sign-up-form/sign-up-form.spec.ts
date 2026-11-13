@@ -28,4 +28,16 @@ describe('SignUpFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should enforce Spring Boot password policy (min 8 chars + special character)', () => {
+    const passwordControl = component.passwordControl;
+    passwordControl?.setValue('Abc1234');
+    expect(passwordControl?.hasError('minlength')).toBe(true);
+
+    passwordControl?.setValue('Abcdefg1');
+    expect(passwordControl?.hasError('pattern')).toBe(true);
+
+    passwordControl?.setValue('Abcdef1!');
+    expect(passwordControl?.valid).toBe(true);
+  });
 });

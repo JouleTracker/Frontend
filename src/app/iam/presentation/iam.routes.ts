@@ -31,6 +31,14 @@ export const iamRoutes: Routes = [
             (m) => m.ForgotPasswordViewComponent
           ),
         title: 'JouleTracker - Recuperar contraseña'
+      },
+      {
+        path: 'verify-email',
+        loadComponent: () =>
+          import('./views/verify-email-view/verify-email-view.component').then(
+            (m) => m.VerifyEmailViewComponent
+          ),
+        title: 'JouleTracker - Verificar correo'
       }
     ]
   }
