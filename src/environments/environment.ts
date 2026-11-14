@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://jouletracker-api.onrender.com',
+  apiBaseUrl: 'https://jouletracker-api-kmok.onrender.com',
   consumptionSummariesEndpointPath: '/api/v1/consumption-summaries',
   energyReadingsEndpointPath: '/api/v1/energy-readings',
   deviceDistributionsEndpointPath: '/api/v1/device-distributions',
