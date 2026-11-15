@@ -298,6 +298,29 @@
   cursor: pointer;
 }
 
+.login-legal-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #bed4c2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #4b5563;
+}
+
+.login-legal-footer a {
+  color: #214029;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-legal-footer a:hover {
+  text-decoration: underline;
+}
+
 /* ── Right: Promotional Content ──────────────────── */
 .login-promo {
   flex: 1;

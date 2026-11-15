@@ -8,6 +8,29 @@
 
   <!-- Contenedor dinámico de las vistas -->
   <main class="shell-content">
-    <router-outlet></router-outlet>
+    <div class="shell-main">
+      <router-outlet></router-outlet>
+    </div>
+
+    @if (showSidebar()) {
+      <footer class="shell-footer">
+        <span>{{ 'LEGAL.COPYRIGHT' | translate }}</span>
+        <nav class="shell-footer-links" aria-label="Legal">
+          <a
+            href="https://jouletracker.github.io/JouleTracker-LandingPage/terms.html"
+            target="_blank"
+            rel="noopener noreferrer">
+            {{ 'LEGAL.TERMS' | translate }}
+          </a>
+          <span aria-hidden="true">·</span>
+          <a
+            href="https://jouletracker.github.io/JouleTracker-LandingPage/privacy.html"
+            target="_blank"
+            rel="noopener noreferrer">
+            {{ 'LEGAL.PRIVACY' | translate }}
+          </a>
+        </nav>
+      </footer>
+    }
   </main>
 </div>
