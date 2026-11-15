@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IamStore } from '../../../application/iam.store';
 import { SignUpCommand } from '../../../domain/model/sign-up.command';
 import { UserRole } from '../../../domain/model/user.entity';
@@ -34,15 +34,39 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './sign-up-form.html',
   styleUrl: './sign-up-form.css'
 })
-export class SignUpFormComponent {
+export class SignUpFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly errorMessage = signal<string | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly showPassword = signal<boolean>(false);
   readonly showConfirmPassword = signal<boolean>(false);
+
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const rawType = (
+        params.get('accountType') ??
+        params.get('type') ??
+        params.get('segment') ??
+        ''
+      )
+        .trim()
+        .toLowerCase();
+
+      if (rawType === 'business' || rawType === 'mype' || rawType === 'negocio') {
+        this.registerForm.patchValue({ accountType: 'business' });
+      } else if (
+        rawType === 'homeowner' ||
+        rawType === 'hogar' ||
+        rawType === 'jefe-de-hogar'
+      ) {
+        this.registerForm.patchValue({ accountType: 'homeowner' });
+      }
+    });
+  }
 
   readonly registerForm = this.fb.group(
     {
