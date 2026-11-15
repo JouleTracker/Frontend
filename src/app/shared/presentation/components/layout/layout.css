@@ -27,6 +27,42 @@
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-main {
+  flex: 1 0 auto;
+}
+
+.shell-footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 12px 24px;
+  border-top: 1px solid rgba(209, 213, 219, 0.7);
+  background-color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.shell-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shell-footer-links a {
+  color: #214029;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.shell-footer-links a:hover {
+  text-decoration: underline;
 }
 
 /* Cuando estamos en login, registro o forgot password */

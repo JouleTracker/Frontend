@@ -37,6 +37,11 @@
     "NO": "No",
     "ALL": "Todos"
   },
+  "LEGAL": {
+    "TERMS": "Términos de Servicio",
+    "PRIVACY": "Política de Privacidad",
+    "COPYRIGHT": "© 2026 VoltLab · JouleTracker"
+  },
   "PAYWALL": {
     "UPGRADE_REQUIRED": "Actualización requerida",
     "ACCESS_DENIED_PREFIX": "Para acceder a",

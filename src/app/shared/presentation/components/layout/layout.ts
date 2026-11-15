@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Sidebar } from '../sidebar/sidebar';
 import { IamStore } from '../../../../iam/application/iam.store';
 
@@ -13,7 +14,7 @@ import { IamStore } from '../../../../iam/application/iam.store';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, Sidebar],
+  imports: [RouterOutlet, Sidebar, TranslatePipe],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
