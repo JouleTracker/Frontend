@@ -24,6 +24,11 @@ export const iamRoutes: Routes = [
         title: 'JouleTracker - Crear cuenta'
       },
       {
+        path: 'register',
+        redirectTo: 'registro',
+        pathMatch: 'full'
+      },
+      {
         path: 'recuperar-contrasena',
         canActivate: [guestGuard],
         loadComponent: () =>
