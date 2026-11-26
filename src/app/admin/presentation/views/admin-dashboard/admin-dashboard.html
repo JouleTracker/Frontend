@@ -24,47 +24,85 @@
   </header>
 
   @if (notificationMessage) {
-    <div class="toast-banner">
+    <div
+      class="toast-banner"
+      [class.toast-error]="notificationIsError"
+      [attr.role]="notificationIsError ? 'alert' : 'status'"
+    >
       {{ notificationMessage }}
     </div>
   }
 
-  <!-- TAB 1: Gestión de Usuarios y Baneos -->
+  <!-- TAB 1: User Moderation (US-49) -->
   @if (selectedTab === 'users') {
     <section class="admin-card">
       <h3>{{ 'ADMIN.USERS_TITLE' | translate }}</h3>
       <div class="table-container">
         <table class="table-users">
           <thead>
-          <tr>
-            <th>{{ 'ADMIN.COL_ID' | translate }}</th>
-            <th>{{ 'ADMIN.COL_NAME' | translate }}</th>
-            <th>{{ 'ADMIN.COL_EMAIL' | translate }}</th>
-            <th>{{ 'ADMIN.COL_PLAN' | translate }}</th>
-            <th>{{ 'ADMIN.COL_STATUS' | translate }}</th>
-            <th>{{ 'ADMIN.COL_ACTION' | translate }}</th>
-          </tr>
+            <tr>
+              <th>{{ 'ADMIN.COL_ID' | translate }}</th>
+              <th>{{ 'ADMIN.COL_NAME' | translate }}</th>
+              <th>{{ 'ADMIN.COL_EMAIL' | translate }}</th>
+              <th>{{ 'ADMIN.COL_PLAN' | translate }}</th>
+              <th>{{ 'ADMIN.COL_STATUS' | translate }}</th>
+              <th>{{ 'ADMIN.COL_ACTION' | translate }}</th>
+            </tr>
           </thead>
           <tbody>
             @for (u of users; track u.id) {
+              @let currentStatus = getUserStatus(u);
+              @let selfRow = isCurrentAdmin(u);
+              @let busy = updatingUserIds.has(u.id);
               <tr>
                 <td>#{{ u.id }}</td>
-                <td><strong>{{ u.name }}</strong></td>
-                <td>{{ u.email }}</td>
-                <td><span class="plan-pill">{{ u.plan | uppercase }}</span></td>
                 <td>
-                  <span class="badge" [class.badge-banned]="u.banned" [class.badge-active]="!u.banned">
-                    {{ (u.banned ? 'ADMIN.STATUS_BANNED' : 'ADMIN.STATUS_ACTIVE') | translate }}
+                  <strong>{{ u.name }}</strong>
+                  @if (selfRow) {
+                    <span class="self-pill">{{ 'ADMIN.YOU_BADGE' | translate }}</span>
+                  }
+                </td>
+                <td>{{ u.email }}</td>
+                <td><span class="plan-pill">{{ (u.plan || 'pro') | uppercase }}</span></td>
+                <td>
+                  <span
+                    class="badge"
+                    [class.badge-active]="currentStatus === 'ACTIVE'"
+                    [class.badge-banned]="currentStatus === 'BANNED'"
+                    [class.badge-suspended]="currentStatus === 'SUSPENDED'"
+                    [class.badge-inactive]="currentStatus === 'INACTIVE'"
+                  >
+                    {{ getStatusTranslationKey(currentStatus) | translate }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    type="button"
-                    [class.btn-danger]="!u.banned"
-                    [class.btn-success]="u.banned"
-                    (click)="toggleBan(u)">
-                    {{ (u.banned ? 'ADMIN.BTN_UNBAN' : 'ADMIN.BTN_BAN') | translate }}
-                  </button>
+                  <div class="action-controls">
+                    <select
+                      class="status-select"
+                      [ngModel]="currentStatus"
+                      (ngModelChange)="updateUserStatus(u, $event)"
+                      [disabled]="selfRow || busy"
+                      [attr.aria-label]="'ADMIN.CHANGE_STATUS_ARIA' | translate"
+                    >
+                      @for (st of availableStatuses; track st) {
+                        <option [value]="st">{{ getStatusTranslationKey(st) | translate }}</option>
+                      }
+                    </select>
+
+                    <button
+                      type="button"
+                      [class.btn-danger]="currentStatus !== 'BANNED'"
+                      [class.btn-success]="currentStatus === 'BANNED'"
+                      [disabled]="selfRow || busy"
+                      [title]="selfRow ? ('ADMIN.CANNOT_BAN_SELF' | translate) : ''"
+                      (click)="toggleBan(u)"
+                    >
+                      {{
+                        (currentStatus === 'BANNED' ? 'ADMIN.BTN_UNBAN' : 'ADMIN.BTN_BAN')
+                          | translate
+                      }}
+                    </button>
+                  </div>
                 </td>
               </tr>
             }
@@ -74,7 +112,7 @@
     </section>
   }
 
-  <!-- TAB 2: Enviar Alerta -->
+  <!-- TAB 2: Broadcast Alerts -->
   @if (selectedTab === 'alert') {
     <section class="admin-card form-card">
       <h3>{{ 'ADMIN.ALERTS_TITLE' | translate }}</h3>
@@ -82,7 +120,7 @@
         <div class="field">
           <label>{{ 'ADMIN.FIELD_TARGET_USER' | translate }}:</label>
           <select [(ngModel)]="alertForm.userId" name="alertUser" required>
-            @for (u of users; track u.id) {
+            @for (u of clientUsers; track u.id) {
               <option [value]="u.id">{{ u.name }} ({{ u.email }})</option>
             }
           </select>
@@ -95,15 +133,16 @@
             [(ngModel)]="alertForm.title"
             name="alertTitle"
             required
-            placeholder="Pico de consumo anómalo" />
+            [placeholder]="'ADMIN.ALERT_TITLE_PLACEHOLDER' | translate"
+          />
         </div>
 
         <div class="field">
           <label>{{ 'ADMIN.FIELD_SEVERITY' | translate }}:</label>
           <select [(ngModel)]="alertForm.severity" name="alertSeverity">
-            <option value="info">Info</option>
-            <option value="warning">Warning</option>
-            <option value="critical">Critical</option>
+            <option value="info">{{ 'ADMIN.SEVERITY_INFO' | translate }}</option>
+            <option value="warning">{{ 'ADMIN.SEVERITY_WARNING' | translate }}</option>
+            <option value="critical">{{ 'ADMIN.SEVERITY_CRITICAL' | translate }}</option>
           </select>
         </div>
 
@@ -114,7 +153,8 @@
             name="alertDesc"
             rows="4"
             required
-            placeholder="Escribe el detalle de la alerta que recibirá el usuario..."></textarea>
+            [placeholder]="'ADMIN.ALERT_DESC_PLACEHOLDER' | translate"
+          ></textarea>
         </div>
 
         <button type="submit" class="btn-primary">
@@ -124,7 +164,7 @@
     </section>
   }
 
-  <!-- TAB 3: Enviar Recomendación -->
+  <!-- TAB 3: Send Recommendations -->
   @if (selectedTab === 'recommendation') {
     <section class="admin-card form-card">
       <h3>{{ 'ADMIN.REC_TITLE' | translate }}</h3>
@@ -132,7 +172,7 @@
         <div class="field">
           <label>{{ 'ADMIN.FIELD_TARGET_USER' | translate }}:</label>
           <select [(ngModel)]="recForm.userId" name="recUser" required>
-            @for (u of users; track u.id) {
+            @for (u of clientUsers; track u.id) {
               <option [value]="u.id">{{ u.name }} ({{ u.email }})</option>
             }
           </select>
@@ -145,7 +185,8 @@
             [(ngModel)]="recForm.title"
             name="recTitle"
             required
-            placeholder="Optimización de temperatura nocturna" />
+            [placeholder]="'ADMIN.REC_TITLE_PLACEHOLDER' | translate"
+          />
         </div>
 
         <div class="form-row">
@@ -156,7 +197,8 @@
               [(ngModel)]="recForm.category"
               name="recCategory"
               required
-              placeholder="Climatización / Cocina" />
+              [placeholder]="'ADMIN.REC_CATEGORY_PLACEHOLDER' | translate"
+            />
           </div>
 
           <div class="field col">
@@ -166,7 +208,8 @@
               step="0.1"
               [(ngModel)]="recForm.estimatedSavingsKwh"
               name="recSavings"
-              required />
+              required
+            />
           </div>
         </div>
 
@@ -177,7 +220,8 @@
             name="recDesc"
             rows="4"
             required
-            placeholder="Describe la recomendación técnica para reducir el consumo..."></textarea>
+            [placeholder]="'ADMIN.REC_DESC_PLACEHOLDER' | translate"
+          ></textarea>
         </div>
 
         <button type="submit" class="btn-primary">
