@@ -252,4 +252,67 @@ describe('IamApi & Assemblers (Spring Boot Integration)', () => {
     expect(resolvedLastName).toBe('Jara');
     expect(resolvedPhone).toBe('+51 987654321');
   });
+
+  it('should GET current subscription from /subscriptions/me (TS-18 / US-46)', () => {
+    let activePlan = '';
+    api.getCurrentSubscription().subscribe((sub) => {
+      activePlan = sub.plan;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.subscriptionsEndpointPath}/me`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush({
+      userId: 7,
+      plan: 'plus',
+      planCode: 'PLUS',
+      status: 'ACTIVE'
+    });
+
+    expect(activePlan).toBe('plus');
+  });
+
+  it('should POST createCheckoutSession to /subscriptions/checkout-session (TS-18 / US-46)', () => {
+    let checkoutUrl = '';
+    api.createCheckoutSession('pro').subscribe((res) => {
+      checkoutUrl = res.checkoutUrl;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.subscriptionsEndpointPath}/checkout-session`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ plan: 'PRO' });
+    req.flush({
+      sessionId: 'cs_test_123',
+      checkoutUrl: 'https://checkout.stripe.com/c/pay/cs_test_123',
+      plan: 'pro',
+      amountCents: 7900,
+      currency: 'pen'
+    });
+
+    expect(checkoutUrl).toBe('https://checkout.stripe.com/c/pay/cs_test_123');
+  });
+
+  it('should POST confirmCheckoutSession to /subscriptions/confirm (TS-18 / US-46)', () => {
+    let confirmedPlan = '';
+    api.confirmCheckoutSession(' cs_test_123 ').subscribe((res) => {
+      confirmedPlan = res.plan;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.subscriptionsEndpointPath}/confirm`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ sessionId: 'cs_test_123' });
+    req.flush({
+      userId: 7,
+      plan: 'pro',
+      planCode: 'PRO',
+      status: 'ACTIVE'
+    });
+
+    expect(confirmedPlan).toBe('pro');
+  });
 });

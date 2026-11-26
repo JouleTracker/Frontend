@@ -52,6 +52,25 @@
       </div>
 
       <!-- Grid de Tarjetas de Precios -->
+      @if (verifyingCheckout()) {
+        <div class="checkout-banner checkout-info" role="status">
+          <mat-icon>hourglass_top</mat-icon>
+          <span>{{ 'HOME.CHECKOUT_VERIFYING' | translate }}</span>
+        </div>
+      }
+      @if (checkoutMessage()) {
+        <div class="checkout-banner checkout-success" role="status">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ checkoutMessage() }}</span>
+        </div>
+      }
+      @if (checkoutError()) {
+        <div class="checkout-banner checkout-error" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ checkoutError() }}</span>
+        </div>
+      }
+
       <div class="plans-grid">
         @for (plan of plans; track plan.id) {
           <article
@@ -100,10 +119,16 @@
               class="cta-btn"
               [class.btn-current]="isCurrentPlan(plan.id)"
               [class.cta-btn-primary]="!isCurrentPlan(plan.id)"
-              [disabled]="isCurrentPlan(plan.id)"
+              [disabled]="isCurrentPlan(plan.id) || processingPlan() !== null"
               (click)="onSelectPlan(plan.id)"
             >
-              {{ isCurrentPlan(plan.id) ? ('HOME.ACTIVE_PLAN_BTN' | translate) : ('HOME.CHANGE_PLAN_BTN' | translate:{ plan: plan.name }) }}
+              @if (processingPlan() === plan.id) {
+                {{ 'HOME.CHECKOUT_REDIRECTING' | translate }}
+              } @else if (isCurrentPlan(plan.id)) {
+                {{ 'HOME.ACTIVE_PLAN_BTN' | translate }}
+              } @else {
+                {{ 'HOME.CHANGE_PLAN_BTN' | translate:{ plan: plan.name } }}
+              }
             </button>
           </article>
         }

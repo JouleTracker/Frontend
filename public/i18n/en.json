@@ -110,7 +110,12 @@
         "FEAT_4": "Full history and detailed analytics",
         "FEAT_5": "Priority support"
       }
-    }
+    },
+    "CHECKOUT_REDIRECTING": "Redirecting to Stripe...",
+    "CHECKOUT_VERIFYING": "Verifying your payment with Stripe...",
+    "CHECKOUT_SUCCESS": "Payment confirmed! Your {{plan}} plan is now active.",
+    "CHECKOUT_CANCELLED": "Checkout was cancelled. No charges were made.",
+    "CHECKOUT_ERROR": "Unable to process Stripe Checkout right now. Please try again."
   },
   "CONSUMPTION": {
     "TITLE": "Electricity Consumption",

@@ -110,7 +110,12 @@
         "FEAT_4": "Historial completo y análisis detallado",
         "FEAT_5": "Soporte prioritario"
       }
-    }
+    },
+    "CHECKOUT_REDIRECTING": "Redirigiendo a Stripe...",
+    "CHECKOUT_VERIFYING": "Verificando tu pago con Stripe...",
+    "CHECKOUT_SUCCESS": "¡Pago confirmado! Tu plan {{plan}} ya está activo.",
+    "CHECKOUT_CANCELLED": "El pago fue cancelado. No se realizó ningún cargo.",
+    "CHECKOUT_ERROR": "No se pudo procesar el pago con Stripe en este momento. Inténtalo nuevamente."
   },
   "CONSUMPTION": {
     "TITLE": "Consumo eléctrico",
