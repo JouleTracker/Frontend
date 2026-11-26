@@ -33,20 +33,47 @@
           </div>
         </div>
 
-        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form" novalidate>
           <div class="form-group">
-            <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
-            <input type="text" formControlName="fullName" [placeholder]="'SETTINGS.FULL_NAME_PLACEHOLDER' | translate" />
+            <label>{{ 'SETTINGS.FIRST_NAME' | translate }}</label>
+            <input
+              type="text"
+              formControlName="firstName"
+              [placeholder]="'SETTINGS.FIRST_NAME_PLACEHOLDER' | translate"
+            />
+            @if (profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.FIRST_NAME_REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'SETTINGS.LAST_NAME' | translate }}</label>
+            <input
+              type="text"
+              formControlName="lastName"
+              [placeholder]="'SETTINGS.LAST_NAME_PLACEHOLDER' | translate"
+            />
+            @if (profileForm.get('lastName')?.touched && profileForm.get('lastName')?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.LAST_NAME_REQUIRED' | translate }}</span>
+            }
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
-            <input type="email" formControlName="email" [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate" />
+            <input
+              type="email"
+              formControlName="email"
+              [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate"
+              readonly
+            />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.PHONE' | translate }}</label>
             <input type="tel" formControlName="phone" [placeholder]="'SETTINGS.PHONE_PLACEHOLDER' | translate" />
+            @if (profileForm.get('phone')?.touched && profileForm.get('phone')?.hasError('maxlength')) {
+              <span class="field-error">{{ 'SETTINGS.PHONE_MAX_LENGTH_ERROR' | translate }}</span>
+            }
           </div>
 
           @if (profileMessage()) {

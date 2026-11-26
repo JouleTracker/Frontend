@@ -582,7 +582,15 @@
     "DEACTIVATE_MODAL_BODY": "Are you sure you want to deactivate your JouleTracker account? Your session will end immediately and you will no longer be able to sign in.",
     "DEACTIVATING": "Deactivating...",
     "CONFIRM_DEACTIVATE_BTN": "Yes, deactivate account",
-    "DEACTIVATE_ERROR": "Unable to deactivate your account right now. Please try again."
+    "DEACTIVATE_ERROR": "Unable to deactivate your account right now. Please try again.",
+    "FIRST_NAME": "First name",
+    "FIRST_NAME_PLACEHOLDER": "Your first name",
+    "FIRST_NAME_REQUIRED": "First name is required (max 100 characters).",
+    "LAST_NAME": "Last name",
+    "LAST_NAME_PLACEHOLDER": "Your last name",
+    "LAST_NAME_REQUIRED": "Last name is required (max 100 characters).",
+    "PHONE_MAX_LENGTH_ERROR": "Phone number must not exceed 20 characters.",
+    "PROFILE_UPDATE_ERROR": "Unable to update your personal information. Please try again."
   },
   "AUTH": {
     "SIGN_IN_TITLE": "Sign In",

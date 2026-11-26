@@ -147,11 +147,19 @@ export function mapBackendUserToEntity(
     resource.name?.trim() ||
     [resource.firstName, resource.lastName].filter(Boolean).join(' ').trim() ||
     resource.email;
+  const split = splitFullName(fullName);
+  const firstName = resource.firstName?.trim() || split.firstName || existingSession?.firstName || '';
+  const lastName =
+    resource.lastName !== undefined
+      ? resource.lastName.trim()
+      : split.lastName || existingSession?.lastName || '';
   const status = resolveUserStatus(resource.status, resource.banned, existingSession?.status);
 
   return {
     id: resource.id,
     name: fullName,
+    firstName,
+    lastName,
     email: resource.email,
     role: resolveRoleFromBackend(
       resource.roles,
@@ -163,7 +171,10 @@ export function mapBackendUserToEntity(
     status,
     banned: status === 'BANNED' || status === 'SUSPENDED' || Boolean(resource.banned),
     plan: resource.plan ?? prefs.plan ?? existingSession?.plan ?? 'pro',
-    phone: resource.phone ?? prefs.phone ?? existingSession?.phone,
+    phone:
+      resource.phone !== undefined
+        ? (resource.phone ?? undefined)
+        : (prefs.phone ?? existingSession?.phone),
     home: resource.home ?? prefs.home ?? existingSession?.home,
     business: resource.business ?? prefs.business ?? existingSession?.business,
     notifications: resource.notifications ?? prefs.notifications ?? existingSession?.notifications
