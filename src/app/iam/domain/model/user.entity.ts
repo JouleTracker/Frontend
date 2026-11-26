@@ -1,5 +1,6 @@
 export type SubscriptionPlan = 'starter' | 'plus' | 'pro';
 export type UserRole = 'admin' | 'homeowner' | 'business';
+export type UserStatus = 'ACTIVE' | 'BANNED' | 'SUSPENDED' | 'INACTIVE';
 
 export interface UserHome {
   homeType?: string;
@@ -10,9 +11,9 @@ export interface UserHome {
 
 export interface UserBusiness {
   businessName?: string;
-  taxId?: string; // RUC
-  businessType?: string; // Restaurante, Taller, Bodega, Oficina, etc.
-  commercialTariff?: string; // BT5B Comercial, MT2, etc.
+  taxId?: string;
+  businessType?: string;
+  commercialTariff?: string;
   address?: string;
 }
 
@@ -22,6 +23,9 @@ export interface UserNotifications {
   personalizedTips?: boolean;
 }
 
+/**
+ * Core IAM User entity representing an authenticated or managed JouleTracker account.
+ */
 export interface User {
   id: number;
   name: string;
@@ -29,6 +33,7 @@ export interface User {
   role?: UserRole | string;
   token?: string;
   verified?: boolean;
+  status?: UserStatus;
   banned?: boolean;
   plan?: SubscriptionPlan;
   phone?: string;

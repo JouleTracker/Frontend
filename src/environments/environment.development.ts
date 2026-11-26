@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:8080',
+  apiBaseUrl: 'http://localhost:8081',
   consumptionSummariesEndpointPath: '/api/v1/consumption-summaries',
   energyReadingsEndpointPath: '/api/v1/energy-readings',
   deviceDistributionsEndpointPath: '/api/v1/device-distributions',
@@ -13,6 +13,7 @@ export const environment = {
   loginEndpointPath: '/api/v1/authentication/sign-in',
   registerEndpointPath: '/api/v1/authentication/sign-up',
   forgotPasswordEndpointPath: '/api/v1/authentication/forgot-password',
+  resetPasswordEndpointPath: '/api/v1/authentication/reset-password',
   verifyEmailEndpointPath: '/api/v1/authentication/verify-email',
   resendCodeEndpointPath: '/api/v1/authentication/resend-verification',
   sensorsEndpointPath: '/api/v1/sensors',

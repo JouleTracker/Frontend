@@ -4,7 +4,8 @@ import {
   UserBusiness,
   UserHome,
   UserNotifications,
-  UserRole
+  UserRole,
+  UserStatus
 } from '../domain/model/user.entity';
 
 export interface BackendUserResource {
@@ -17,12 +18,43 @@ export interface BackendUserResource {
   role?: string;
   emailVerified?: boolean;
   verified?: boolean;
+  status?: string;
   banned?: boolean;
   plan?: SubscriptionPlan;
   phone?: string;
   home?: UserHome;
   business?: UserBusiness;
   notifications?: UserNotifications;
+}
+
+const VALID_USER_STATUSES: ReadonlySet<UserStatus> = new Set([
+  'ACTIVE',
+  'BANNED',
+  'SUSPENDED',
+  'INACTIVE'
+]);
+
+/**
+ * Normalizes a raw backend account status string into a strictly typed `UserStatus`.
+ */
+export function resolveUserStatus(
+  rawStatus?: string,
+  banned?: boolean,
+  fallbackStatus?: UserStatus
+): UserStatus {
+  if (rawStatus) {
+    const normalized = rawStatus.trim().toUpperCase() as UserStatus;
+    if (VALID_USER_STATUSES.has(normalized)) {
+      return normalized;
+    }
+  }
+  if (banned === true) {
+    return 'BANNED';
+  }
+  if (banned === false) {
+    return 'ACTIVE';
+  }
+  return fallbackStatus ?? 'ACTIVE';
 }
 
 export interface LocalUserPreferences {
@@ -69,10 +101,10 @@ export function saveLocalUserPreferences(
 export function splitFullName(fullName: string): { firstName: string; lastName: string } {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) {
-    return { firstName: 'Usuario', lastName: 'JouleTracker' };
+    return { firstName: '', lastName: '' };
   }
   if (parts.length === 1) {
-    return { firstName: parts[0], lastName: parts[0] };
+    return { firstName: parts[0], lastName: '' };
   }
   return {
     firstName: parts[0],
@@ -102,7 +134,8 @@ export function resolveRoleFromBackend(
 
 /**
  * Maps Spring Boot `UserResource` (or legacy flat user JSON) to the frontend `User` entity,
- * preserving local Sprint 4 preferences (plan, business/home metadata, notifications, account mode).
+ * preserving local preferences (plan, business/home metadata, notifications, account mode)
+ * and synchronizing account moderation status (`ACTIVE`, `BANNED`, `SUSPENDED`, `INACTIVE`).
  */
 export function mapBackendUserToEntity(
   resource: BackendUserResource,
@@ -114,6 +147,7 @@ export function mapBackendUserToEntity(
     resource.name?.trim() ||
     [resource.firstName, resource.lastName].filter(Boolean).join(' ').trim() ||
     resource.email;
+  const status = resolveUserStatus(resource.status, resource.banned, existingSession?.status);
 
   return {
     id: resource.id,
@@ -126,7 +160,8 @@ export function mapBackendUserToEntity(
     ),
     token: tokenOverride ?? existingSession?.token,
     verified: resource.emailVerified ?? resource.verified ?? existingSession?.verified,
-    banned: resource.banned ?? existingSession?.banned,
+    status,
+    banned: status === 'BANNED' || status === 'SUSPENDED' || Boolean(resource.banned),
     plan: resource.plan ?? prefs.plan ?? existingSession?.plan ?? 'pro',
     phone: resource.phone ?? prefs.phone ?? existingSession?.phone,
     home: resource.home ?? prefs.home ?? existingSession?.home,

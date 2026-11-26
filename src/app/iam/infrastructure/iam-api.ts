@@ -7,7 +7,7 @@ import { SignUpRequest } from './sign-up.request';
 import { SignUpResponse } from './sign-up-response';
 import { SignInApiEndpoint } from './sign-in-api-endpoint';
 import { SignUpApiEndpoint } from './sign-up-api-endpoint';
-import { SubscriptionPlan, User } from '../domain/model/user.entity';
+import { SubscriptionPlan, User, UserStatus } from '../domain/model/user.entity';
 import { environment } from '../../../environments/environment';
 import { extractHttpErrorMessage } from '../../shared/infrastructure/http-error.util';
 import {
@@ -16,11 +16,22 @@ import {
   saveLocalUserPreferences
 } from './user-mapper.util';
 
+export interface MessageResponse {
+  message?: string;
+}
+
+/**
+ * Infrastructure HTTP adapter for the IAM & User Management bounded contexts.
+ * Connects Angular application services to the JouleTracker Spring Boot REST API.
+ */
 @Injectable({ providedIn: 'root' })
 export class IamApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiBaseUrl;
 
+  /**
+   * Authenticates a user with email and password (`POST /api/v1/authentication/sign-in`).
+   */
   signIn(request: SignInRequest): Observable<SignInResponse> {
     const payload: SignInRequest = {
       email: request.email.trim().toLowerCase(),
@@ -29,19 +40,29 @@ export class IamApi {
 
     return this.http.post<SignInResponse>(SignInApiEndpoint.getEndpoint(), payload).pipe(
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Credenciales incorrectas.')))
+        throwError(
+          () => new Error(extractHttpErrorMessage(err, 'Correo electrónico o contraseña incorrectos.'))
+        )
       )
     );
   }
 
+  /**
+   * Registers a new user account (`POST /api/v1/authentication/sign-up`).
+   */
   signUp(request: SignUpRequest): Observable<SignUpResponse> {
     return this.http.post<SignUpResponse>(SignUpApiEndpoint.getEndpoint(), request).pipe(
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'No se pudo completar el registro.')))
+        throwError(
+          () => new Error(extractHttpErrorMessage(err, 'No se pudo completar el registro.'))
+        )
       )
     );
   }
 
+  /**
+   * Verifies a user's email address using the activation token (`GET /api/v1/authentication/verify-email`).
+   */
   verifyEmail(token: string): Observable<User> {
     const url = `${this.baseUrl}${environment.verifyEmailEndpointPath}?token=${encodeURIComponent(token.trim())}`;
     return this.http.get<BackendUserResource>(url).pipe(
@@ -57,12 +78,167 @@ export class IamApi {
     );
   }
 
+  /**
+   * Requests a fresh account verification email (`POST /api/v1/authentication/resend-verification`).
+   */
+  resendVerification(email: string): Observable<MessageResponse> {
+    const url = `${this.baseUrl}${environment.resendCodeEndpointPath}`;
+    return this.http
+      .post<MessageResponse | null>(url, { email: email.trim().toLowerCase() })
+      .pipe(
+        map((res) => res ?? {}),
+        catchError((err) =>
+          throwError(
+            () =>
+              new Error(
+                extractHttpErrorMessage(
+                  err,
+                  'No se pudo reenviar el correo de verificación. Inténtalo más tarde.'
+                )
+              )
+          )
+        )
+      );
+  }
+
+  /**
+   * Initiates the password recovery flow (`POST /api/v1/authentication/forgot-password`).
+   * The backend returns an anti-enumeration response regardless of whether the email exists.
+   */
+  forgotPassword(email: string): Observable<MessageResponse> {
+    const url = `${this.baseUrl}${environment.forgotPasswordEndpointPath}`;
+    return this.http
+      .post<MessageResponse | null>(url, { email: email.trim().toLowerCase() })
+      .pipe(
+        map((res) => res ?? {}),
+        catchError((err) =>
+          throwError(
+            () =>
+              new Error(
+                extractHttpErrorMessage(
+                  err,
+                  'No se pudo procesar tu solicitud de recuperación en este momento.'
+                )
+              )
+          )
+        )
+      );
+  }
+
+  /**
+   * Completes the password reset flow using a recovery token (`POST /api/v1/authentication/reset-password`).
+   */
+  resetPassword(token: string, newPassword: string): Observable<MessageResponse> {
+    const url = `${this.baseUrl}${environment.resetPasswordEndpointPath}`;
+    return this.http
+      .post<MessageResponse | null>(url, { token: token.trim(), newPassword })
+      .pipe(
+        map((res) => res ?? {}),
+        catchError((err) =>
+          throwError(
+            () =>
+              new Error(
+                extractHttpErrorMessage(
+                  err,
+                  'El enlace de restablecimiento es inválido o ha expirado. Solicita uno nuevo.'
+                )
+              )
+          )
+        )
+      );
+  }
+
+  /**
+   * Changes the authenticated user's password (`PUT /api/v1/users/{id}/password`).
+   */
+  changePassword(
+    userId: number,
+    currentPassword: string,
+    newPassword: string
+  ): Observable<void> {
+    const url = `${this.baseUrl}${environment.usersEndpointPath}/${userId}/password`;
+    return this.http.put<void>(url, { currentPassword, newPassword }).pipe(
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(
+                err,
+                'No se pudo actualizar la contraseña. Verifica tu contraseña actual.'
+              )
+            )
+        )
+      )
+    );
+  }
+
+  /**
+   * Self-deactivates the authenticated user's account (`PATCH /api/v1/users/{id}/deactivate`).
+   */
+  deactivateAccount(userId: number): Observable<void> {
+    const url = `${this.baseUrl}${environment.usersEndpointPath}/${userId}/deactivate`;
+    return this.http.patch<void>(url, {}).pipe(
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(
+                err,
+                'No se pudo desactivar tu cuenta. Inténtalo nuevamente.'
+              )
+            )
+        )
+      )
+    );
+  }
+
+  /**
+   * Updates a user's moderation status as an administrator (`PATCH /api/v1/users/{id}/status`).
+   */
+  updateUserStatus(userId: number, status: UserStatus): Observable<User> {
+    const url = `${this.baseUrl}${environment.usersEndpointPath}/${userId}/status`;
+    return this.http.patch<BackendUserResource | null>(url, { status }).pipe(
+      map((res) =>
+        res
+          ? mapBackendUserToEntity(res)
+          : {
+              id: userId,
+              name: '',
+              email: '',
+              status,
+              banned: status === 'BANNED' || status === 'SUSPENDED'
+            }
+      ),
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(err, 'No se pudo actualizar el estado del usuario.')
+            )
+        )
+      )
+    );
+  }
+
+  /**
+   * Retrieves all users for administrative moderation (`GET /api/v1/users`).
+   */
   getUsers(): Observable<User[]> {
     return this.http
       .get<BackendUserResource[]>(`${this.baseUrl}${environment.usersEndpointPath}`)
-      .pipe(map((users) => (users ?? []).map((u) => mapBackendUserToEntity(u))));
+      .pipe(
+        map((users) => (users ?? []).map((u) => mapBackendUserToEntity(u))),
+        catchError((err) =>
+          throwError(
+            () => new Error(extractHttpErrorMessage(err, 'No se pudieron cargar los usuarios.'))
+          )
+        )
+      );
   }
 
+  /**
+   * Retrieves a single user by identifier (`GET /api/v1/users/{id}`).
+   */
   getUserById(userId: number): Observable<User> {
     return this.http
       .get<BackendUserResource>(`${this.baseUrl}${environment.usersEndpointPath}/${userId}`)
