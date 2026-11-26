@@ -38,6 +38,24 @@ export const iamRoutes: Routes = [
         title: 'JouleTracker - Recuperar contraseña'
       },
       {
+        path: 'forgot-password',
+        redirectTo: 'recuperar-contrasena',
+        pathMatch: 'full'
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./views/reset-password-view/reset-password-view.component').then(
+            (m) => m.ResetPasswordViewComponent
+          ),
+        title: 'JouleTracker - Restablecer contraseña'
+      },
+      {
+        path: 'restablecer-contrasena',
+        redirectTo: 'reset-password',
+        pathMatch: 'full'
+      },
+      {
         path: 'verify-email',
         loadComponent: () =>
           import('./views/verify-email-view/verify-email-view.component').then(
