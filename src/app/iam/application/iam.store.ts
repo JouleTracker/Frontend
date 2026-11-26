@@ -104,13 +104,15 @@ export class IamStore {
               ...session,
               id: freshUser.id ?? session.id,
               name: freshUser.name || session.name,
+              firstName: freshUser.firstName ?? session.firstName,
+              lastName: freshUser.lastName ?? session.lastName,
               email: freshUser.email || session.email,
               role: freshUser.role || session.role,
               verified: freshUser.verified ?? session.verified,
               status: freshUser.status ?? session.status,
               banned: freshUser.banned ?? session.banned,
               plan: freshUser.plan ?? session.plan ?? 'pro',
-              phone: freshUser.phone ?? session.phone,
+              phone: freshUser.phone !== undefined ? freshUser.phone : session.phone,
               home: freshUser.home ?? session.home,
               business: freshUser.business ?? session.business,
               notifications: freshUser.notifications ?? session.notifications,
@@ -229,6 +231,38 @@ export class IamStore {
         }
       });
     }
+  }
+
+  /**
+   * Persists personal profile edits (`firstName`, `lastName`, `phone`) via `PUT /api/v1/users/{id}` (US-22)
+   * and updates the reactive session state.
+   */
+  updatePersonalProfile(payload: {
+    firstName: string;
+    lastName: string;
+    phone?: string | null;
+  }): Observable<User> {
+    const current = this._currentUser();
+    if (!current?.id) {
+      return throwError(() => new Error('No active user session found.'));
+    }
+
+    return this.iamApi.updatePersonalProfile(current.id, payload).pipe(
+      tap((updated) => {
+        const merged: User = {
+          ...current,
+          name: updated.name,
+          firstName: updated.firstName,
+          lastName: updated.lastName,
+          phone: updated.phone,
+          status: updated.status ?? current.status,
+          verified: updated.verified ?? current.verified
+        };
+        saveLocalUserPreferences(merged.email, { phone: merged.phone });
+        this._currentUser.set(merged);
+        this.persistSession(merged);
+      })
+    );
   }
 
   updateProfile(changes: Partial<User>): void {

@@ -8,6 +8,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
 import { UserNotifications } from '../../../../iam/domain/model/user.entity';
+import { splitFullName } from '../../../../iam/infrastructure/user-mapper.util';
 import {
   createPasswordMatchValidator,
   passwordPolicyValidators
@@ -47,11 +48,20 @@ export class ConfigurationViewComponent {
   readonly isBusiness = this.iamStore.isBusiness;
   readonly isHomeowner = this.iamStore.isHomeowner;
 
-  // Personal information form
+  private readonly splitInitialName = splitFullName(this.user()?.name ?? '');
+
+  // Personal information form (US-22)
   readonly profileForm = this.fb.group({
-    fullName: [this.user()?.name ?? '', Validators.required],
+    firstName: [
+      this.user()?.firstName ?? this.splitInitialName.firstName,
+      [Validators.required, Validators.maxLength(100)]
+    ],
+    lastName: [
+      this.user()?.lastName ?? this.splitInitialName.lastName,
+      [Validators.required, Validators.maxLength(100)]
+    ],
     email: [this.user()?.email ?? '', [Validators.required, Validators.email]],
-    phone: [this.user()?.phone ?? '']
+    phone: [this.user()?.phone ?? '', [Validators.maxLength(20)]]
   });
 
   // US-25 Change Password form
@@ -142,20 +152,52 @@ export class ConfigurationViewComponent {
       this.profileForm.markAllAsTouched();
       return;
     }
+
+    if (!this.user()?.id) {
+      this.profileError.set(
+        this.translateMessage('SETTINGS.NO_SESSION_ERROR', 'No active user session found.')
+      );
+      return;
+    }
+
     this.savingProfile.set(true);
     this.profileMessage.set(null);
     this.profileError.set(null);
 
-    const { fullName, email, phone } = this.profileForm.getRawValue();
-    this.iamStore.updateProfile({
-      name: (fullName ?? '').trim(),
-      email: (email ?? '').trim(),
-      phone: (phone ?? '').trim()
-    });
-    this.savingProfile.set(false);
-    this.profileMessage.set(
-      this.translateMessage('SETTINGS.PROFILE_SAVED', 'Información personal actualizada correctamente.')
-    );
+    const { firstName, lastName, phone } = this.profileForm.getRawValue();
+    this.iamStore
+      .updatePersonalProfile({
+        firstName: (firstName ?? '').trim(),
+        lastName: (lastName ?? '').trim(),
+        phone: (phone ?? '').trim()
+      })
+      .subscribe({
+        next: (updatedUser) => {
+          this.savingProfile.set(false);
+          this.profileForm.patchValue({
+            firstName: updatedUser.firstName ?? (firstName ?? '').trim(),
+            lastName: updatedUser.lastName ?? (lastName ?? '').trim(),
+            phone: updatedUser.phone ?? ''
+          });
+          const successMsg = this.translateMessage(
+            'SETTINGS.PROFILE_SAVED',
+            'Personal information updated successfully.'
+          );
+          this.profileMessage.set(successMsg);
+          this.showToast('success', successMsg);
+        },
+        error: (err: Error) => {
+          this.savingProfile.set(false);
+          const errorMsg =
+            err.message ||
+            this.translateMessage(
+              'SETTINGS.PROFILE_UPDATE_ERROR',
+              'Unable to update your personal information. Please try again.'
+            );
+          this.profileError.set(errorMsg);
+          this.showToast('error', errorMsg);
+        }
+      });
   }
 
   /**

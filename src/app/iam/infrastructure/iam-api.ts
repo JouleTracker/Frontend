@@ -245,6 +245,34 @@ export class IamApi {
       .pipe(map((res) => mapBackendUserToEntity(res)));
   }
 
+  /**
+   * Updates the authenticated user's personal profile (`PUT /api/v1/users/{id}`, TS-12 / US-22).
+   */
+  updatePersonalProfile(
+    userId: number,
+    payload: { firstName: string; lastName: string; phone?: string | null }
+  ): Observable<User> {
+    const url = `${this.baseUrl}${environment.usersEndpointPath}/${userId}`;
+    const trimmedPhone = payload.phone?.trim() ?? '';
+    const body = {
+      firstName: payload.firstName.trim(),
+      lastName: payload.lastName.trim(),
+      phone: trimmedPhone.length > 0 ? trimmedPhone : null
+    };
+
+    return this.http.put<BackendUserResource>(url, body).pipe(
+      map((res) => mapBackendUserToEntity(res)),
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(err, 'Unable to update your profile information.')
+            )
+        )
+      )
+    );
+  }
+
   updateUserPlan(userId: number, plan: SubscriptionPlan, email?: string): Observable<Partial<User>> {
     saveLocalUserPreferences(email, { plan });
     return of({ id: userId, plan });

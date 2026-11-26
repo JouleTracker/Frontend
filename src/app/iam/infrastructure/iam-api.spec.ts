@@ -212,4 +212,44 @@ describe('IamApi & Assemblers (Spring Boot Integration)', () => {
     expect(updatedStatus).toBe('SUSPENDED');
     expect(updatedBanned).toBe(true);
   });
+
+  it('should PUT updatePersonalProfile to /users/{id} and map response (TS-12 / US-22)', () => {
+    let resolvedFirstName = '';
+    let resolvedLastName = '';
+    let resolvedPhone: string | undefined;
+
+    api
+      .updatePersonalProfile(7, {
+        firstName: ' Miguel ',
+        lastName: ' Jara ',
+        phone: ' +51 987654321 '
+      })
+      .subscribe((user) => {
+        resolvedFirstName = user.firstName ?? '';
+        resolvedLastName = user.lastName ?? '';
+        resolvedPhone = user.phone;
+      });
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}${environment.usersEndpointPath}/7`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({
+      firstName: 'Miguel',
+      lastName: 'Jara',
+      phone: '+51 987654321'
+    });
+    req.flush({
+      id: 7,
+      email: 'miguel@jouletracker.com',
+      firstName: 'Miguel',
+      lastName: 'Jara',
+      phone: '+51 987654321',
+      roles: ['ROLE_USER'],
+      status: 'ACTIVE',
+      emailVerified: true
+    });
+
+    expect(resolvedFirstName).toBe('Miguel');
+    expect(resolvedLastName).toBe('Jara');
+    expect(resolvedPhone).toBe('+51 987654321');
+  });
 });
