@@ -13,6 +13,7 @@ export const environment = {
   loginEndpointPath: '/api/v1/authentication/sign-in',
   registerEndpointPath: '/api/v1/authentication/sign-up',
   forgotPasswordEndpointPath: '/api/v1/authentication/forgot-password',
+  resetPasswordEndpointPath: '/api/v1/authentication/reset-password',
   verifyEmailEndpointPath: '/api/v1/authentication/verify-email',
   resendCodeEndpointPath: '/api/v1/authentication/resend-verification',
   sensorsEndpointPath: '/api/v1/sensors',

@@ -100,8 +100,51 @@
 
 .badge-banned,
 .tag-banned {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+}
+
+.badge-suspended {
+  background-color: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.badge-inactive {
   background-color: #e5e7eb !important;
   color: #4b5563 !important;
+}
+
+.self-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.action-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #111827;
+}
+
+.status-select:disabled,
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── Inputs y Formularios ── */
@@ -209,4 +252,10 @@ button.btn-success:hover {
   margin-bottom: 16px;
   font-size: 13px;
   font-weight: 600;
+}
+
+.toast-banner.toast-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
 }

@@ -1,14 +1,25 @@
 <div class="layout-wrapper">
-
-  <!-- Contenido principal -->
+  <!-- Main Content -->
   <main class="content-container">
     <header class="page-header">
       <h1 class="page-title">{{ 'SETTINGS.TITLE' | translate }}</h1>
       <p class="page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
     </header>
 
+    @if (toastNotification(); as toast) {
+      <div
+        class="settings-toast"
+        [class.toast-success]="toast.type === 'success'"
+        [class.toast-error]="toast.type === 'error'"
+        role="status"
+      >
+        <mat-icon>{{ toast.type === 'success' ? 'check_circle' : 'error_outline' }}</mat-icon>
+        <span>{{ toast.message }}</span>
+      </div>
+    }
+
     <div class="cards-grid">
-      <!-- 1. Información personal -->
+      <!-- 1. Personal Information -->
       <section class="config-card">
         <div class="card-header">
           <div class="avatar-container">
@@ -25,17 +36,17 @@
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
           <div class="form-group">
             <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
-            <input type="text" formControlName="fullName" placeholder="Tu nombre" />
+            <input type="text" formControlName="fullName" [placeholder]="'SETTINGS.FULL_NAME_PLACEHOLDER' | translate" />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
-            <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+            <input type="email" formControlName="email" [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate" />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.PHONE' | translate }}</label>
-            <input type="tel" formControlName="phone" placeholder="Número de contacto" />
+            <input type="tel" formControlName="phone" [placeholder]="'SETTINGS.PHONE_PLACEHOLDER' | translate" />
           </div>
 
           @if (profileMessage()) {
@@ -53,90 +64,141 @@
         </form>
       </section>
 
-      <!-- 2. Mi plan -->
+      <!-- 2. My Plan -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
             <mat-icon>workspace_premium</mat-icon>
           </div>
           <div class="header-texts">
-            <h2 class="card-title">Mi plan</h2>
-            <p class="card-subtitle">Consulta y cambia tu suscripción.</p>
+            <h2 class="card-title">{{ 'SETTINGS.MY_PLAN' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.MY_PLAN_SUB' | translate }}</p>
           </div>
         </div>
 
         <div class="plan-info">
-          <span class="plan-label">Plan actual: </span>
+          <span class="plan-label">{{ 'SETTINGS.CURRENT_PLAN_LABEL' | translate }}: </span>
           <span class="plan-value">{{ currentPlan() | uppercase }}</span>
         </div>
 
         <div class="action-btn-row">
-          <button type="button" class="btn-primary" (click)="goToPlans()">Gestionar plan</button>
+          <button type="button" class="btn-primary" (click)="goToPlans()">
+            {{ 'SETTINGS.MANAGE_PLAN' | translate }}
+          </button>
         </div>
       </section>
 
-      <!-- 3. Cambiar contraseña -->
+      <!-- 3. Change Password (US-25) -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
             <mat-icon>lock_outline</mat-icon>
           </div>
           <div class="header-texts">
-            <h2 class="card-title">Cambiar contraseña</h2>
-            <p class="card-subtitle">Mantén tu cuenta segura</p>
+            <h2 class="card-title">{{ 'SETTINGS.CHANGE_PASSWORD' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.CHANGE_PASSWORD_SUB' | translate }}</p>
           </div>
         </div>
 
-        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="card-form">
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="card-form" novalidate>
           <div class="form-group">
-            <label>Contraseña actual</label>
+            <label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showCurrentPass ? 'text' : 'password'" formControlName="currentPassword" placeholder="Ingresa tu contraseña actual" />
-              <button type="button" class="trailing-icon-btn" (click)="showCurrentPass = !showCurrentPass">
+              <input
+                [type]="showCurrentPass ? 'text' : 'password'"
+                formControlName="currentPassword"
+                [placeholder]="'SETTINGS.CURRENT_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showCurrentPass = !showCurrentPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showCurrentPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (currentPasswordControl?.touched && currentPasswordControl?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.CURRENT_PASSWORD_REQUIRED' | translate }}</span>
+            }
           </div>
 
           <div class="form-group">
-            <label>Nueva contraseña</label>
+            <label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showNewPass ? 'text' : 'password'" formControlName="newPassword" placeholder="Ingresa tu nueva contraseña" />
-              <button type="button" class="trailing-icon-btn" (click)="showNewPass = !showNewPass">
+              <input
+                [type]="showNewPass ? 'text' : 'password'"
+                formControlName="newPassword"
+                [placeholder]="'SETTINGS.NEW_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showNewPass = !showNewPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showNewPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (newPasswordControl?.touched && newPasswordControl?.invalid) {
+              <span class="field-error">
+                @if (newPasswordControl?.errors?.['required']) {
+                  {{ 'AUTH.PASSWORD_REQUIRED' | translate }}
+                } @else if (newPasswordControl?.errors?.['minlength'] || newPasswordControl?.errors?.['maxlength']) {
+                  {{ 'AUTH.PASSWORD_LENGTH_ERROR' | translate }}
+                } @else if (newPasswordControl?.errors?.['pattern']) {
+                  {{ 'AUTH.PASSWORD_POLICY_ERROR' | translate }}
+                }
+              </span>
+            }
           </div>
 
           <div class="form-group">
-            <label>Confirmar nueva contraseña</label>
+            <label>{{ 'SETTINGS.CONFIRM_NEW_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showConfirmPass ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Confirma tu nueva contraseña" />
-              <button type="button" class="trailing-icon-btn" (click)="showConfirmPass = !showConfirmPass">
+              <input
+                [type]="showConfirmPass ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                [placeholder]="'SETTINGS.CONFIRM_NEW_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showConfirmPass = !showConfirmPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showConfirmPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (passwordForm.hasError('passwordMismatch') && confirmPasswordControl?.touched) {
+              <span class="field-error">{{ 'AUTH.PASSWORD_MISMATCH' | translate }}</span>
+            }
           </div>
 
+          <p class="policy-note">{{ 'AUTH.PASSWORD_POLICY_HINT' | translate }}</p>
+
           @if (passwordMessage()) {
-            <p class="form-message success">{{ passwordMessage() }}</p>
+            <p class="form-message success" role="status">{{ passwordMessage() }}</p>
           }
           @if (passwordError()) {
-            <p class="form-message error">{{ passwordError() }}</p>
+            <p class="form-message error" role="alert">{{ passwordError() }}</p>
           }
 
           <div class="action-btn-row">
             <button type="submit" class="btn-primary" [disabled]="savingPassword()">
-              {{ savingPassword() ? 'Actualizando...' : 'Actualizar contraseña' }}
+              {{ savingPassword() ? ('SETTINGS.UPDATING_PASSWORD' | translate) : ('SETTINGS.UPDATE_PASSWORD_BTN' | translate) }}
             </button>
           </div>
         </form>
       </section>
 
-      <!-- 4. Mi hogar (Sólo para Homeowner) -->
+      <!-- 4. My Home (Homeowner only) -->
       @if (isHomeowner()) {
         <section class="config-card">
           <div class="card-header">
@@ -144,24 +206,24 @@
               <mat-icon>home</mat-icon>
             </div>
             <div class="header-texts">
-              <h2 class="card-title">Mi hogar</h2>
-              <p class="card-subtitle">Configura la información de tu hogar.</p>
+              <h2 class="card-title">{{ 'SETTINGS.MY_HOME' | translate }}</h2>
+              <p class="card-subtitle">{{ 'SETTINGS.MY_HOME_SUB' | translate }}</p>
             </div>
           </div>
 
           <form [formGroup]="homeForm" (ngSubmit)="saveHome()" class="card-form">
             <div class="form-row-2">
               <div class="form-group">
-                <label>Tipo de vivienda</label>
+                <label>{{ 'SETTINGS.HOME_TYPE' | translate }}</label>
                 <select formControlName="homeType">
-                  <option value="Casa">Casa</option>
-                  <option value="Departamento">Departamento</option>
-                  <option value="Oficina/Local">Oficina/Local</option>
+                  <option value="House">{{ 'SETTINGS.HOME_TYPE_HOUSE' | translate }}</option>
+                  <option value="Apartment">{{ 'SETTINGS.HOME_TYPE_APARTMENT' | translate }}</option>
+                  <option value="Office/Premises">{{ 'SETTINGS.HOME_TYPE_OFFICE' | translate }}</option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label>Número de habitantes</label>
+                <label>{{ 'SETTINGS.OCCUPANTS' | translate }}</label>
                 <div class="input-with-icon">
                   <mat-icon class="leading-icon">group</mat-icon>
                   <input type="number" min="1" formControlName="occupants" />
@@ -171,13 +233,13 @@
 
             <div class="form-row-2">
               <div class="form-group">
-                <label>Ubicación</label>
-                <input type="text" formControlName="location" placeholder="Ciudad o distrito" />
+                <label>{{ 'SETTINGS.LOCATION' | translate }}</label>
+                <input type="text" formControlName="location" [placeholder]="'SETTINGS.LOCATION_PLACEHOLDER' | translate" />
               </div>
 
               <div class="form-group">
-                <label>Tarifa eléctrica</label>
-                <input type="text" formControlName="tariff" placeholder="Ej. BT5B" />
+                <label>{{ 'SETTINGS.ELECTRICITY_TARIFF' | translate }}</label>
+                <input type="text" formControlName="tariff" [placeholder]="'SETTINGS.TARIFF_PLACEHOLDER' | translate" />
               </div>
             </div>
 
@@ -187,14 +249,14 @@
 
             <div class="action-btn-row">
               <button type="submit" class="btn-primary" [disabled]="savingHome()">
-                {{ savingHome() ? 'Guardando...' : 'Guardar información del hogar' }}
+                {{ savingHome() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_HOME_BTN' | translate) }}
               </button>
             </div>
           </form>
         </section>
       }
 
-      <!-- 4. Mi Negocio / MYPE (Sólo para Business) -->
+      <!-- 4. My Business / SME (Business only) -->
       @if (isBusiness()) {
         <section class="config-card">
           <div class="card-header">
@@ -202,52 +264,52 @@
               <mat-icon>storefront</mat-icon>
             </div>
             <div class="header-texts">
-              <h2 class="card-title">Mi negocio / MYPE</h2>
-              <p class="card-subtitle">Configura los datos comerciales de tu empresa y tarifa.</p>
+              <h2 class="card-title">{{ 'SETTINGS.MY_BUSINESS' | translate }}</h2>
+              <p class="card-subtitle">{{ 'SETTINGS.MY_BUSINESS_SUB' | translate }}</p>
             </div>
           </div>
 
           <form [formGroup]="businessForm" (ngSubmit)="saveBusiness()" class="card-form">
             <div class="form-row-2">
               <div class="form-group">
-                <label>Razón Social o Nombre Comercial</label>
-                <input type="text" formControlName="businessName" placeholder="Ej. Restaurante Don Pepe E.I.R.L." />
+                <label>{{ 'SETTINGS.BUSINESS_NAME' | translate }}</label>
+                <input type="text" formControlName="businessName" [placeholder]="'SETTINGS.BUSINESS_NAME_PLACEHOLDER' | translate" />
               </div>
 
               <div class="form-group">
-                <label>RUC (Registro Único de Contribuyente)</label>
-                <input type="text" formControlName="taxId" placeholder="Ej. 20601234567" maxlength="11" />
+                <label>{{ 'SETTINGS.TAX_ID' | translate }}</label>
+                <input type="text" formControlName="taxId" [placeholder]="'SETTINGS.TAX_ID_PLACEHOLDER' | translate" maxlength="11" />
               </div>
             </div>
 
             <div class="form-row-2">
               <div class="form-group">
-                <label>Giro del Negocio</label>
+                <label>{{ 'SETTINGS.BUSINESS_TYPE' | translate }}</label>
                 <select formControlName="businessType">
-                  <option value="Restaurante">Restaurante / Cafetería</option>
-                  <option value="Panadería">Panadería / Pastelería</option>
-                  <option value="Taller">Taller / Manufactura liviana</option>
-                  <option value="Bodega">Bodega / Minimarket</option>
-                  <option value="Oficina">Oficina Comercial</option>
-                  <option value="Gimnasio">Gimnasio / Spa</option>
-                  <option value="Otro">Otro Comercio</option>
+                  <option value="Restaurant">{{ 'SETTINGS.BIZ_RESTAURANT' | translate }}</option>
+                  <option value="Bakery">{{ 'SETTINGS.BIZ_BAKERY' | translate }}</option>
+                  <option value="Workshop">{{ 'SETTINGS.BIZ_WORKSHOP' | translate }}</option>
+                  <option value="Store">{{ 'SETTINGS.BIZ_STORE' | translate }}</option>
+                  <option value="Office">{{ 'SETTINGS.BIZ_OFFICE' | translate }}</option>
+                  <option value="Gym">{{ 'SETTINGS.BIZ_GYM' | translate }}</option>
+                  <option value="Other">{{ 'SETTINGS.BIZ_OTHER' | translate }}</option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label>Tarifa Comercial</label>
+                <label>{{ 'SETTINGS.COMMERCIAL_TARIFF' | translate }}</label>
                 <select formControlName="commercialTariff">
-                  <option value="BT5B Comercial">BT5B Comercial (Baja Tensión)</option>
-                  <option value="BT2">BT2 (Baja Tensión Simple)</option>
-                  <option value="MT2">MT2 (Media Tensión)</option>
-                  <option value="Otro">Otra Tarifa</option>
+                  <option value="BT5B Commercial">{{ 'SETTINGS.TARIFF_BT5B' | translate }}</option>
+                  <option value="BT2">{{ 'SETTINGS.TARIFF_BT2' | translate }}</option>
+                  <option value="MT2">{{ 'SETTINGS.TARIFF_MT2' | translate }}</option>
+                  <option value="Other">{{ 'SETTINGS.TARIFF_OTHER' | translate }}</option>
                 </select>
               </div>
             </div>
 
             <div class="form-group">
-              <label>Dirección del Local</label>
-              <input type="text" formControlName="address" placeholder="Ej. Av. Larco 456, Miraflores" />
+              <label>{{ 'SETTINGS.BUSINESS_ADDRESS' | translate }}</label>
+              <input type="text" formControlName="address" [placeholder]="'SETTINGS.BUSINESS_ADDRESS_PLACEHOLDER' | translate" />
             </div>
 
             @if (businessMessage()) {
@@ -256,22 +318,22 @@
 
             <div class="action-btn-row">
               <button type="submit" class="btn-primary" [disabled]="savingBusiness()">
-                {{ savingBusiness() ? 'Guardando...' : 'Guardar información del negocio' }}
+                {{ savingBusiness() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_BUSINESS_BTN' | translate) }}
               </button>
             </div>
           </form>
         </section>
       }
 
-      <!-- 5. Notificaciones -->
+      <!-- 5. Notifications -->
       <section class="config-card notification-card">
         <div class="card-header">
           <div class="icon-badge">
             <mat-icon>notifications</mat-icon>
           </div>
           <div class="header-texts">
-            <h2 class="card-title">Notificaciones</h2>
-            <p class="card-subtitle">Elige qué notificaciones quieres recibir.</p>
+            <h2 class="card-title">{{ 'SETTINGS.NOTIFICATIONS' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.NOTIFICATIONS_SUB' | translate }}</p>
           </div>
         </div>
 
@@ -280,8 +342,8 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">bar_chart</mat-icon>
               <div>
-                <strong class="notif-title">Alertas de consumo alto</strong>
-                <p class="notif-desc">Te avisamos cuando detectemos un consumo inusual.</p>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_HIGH_CONSUMPTION' | translate }}</strong>
+                <p class="notif-desc">{{ 'SETTINGS.NOTIF_HIGH_CONSUMPTION_DESC' | translate }}</p>
               </div>
             </div>
             <mat-slide-toggle
@@ -295,8 +357,8 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">build</mat-icon>
               <div>
-                <strong class="notif-title">Recordatorios de mantenimiento</strong>
-                <p class="notif-desc">Recibe sugerencias para el cuidado de tus dispositivos.</p>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_MAINTENANCE' | translate }}</strong>
+                <p class="notif-desc">{{ 'SETTINGS.NOTIF_MAINTENANCE_DESC' | translate }}</p>
               </div>
             </div>
             <mat-slide-toggle
@@ -310,8 +372,8 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">eco</mat-icon>
               <div>
-                <strong class="notif-title">Recomendaciones personalizadas</strong>
-                <p class="notif-desc">Consejos para ahorrar energía.</p>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_TIPS' | translate }}</strong>
+                <p class="notif-desc">{{ 'SETTINGS.NOTIF_TIPS_DESC' | translate }}</p>
               </div>
             </div>
             <mat-slide-toggle
@@ -327,9 +389,91 @@
         }
 
         <div class="action-btn-row">
-          <button type="button" class="btn-primary" (click)="saveNotifications()">Guardar preferencias</button>
+          <button type="button" class="btn-primary" (click)="saveNotifications()">
+            {{ 'SETTINGS.SAVE_PREFERENCES_BTN' | translate }}
+          </button>
+        </div>
+      </section>
+
+      <!-- 6. Danger Zone: Account Deactivation (US-40) -->
+      <section class="config-card danger-zone-card">
+        <div class="card-header">
+          <div class="icon-badge danger-badge">
+            <mat-icon>warning_amber</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title danger-title">{{ 'SETTINGS.DANGER_ZONE_TITLE' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.DANGER_ZONE_SUB' | translate }}</p>
+          </div>
+        </div>
+
+        <p class="danger-description">{{ 'SETTINGS.DEACTIVATE_DESC' | translate }}</p>
+
+        <div class="action-btn-row">
+          <button
+            type="button"
+            class="btn-danger"
+            (click)="openDeactivateModal()"
+          >
+            {{ 'SETTINGS.DEACTIVATE_ACCOUNT_BTN' | translate }}
+          </button>
         </div>
       </section>
     </div>
   </main>
+
+  <!-- US-40 Account Deactivation Confirmation Modal -->
+  @if (showDeactivateModal()) {
+    <div
+      class="modal-backdrop"
+      role="presentation"
+      (click)="closeDeactivateModal()"
+    >
+      <div
+        class="modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deactivate-modal-title"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="modal-header">
+          <div class="icon-badge danger-badge">
+            <mat-icon>no_accounts</mat-icon>
+          </div>
+          <h3 id="deactivate-modal-title" class="modal-title">
+            {{ 'SETTINGS.DEACTIVATE_MODAL_TITLE' | translate }}
+          </h3>
+        </div>
+
+        <p class="modal-body">{{ 'SETTINGS.DEACTIVATE_MODAL_BODY' | translate }}</p>
+
+        @if (deactivateError()) {
+          <p class="form-message error" role="alert">{{ deactivateError() }}</p>
+        }
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            [disabled]="deactivatingAccount()"
+            (click)="closeDeactivateModal()"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="deactivatingAccount()"
+            (click)="confirmDeactivateAccount()"
+          >
+            {{
+              deactivatingAccount()
+                ? ('SETTINGS.DEACTIVATING' | translate)
+                : ('SETTINGS.CONFIRM_DEACTIVATE_BTN' | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

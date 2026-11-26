@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { iamGuard, adminGuard, homeownerGuard, businessGuard } from './iam/infrastructure/iam.guard';
 
-// ── Vistas del Cliente (Hogar & Negocio) ──
+// Vistas del Cliente (Hogar y Negocio)
 const homeView = () =>
   import('./shared/presentation/views/home-view/home-view.component').then((m) => m.HomeViewComponent);
 
@@ -31,7 +31,7 @@ const configurationView = () =>
     (m) => m.ConfigurationViewComponent
   );
 
-// ── Vista de Administración ──
+// Vista de Administración
 const adminDashboardView = () =>
   import('./admin/presentation/views/admin-dashboard/admin-dashboard').then(
     (m) => m.AdminDashboardComponent
@@ -42,7 +42,7 @@ const baseTitle = 'JouleTracker';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  // ── Módulo de Administración de Plataforma ──
+  // Módulo de Administración de Plataforma
   { path: 'admin', redirectTo: 'admin/usuarios', pathMatch: 'full' },
   {
     path: 'admin/usuarios',
@@ -63,15 +63,15 @@ export const routes: Routes = [
     loadComponent: adminDashboardView,
     data: { tab: 'recommendation' },
     canActivate: [iamGuard, adminGuard],
-    title: `${baseTitle} - Emitir Recomendaciones`
+    title: `${baseTitle} - Enviar Recomendaciones`
   },
 
-  // ── Rutas de Clientes (Homeowner & Business) ──
+  // Rutas de Clientes (Hogar y Negocio)
   { path: 'inicio', loadComponent: homeView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes, canActivate: [iamGuard, homeownerGuard] },
   { path: 'dispositivos', loadChildren: devicesRoutes, canActivate: [iamGuard, homeownerGuard] },
 
-  // ── Exclusivo MYPE: Áreas de Negocio (US-31, US-33) ──
+  // Exclusivo Negocio / MYPE: Áreas del Negocio (US-31, US-33)
   { path: 'areas', loadChildren: businessRoutes, canActivate: [iamGuard, businessGuard], title: `${baseTitle} - Áreas del Negocio` },
 
   { path: 'sensores', loadChildren: iotRoutes, canActivate: [iamGuard, homeownerGuard] },
@@ -82,7 +82,7 @@ export const routes: Routes = [
   { path: 'reports', redirectTo: 'reportes', pathMatch: 'full' },
   { path: 'configuracion', loadComponent: configurationView, canActivate: [iamGuard, homeownerGuard], title: `${baseTitle} - Configuración` },
 
-  // ── IAM ──
+  // Contexto Delimitado IAM
   {
     path: '',
     loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes)

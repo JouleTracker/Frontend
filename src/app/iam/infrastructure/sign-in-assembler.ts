@@ -32,6 +32,7 @@ export class SignInAssembler {
         role: response.role,
         emailVerified: response.emailVerified,
         verified: response.verified,
+        status: response.status,
         banned: response.banned,
         plan: response.plan,
         phone: response.phone,

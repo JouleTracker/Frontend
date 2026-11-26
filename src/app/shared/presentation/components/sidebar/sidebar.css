@@ -437,3 +437,24 @@
   to { opacity: 1; }
 }
 
+.sidebar-legal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 10.5px;
+  color: #6b7280;
+}
+
+.sidebar-legal a {
+  color: #4b5563;
+  text-decoration: none;
+}
+
+.sidebar-legal a:hover {
+  color: #214029;
+  text-decoration: underline;
+}
+
