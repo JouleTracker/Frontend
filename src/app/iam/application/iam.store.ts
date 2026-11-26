@@ -9,6 +9,10 @@ import { SignInAssembler } from '../infrastructure/sign-in-assembler';
 import { SignUpAssembler } from '../infrastructure/sign-up-assembler';
 import { saveLocalUserPreferences } from '../infrastructure/user-mapper.util';
 
+/**
+ * Signal-based application store managing IAM authentication state, JWT session
+ * persistence, role-based access helpers, subscription limits, and account lifecycle actions.
+ */
 @Injectable({ providedIn: 'root' })
 export class IamStore {
   private readonly iamApi = inject(IamApi);
@@ -19,17 +23,30 @@ export class IamStore {
   private readonly _currentUser = signal<User | null>(this.restoreSession());
   readonly currentUser = this._currentUser.asReadonly();
 
-  // Estado de sesión
+  // Authentication state
   readonly isSignedIn = computed(() => this._currentUser() !== null);
   readonly isAuthenticated = this.isSignedIn;
 
-  /** Roles y permisos especiales (normalizados en minúsculas y sin espacios) */
-  readonly isAdmin = computed(() => this._currentUser()?.role?.toString().toLowerCase().trim() === 'admin');
-  readonly isBusiness = computed(() => this._currentUser()?.role?.toString().toLowerCase().trim() === 'business');
+  /** Normalized role and moderation status checks */
+  readonly isAdmin = computed(
+    () => this._currentUser()?.role?.toString().toLowerCase().trim() === 'admin'
+  );
+  readonly isBusiness = computed(
+    () => this._currentUser()?.role?.toString().toLowerCase().trim() === 'business'
+  );
   readonly isHomeowner = computed(() => !this.isAdmin() && !this.isBusiness());
-  readonly isBanned = computed(() => !!this._currentUser()?.banned);
+  readonly isBanned = computed(() => {
+    const user = this._currentUser();
+    if (!user) return false;
+    return (
+      Boolean(user.banned) ||
+      user.status === 'BANNED' ||
+      user.status === 'SUSPENDED' ||
+      user.status === 'INACTIVE'
+    );
+  });
 
-  /** Rol actual normalizado ('admin' | 'business' | 'homeowner') */
+  /** Normalized current role (`'admin' | 'business' | 'homeowner'`) */
   readonly currentRole = computed(() => {
     const role = this._currentUser()?.role?.toString().toLowerCase().trim();
     if (role === 'admin') return 'admin';
@@ -37,17 +54,13 @@ export class IamStore {
     return 'homeowner';
   });
 
-  /** ID del usuario autenticado */
+  /** Identifier of the currently authenticated user */
   readonly currentUserId = computed(() => this._currentUser()?.id ?? null);
 
-  // ── Gestión de Planes y Permisos (Por defecto todos cuentan con plan Pro) ──
-  readonly currentPlan = computed<SubscriptionPlan>(
-    () => this._currentUser()?.plan ?? 'pro'
-  );
+  // Subscription plans and feature entitlements
+  readonly currentPlan = computed<SubscriptionPlan>(() => this._currentUser()?.plan ?? 'pro');
 
-  readonly hasPlusAccess = computed(() =>
-    ['plus', 'pro'].includes(this.currentPlan())
-  );
+  readonly hasPlusAccess = computed(() => ['plus', 'pro'].includes(this.currentPlan()));
   readonly hasProAccess = computed(() => this.currentPlan() === 'pro');
 
   readonly deviceLimit = computed(() => {
@@ -78,8 +91,8 @@ export class IamStore {
   }
 
   /**
-   * Sincroniza la sesión almacenada localmente con los datos más recientes del backend
-   * (actualiza de inmediato rol, datos comerciales o cambios de plan).
+   * Synchronizes the locally restored session with the latest user profile and status
+   * from the backend API. Clears the session if the token is rejected or account is restricted.
    */
   private refreshSessionFromBackend(): void {
     const session = this._currentUser();
@@ -94,6 +107,7 @@ export class IamStore {
               email: freshUser.email || session.email,
               role: freshUser.role || session.role,
               verified: freshUser.verified ?? session.verified,
+              status: freshUser.status ?? session.status,
               banned: freshUser.banned ?? session.banned,
               plan: freshUser.plan ?? session.plan ?? 'pro',
               phone: freshUser.phone ?? session.phone,
@@ -102,12 +116,22 @@ export class IamStore {
               notifications: freshUser.notifications ?? session.notifications,
               token: session.token
             };
+
+            if (
+              merged.banned ||
+              merged.status === 'BANNED' ||
+              merged.status === 'SUSPENDED' ||
+              merged.status === 'INACTIVE'
+            ) {
+              this.clearSessionOnly();
+              return;
+            }
+
             this._currentUser.set(merged);
             this.persistSession(merged);
           }
         },
         error: (err) => {
-          // Si el token ya no es válido o el usuario no existe en el backend actual, limpiar la sesión
           if (err?.status === 401 || err?.status === 403 || err?.status === 404) {
             this.clearSessionOnly();
           }
@@ -116,43 +140,70 @@ export class IamStore {
     }
   }
 
-  // ── Métodos de Autenticación ──────────────────────────────────
-  signIn(command: SignInCommand): Observable<any> {
+  /**
+   * Authenticates the user, stores the JWT session, and navigates to the role dashboard.
+   */
+  signIn(command: SignInCommand): Observable<unknown> {
     const request = SignInAssembler.toRequestFromCommand(command);
     return this.iamApi.signIn(request).pipe(
       tap((response) => {
         const user = SignInAssembler.toEntityFromResponse(response);
 
-        // Block access if user is banned
-        if (user.banned) {
-          throw new Error('Your account has been temporarily suspended by an administrator.');
+        if (
+          user.banned ||
+          user.status === 'BANNED' ||
+          user.status === 'SUSPENDED' ||
+          user.status === 'INACTIVE'
+        ) {
+          throw new Error(
+            'Tu cuenta se encuentra suspendida, baneada o inactiva. Contacta con soporte.'
+          );
         }
 
         this._currentUser.set(user);
         this.persistSession(user);
 
-        // Redirección condicionada por rol
         const targetRoute = user.role === 'admin' ? '/admin' : '/inicio';
         this.router.navigate([targetRoute]).catch((err) => {
-          console.error('Error al navegar:', err);
+          console.error('Navigation failed after sign-in:', err);
         });
       })
     );
   }
 
-  signUp(command: SignUpCommand): Observable<any> {
+  /**
+   * Registers a new JouleTracker account and stores initial local preferences.
+   */
+  signUp(command: SignUpCommand): Observable<unknown> {
     saveLocalUserPreferences(command.email, {
       role: command.role || 'homeowner',
       plan: command.plan || 'pro'
     });
     const request = SignUpAssembler.toRequestFromCommand(command);
-    return this.iamApi.signUp(request).pipe(
-      tap((response) => {
-        console.log('Usuario registrado con éxito en IamStore:', response);
+    return this.iamApi.signUp(request);
+  }
+
+  /**
+   * Deactivates the currently authenticated user's account via `PATCH /api/v1/users/{id}/deactivate`,
+   * immediately clears local authentication state and tokens, and redirects to sign-in.
+   */
+  deactivateCurrentAccount(): Observable<void> {
+    const userId = this._currentUser()?.id;
+    if (!userId) {
+      return throwError(() => new Error('No se encontró una sesión de usuario activa.'));
+    }
+
+    return this.iamApi.deactivateAccount(userId).pipe(
+      tap(() => {
+        this.clearSessionOnly();
+        this.router.navigate(['/login'], { queryParams: { deactivated: '1' } });
       })
     );
   }
 
+  /**
+   * Clears the active session and redirects to the sign-in screen.
+   */
   signOut(): void {
     this.clearSessionOnly();
     this.router.navigate(['/login']);
@@ -173,11 +224,8 @@ export class IamStore {
 
     if (current.id) {
       this.iamApi.updateUserPlan(current.id, newPlan, current.email).subscribe({
-        next: (savedUser) => {
-          console.log('Plan actualizado:', savedUser.plan);
-        },
         error: (err) => {
-          console.error('Error al actualizar plan:', err);
+          console.error('Failed to update plan:', err);
         }
       });
     }
@@ -194,7 +242,7 @@ export class IamStore {
     if (current.id) {
       this.iamApi.updateUserProfile(current.id, { email: current.email, ...changes }).subscribe({
         error: (err) => {
-          console.error('Error al actualizar perfil:', err);
+          console.error('Failed to update profile:', err);
         }
       });
     }

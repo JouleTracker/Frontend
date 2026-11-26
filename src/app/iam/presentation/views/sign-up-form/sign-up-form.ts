@@ -1,32 +1,21 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IamStore } from '../../../application/iam.store';
 import { SignUpCommand } from '../../../domain/model/sign-up.command';
 import { UserRole } from '../../../domain/model/user.entity';
+import {
+  createPasswordMatchValidator,
+  passwordPolicyValidators
+} from '../../../domain/model/password-policy';
+import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
 
-function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-  const password = control.get('password')?.value;
-  const confirmControl = control.get('confirmPassword');
-  const confirmPassword = confirmControl?.value;
-
-  if (password && confirmPassword && password !== confirmPassword) {
-    confirmControl?.setErrors({ ...confirmControl.errors, passwordMismatch: true });
-    return { passwordMismatch: true };
-  }
-
-  if (confirmControl?.hasError('passwordMismatch')) {
-    const errors = { ...confirmControl.errors };
-    delete errors['passwordMismatch'];
-    confirmControl.setErrors(Object.keys(errors).length ? errors : null);
-  }
-
-  return null;
-}
-
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-
+/**
+ * Account registration view supporting Homeowner and Business (SME) profiles.
+ * Redirects newly registered users to `/verify-email` with a post-registration notice.
+ */
 @Component({
   selector: 'app-sign-up-form',
   standalone: true,
@@ -74,19 +63,11 @@ export class SignUpFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       accountType: ['homeowner', [Validators.required]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.maxLength(64),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S+$/)
-        ]
-      ],
+      password: ['', passwordPolicyValidators()],
       confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, [Validators.requiredTrue]]
     },
-    { validators: passwordMatchValidator }
+    { validators: createPasswordMatchValidator('password', 'confirmPassword') }
   );
 
   togglePasswordVisibility(): void {
@@ -97,6 +78,14 @@ export class SignUpFormComponent implements OnInit {
     this.showConfirmPassword.update((val) => !val);
   }
 
+  get nameControl() {
+    return this.registerForm.get('name');
+  }
+
+  get emailControl() {
+    return this.registerForm.get('email');
+  }
+
   get passwordControl() {
     return this.registerForm.get('password');
   }
@@ -105,8 +94,12 @@ export class SignUpFormComponent implements OnInit {
     return this.registerForm.get('confirmPassword');
   }
 
+  get acceptTermsControl() {
+    return this.registerForm.get('acceptTerms');
+  }
+
   onSubmit(): void {
-    if (this.registerForm.invalid) {
+    if (this.registerForm.invalid || this.isLoading()) {
       this.registerForm.markAllAsTouched();
       return;
     }
@@ -125,14 +118,23 @@ export class SignUpFormComponent implements OnInit {
     this.iamStore.signUp(command).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/login'], {
-          queryParams: { registered: '1', email: command.email }
+        this.router.navigate(['/verify-email'], {
+          queryParams: { pending: '1', email: command.email }
         });
       },
-      error: (err: Error) => {
+      error: (err: unknown) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.message || this.translate.instant('AUTH.SIGN_UP_ERROR'));
+        const fallback = this.translateOrFallback(
+          'AUTH.REGISTER_ERROR_DEFAULT',
+          'No se pudo completar el registro. Revisa los datos e inténtalo nuevamente.'
+        );
+        this.errorMessage.set(extractHttpErrorMessage(err, fallback));
       }
     });
+  }
+
+  private translateOrFallback(key: string, fallback: string): string {
+    const value = this.translate.instant(key);
+    return value && value !== key ? value : fallback;
   }
 }

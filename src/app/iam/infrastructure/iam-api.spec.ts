@@ -40,16 +40,16 @@ describe('IamApi & Assemblers (Spring Boot Integration)', () => {
     });
   });
 
-  it('should handle single-word name when splitting into firstName and lastName', () => {
+  it('should not duplicate single-word name into lastName when splitting full name', () => {
     const req = SignUpAssembler.toRequestFromCommand({
-      name: 'Admin',
-      email: 'admin@jouletracker.com',
+      name: 'rodrigo',
+      email: 'rodrigo@jouletracker.com',
       password: 'Password123!',
-      role: 'admin'
+      role: 'homeowner'
     });
 
-    expect(req.firstName).toBe('Admin');
-    expect(req.lastName).toBe('Admin');
+    expect(req.firstName).toBe('rodrigo');
+    expect(req.lastName).toBe('');
   });
 
   it('should POST sign-in and map AuthenticatedUserResource into User entity', () => {
@@ -104,5 +104,112 @@ describe('IamApi & Assemblers (Spring Boot Integration)', () => {
     });
 
     expect(verifiedFlag).toBe(true);
+  });
+
+  it('should POST forgot-password with normalized email (US-03)', () => {
+    let completed = false;
+    api.forgotPassword(' User@Example.com ').subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.forgotPasswordEndpointPath}`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ email: 'user@example.com' });
+    req.flush({ message: 'If the email exists, instructions have been sent.' });
+    expect(completed).toBe(true);
+  });
+
+  it('should POST reset-password with token and newPassword (US-03)', () => {
+    let completed = false;
+    api.resetPassword(' reset-token-123 ', 'StrongPass1!').subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.resetPasswordEndpointPath}`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      token: 'reset-token-123',
+      newPassword: 'StrongPass1!'
+    });
+    req.flush({});
+    expect(completed).toBe(true);
+  });
+
+  it('should POST resend-verification with normalized email (US-04)', () => {
+    let completed = false;
+    api.resendVerification(' Test@Example.com ').subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.resendCodeEndpointPath}`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ email: 'test@example.com' });
+    req.flush({});
+    expect(completed).toBe(true);
+  });
+
+  it('should PUT changePassword to /users/{id}/password (US-25)', () => {
+    let completed = false;
+    api.changePassword(42, 'OldPass1!', 'NewPass2@').subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.usersEndpointPath}/42/password`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({
+      currentPassword: 'OldPass1!',
+      newPassword: 'NewPass2@'
+    });
+    req.flush(null);
+    expect(completed).toBe(true);
+  });
+
+  it('should PATCH deactivateAccount to /users/{id}/deactivate (US-40)', () => {
+    let completed = false;
+    api.deactivateAccount(42).subscribe(() => {
+      completed = true;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.usersEndpointPath}/42/deactivate`
+    );
+    expect(req.request.method).toBe('PATCH');
+    req.flush(null);
+    expect(completed).toBe(true);
+  });
+
+  it('should PATCH updateUserStatus to /users/{id}/status and map status (US-49)', () => {
+    let updatedStatus: string | undefined;
+    let updatedBanned: boolean | undefined;
+
+    api.updateUserStatus(15, 'SUSPENDED').subscribe((user) => {
+      updatedStatus = user.status;
+      updatedBanned = user.banned;
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiBaseUrl}${environment.usersEndpointPath}/15/status`
+    );
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ status: 'SUSPENDED' });
+    req.flush({
+      id: 15,
+      email: 'client@jouletracker.com',
+      firstName: 'Client',
+      lastName: 'User',
+      roles: ['ROLE_USER'],
+      status: 'SUSPENDED'
+    });
+
+    expect(updatedStatus).toBe('SUSPENDED');
+    expect(updatedBanned).toBe(true);
   });
 });

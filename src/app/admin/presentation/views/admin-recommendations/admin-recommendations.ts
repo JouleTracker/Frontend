@@ -6,7 +6,12 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
+import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
 
+/**
+ * Administrative recommendations view allowing admins to send targeted
+ * energy-saving suggestions to users.
+ */
 @Component({
   selector: 'app-admin-recommendations',
   standalone: true,
@@ -22,6 +27,7 @@ export class AdminRecommendationsComponent implements OnInit {
 
   users: User[] = [];
   toastMsg: string | null = null;
+  toastIsError = false;
 
   form = {
     userId: 1,
@@ -51,15 +57,29 @@ export class AdminRecommendationsComponent implements OnInit {
 
     this.http.post(`${this.baseUrl}${environment.recommendationsEndpointPath}`, payload).subscribe({
       next: () => {
-        this.toastMsg = this.translate.instant('ADMIN.REC_SENT');
+        this.toastIsError = false;
+        this.toastMsg = this.t('ADMIN.TOAST_REC_SENT', 'Recomendación enviada exitosamente.');
         this.form.title = '';
         this.form.description = '';
-        setTimeout(() => (this.toastMsg = null), 3000);
+        setTimeout(() => (this.toastMsg = null), 3500);
       },
-      error: () => {
-        this.toastMsg = this.translate.instant('ADMIN.REC_NOT_READY');
-        setTimeout(() => (this.toastMsg = null), 4000);
+      error: (err) => {
+        this.toastIsError = true;
+        const fallback = this.t(
+          'ADMIN.TOAST_REC_ERROR',
+          'No se pudo enviar la recomendación. Inténtalo nuevamente.'
+        );
+        this.toastMsg = extractHttpErrorMessage(err, fallback);
+        setTimeout(() => {
+          this.toastMsg = null;
+          this.toastIsError = false;
+        }, 4000);
       }
     });
+  }
+
+  private t(key: string, fallback: string): string {
+    const translated = this.translate.instant(key);
+    return translated && translated !== key ? translated : fallback;
   }
 }

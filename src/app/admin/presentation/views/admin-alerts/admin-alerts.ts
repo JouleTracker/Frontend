@@ -6,7 +6,12 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
+import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
 
+/**
+ * Administrative broadcast alerts view allowing platform admins to emit
+ * consumption warnings and notifications to target user accounts.
+ */
 @Component({
   selector: 'app-admin-alerts',
   standalone: true,
@@ -22,6 +27,7 @@ export class AdminAlertsComponent implements OnInit {
 
   users: User[] = [];
   toastMsg: string | null = null;
+  toastIsError = false;
 
   form = {
     userId: 1,
@@ -47,7 +53,7 @@ export class AdminAlertsComponent implements OnInit {
       message: this.form.description,
       severity: this.form.severity,
       status: 'Activa',
-      timeAgo: this.translate.instant('ALERTS.TIME_NOW'),
+      timeAgo: 'Reciente',
       actionUrl: '/consumo',
       timestamp: new Date().toISOString(),
       read: false
@@ -55,15 +61,29 @@ export class AdminAlertsComponent implements OnInit {
 
     this.http.post(`${this.baseUrl}${environment.alertsEndpointPath}`, payload).subscribe({
       next: () => {
-        this.toastMsg = this.translate.instant('ADMIN.ALERT_SENT');
+        this.toastIsError = false;
+        this.toastMsg = this.t('ADMIN.TOAST_ALERT_SENT', 'Alerta enviada exitosamente.');
         this.form.title = '';
         this.form.description = '';
-        setTimeout(() => (this.toastMsg = null), 3000);
+        setTimeout(() => (this.toastMsg = null), 3500);
       },
-      error: () => {
-        this.toastMsg = this.translate.instant('ADMIN.ALERT_NOT_READY');
-        setTimeout(() => (this.toastMsg = null), 4000);
+      error: (err) => {
+        this.toastIsError = true;
+        const fallback = this.t(
+          'ADMIN.TOAST_ALERT_ERROR',
+          'No se pudo enviar la alerta. Inténtalo nuevamente.'
+        );
+        this.toastMsg = extractHttpErrorMessage(err, fallback);
+        setTimeout(() => {
+          this.toastMsg = null;
+          this.toastIsError = false;
+        }, 4000);
       }
     });
+  }
+
+  private t(key: string, fallback: string): string {
+    const translated = this.translate.instant(key);
+    return translated && translated !== key ? translated : fallback;
   }
 }

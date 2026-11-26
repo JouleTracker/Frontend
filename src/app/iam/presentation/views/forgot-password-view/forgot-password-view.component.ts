@@ -1,12 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
-
+import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { IamApi } from '../../../infrastructure/iam-api';
+import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
 
+/**
+ * Step 1 of the US-03 Password Recovery flow.
+ * Submits the user's email to `POST /api/v1/authentication/forgot-password` and displays
+ * a clear anti-enumeration confirmation banner on completion.
+ */
 @Component({
   selector: 'app-forgot-password-view',
   standalone: true,
@@ -16,52 +20,57 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 })
 export class ForgotPasswordViewComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
+  private readonly iamApi = inject(IamApi);
   private readonly translate = inject(TranslateService);
 
-  private readonly usersUrl = `${environment.apiBaseUrl}/users`;
-
-  readonly step = signal<'email' | 'new-password' | 'success'>('email');
   readonly isLoading = signal<boolean>(false);
+  readonly isSubmitted = signal<boolean>(false);
+  readonly submittedEmail = signal<string>('');
   readonly errorMessage = signal<string | null>(null);
-  readonly showPassword = signal<boolean>(false);
-
-  private userId: number | string | null = null;
 
   readonly emailForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]]
   });
 
-  readonly resetForm = this.fb.group({
-    newPassword: ['', [Validators.required, Validators.minLength(6)]]
-  });
-
-  togglePasswordVisibility(): void {
-    this.showPassword.update((v) => !v);
+  get emailControl() {
+    return this.emailForm.get('email');
   }
 
-  onCheckEmail(): void {
-    if (this.emailForm.invalid) {
+  onSubmit(): void {
+    if (this.emailForm.invalid || this.isLoading()) {
       this.emailForm.markAllAsTouched();
       return;
     }
 
-    this.isLoading.set(false);
-    this.errorMessage.set(
-      this.translate.instant('AUTH.FORGOT_EMAIL_UNAVAILABLE')
-    );
+    const email = this.emailForm.value.email!.trim().toLowerCase();
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.iamApi.forgotPassword(email).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.submittedEmail.set(email);
+        this.isSubmitted.set(true);
+      },
+      error: (err: unknown) => {
+        this.isLoading.set(false);
+        const fallback = this.translateOrFallback(
+          'AUTH.FORGOT_ERROR_DEFAULT',
+          'No se pudo procesar tu solicitud de recuperación en este momento.'
+        );
+        this.errorMessage.set(extractHttpErrorMessage(err, fallback));
+      }
+    });
   }
 
-  onResetPassword(): void {
-    if (this.resetForm.invalid || !this.userId) {
-      this.resetForm.markAllAsTouched();
-      return;
-    }
+  private translateOrFallback(key: string, fallback: string): string {
+    const value = this.translate.instant(key);
+    return value && value !== key ? value : fallback;
+  }
 
-    this.isLoading.set(false);
-    this.errorMessage.set(
-      this.translate.instant('AUTH.FORGOT_DIRECT_DISABLED')
-    );
+  resetForm(): void {
+    this.isSubmitted.set(false);
+    this.errorMessage.set(null);
+    this.emailForm.reset();
   }
 }

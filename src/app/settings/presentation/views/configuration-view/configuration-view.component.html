@@ -1,14 +1,25 @@
 <div class="layout-wrapper">
-
-  <!-- Contenido principal -->
+  <!-- Main Content -->
   <main class="content-container">
     <header class="page-header">
       <h1 class="page-title">{{ 'SETTINGS.TITLE' | translate }}</h1>
       <p class="page-subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
     </header>
 
+    @if (toastNotification(); as toast) {
+      <div
+        class="settings-toast"
+        [class.toast-success]="toast.type === 'success'"
+        [class.toast-error]="toast.type === 'error'"
+        role="status"
+      >
+        <mat-icon>{{ toast.type === 'success' ? 'check_circle' : 'error_outline' }}</mat-icon>
+        <span>{{ toast.message }}</span>
+      </div>
+    }
+
     <div class="cards-grid">
-      <!-- 1. Información personal -->
+      <!-- 1. Personal Information -->
       <section class="config-card">
         <div class="card-header">
           <div class="avatar-container">
@@ -25,17 +36,17 @@
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
           <div class="form-group">
             <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
-            <input type="text" formControlName="fullName" [placeholder]="'SETTINGS.FULL_NAME_PH' | translate" />
+            <input type="text" formControlName="fullName" [placeholder]="'SETTINGS.FULL_NAME_PLACEHOLDER' | translate" />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
-            <input type="email" formControlName="email" [placeholder]="'SETTINGS.EMAIL_PH' | translate" />
+            <input type="email" formControlName="email" [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate" />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.PHONE' | translate }}</label>
-            <input type="tel" formControlName="phone" [placeholder]="'SETTINGS.PHONE_PH' | translate" />
+            <input type="tel" formControlName="phone" [placeholder]="'SETTINGS.PHONE_PLACEHOLDER' | translate" />
           </div>
 
           @if (profileMessage()) {
@@ -53,7 +64,7 @@
         </form>
       </section>
 
-      <!-- 2. Mi plan -->
+      <!-- 2. My Plan -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -66,16 +77,18 @@
         </div>
 
         <div class="plan-info">
-          <span class="plan-label">{{ 'SETTINGS.CURRENT_PLAN' | translate }} </span>
+          <span class="plan-label">{{ 'SETTINGS.CURRENT_PLAN_LABEL' | translate }}: </span>
           <span class="plan-value">{{ currentPlan() | uppercase }}</span>
         </div>
 
         <div class="action-btn-row">
-          <button type="button" class="btn-primary" (click)="goToPlans()">{{ 'SETTINGS.MANAGE_PLAN' | translate }}</button>
+          <button type="button" class="btn-primary" (click)="goToPlans()">
+            {{ 'SETTINGS.MANAGE_PLAN' | translate }}
+          </button>
         </div>
       </section>
 
-      <!-- 3. Cambiar contraseña -->
+      <!-- 3. Change Password (US-25) -->
       <section class="config-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -87,56 +100,105 @@
           </div>
         </div>
 
-        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="card-form">
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="card-form" novalidate>
           <div class="form-group">
             <label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showCurrentPass ? 'text' : 'password'" formControlName="currentPassword" [placeholder]="'SETTINGS.CURRENT_PASSWORD_PH' | translate" />
-              <button type="button" class="trailing-icon-btn" (click)="showCurrentPass = !showCurrentPass">
+              <input
+                [type]="showCurrentPass ? 'text' : 'password'"
+                formControlName="currentPassword"
+                [placeholder]="'SETTINGS.CURRENT_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showCurrentPass = !showCurrentPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showCurrentPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (currentPasswordControl?.touched && currentPasswordControl?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.CURRENT_PASSWORD_REQUIRED' | translate }}</span>
+            }
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showNewPass ? 'text' : 'password'" formControlName="newPassword" [placeholder]="'SETTINGS.NEW_PASSWORD_PH' | translate" />
-              <button type="button" class="trailing-icon-btn" (click)="showNewPass = !showNewPass">
+              <input
+                [type]="showNewPass ? 'text' : 'password'"
+                formControlName="newPassword"
+                [placeholder]="'SETTINGS.NEW_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showNewPass = !showNewPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showNewPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (newPasswordControl?.touched && newPasswordControl?.invalid) {
+              <span class="field-error">
+                @if (newPasswordControl?.errors?.['required']) {
+                  {{ 'AUTH.PASSWORD_REQUIRED' | translate }}
+                } @else if (newPasswordControl?.errors?.['minlength'] || newPasswordControl?.errors?.['maxlength']) {
+                  {{ 'AUTH.PASSWORD_LENGTH_ERROR' | translate }}
+                } @else if (newPasswordControl?.errors?.['pattern']) {
+                  {{ 'AUTH.PASSWORD_POLICY_ERROR' | translate }}
+                }
+              </span>
+            }
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.CONFIRM_NEW_PASSWORD' | translate }}</label>
             <div class="input-with-icon">
               <mat-icon class="leading-icon">lock</mat-icon>
-              <input [type]="showConfirmPass ? 'text' : 'password'" formControlName="confirmPassword" [placeholder]="'SETTINGS.CONFIRM_NEW_PASSWORD_PH' | translate" />
-              <button type="button" class="trailing-icon-btn" (click)="showConfirmPass = !showConfirmPass">
+              <input
+                [type]="showConfirmPass ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                [placeholder]="'SETTINGS.CONFIRM_NEW_PASSWORD_PLACEHOLDER' | translate"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="trailing-icon-btn"
+                (click)="showConfirmPass = !showConfirmPass"
+                [attr.aria-label]="'AUTH.TOGGLE_PASSWORD' | translate"
+              >
                 <mat-icon>{{ showConfirmPass ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
             </div>
+            @if (passwordForm.hasError('passwordMismatch') && confirmPasswordControl?.touched) {
+              <span class="field-error">{{ 'AUTH.PASSWORD_MISMATCH' | translate }}</span>
+            }
           </div>
 
+          <p class="policy-note">{{ 'AUTH.PASSWORD_POLICY_HINT' | translate }}</p>
+
           @if (passwordMessage()) {
-            <p class="form-message success">{{ passwordMessage() }}</p>
+            <p class="form-message success" role="status">{{ passwordMessage() }}</p>
           }
           @if (passwordError()) {
-            <p class="form-message error">{{ passwordError() }}</p>
+            <p class="form-message error" role="alert">{{ passwordError() }}</p>
           }
 
           <div class="action-btn-row">
             <button type="submit" class="btn-primary" [disabled]="savingPassword()">
-              {{ (savingPassword() ? 'SETTINGS.UPDATING' : 'SETTINGS.UPDATE_PASSWORD') | translate }}
+              {{ savingPassword() ? ('SETTINGS.UPDATING_PASSWORD' | translate) : ('SETTINGS.UPDATE_PASSWORD_BTN' | translate) }}
             </button>
           </div>
         </form>
       </section>
 
-      <!-- 4. Mi hogar (Sólo para Homeowner) -->
+      <!-- 4. My Home (Homeowner only) -->
       @if (isHomeowner()) {
         <section class="config-card">
           <div class="card-header">
@@ -154,9 +216,9 @@
               <div class="form-group">
                 <label>{{ 'SETTINGS.HOME_TYPE' | translate }}</label>
                 <select formControlName="homeType">
-                  <option value="Casa">{{ 'SETTINGS.HOME_HOUSE' | translate }}</option>
-                  <option value="Departamento">{{ 'SETTINGS.HOME_APT' | translate }}</option>
-                  <option value="Oficina/Local">{{ 'SETTINGS.HOME_OFFICE' | translate }}</option>
+                  <option value="House">{{ 'SETTINGS.HOME_TYPE_HOUSE' | translate }}</option>
+                  <option value="Apartment">{{ 'SETTINGS.HOME_TYPE_APARTMENT' | translate }}</option>
+                  <option value="Office/Premises">{{ 'SETTINGS.HOME_TYPE_OFFICE' | translate }}</option>
                 </select>
               </div>
 
@@ -172,12 +234,12 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label>{{ 'SETTINGS.LOCATION' | translate }}</label>
-                <input type="text" formControlName="location" [placeholder]="'SETTINGS.LOCATION_PH' | translate" />
+                <input type="text" formControlName="location" [placeholder]="'SETTINGS.LOCATION_PLACEHOLDER' | translate" />
               </div>
 
               <div class="form-group">
-                <label>{{ 'SETTINGS.TARIFF' | translate }}</label>
-                <input type="text" formControlName="tariff" [placeholder]="'SETTINGS.TARIFF_PH' | translate" />
+                <label>{{ 'SETTINGS.ELECTRICITY_TARIFF' | translate }}</label>
+                <input type="text" formControlName="tariff" [placeholder]="'SETTINGS.TARIFF_PLACEHOLDER' | translate" />
               </div>
             </div>
 
@@ -187,14 +249,14 @@
 
             <div class="action-btn-row">
               <button type="submit" class="btn-primary" [disabled]="savingHome()">
-                {{ (savingHome() ? 'SETTINGS.SAVING' : 'SETTINGS.SAVE_HOME') | translate }}
+                {{ savingHome() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_HOME_BTN' | translate) }}
               </button>
             </div>
           </form>
         </section>
       }
 
-      <!-- 4. Mi Negocio / MYPE (Sólo para Business) -->
+      <!-- 4. My Business / SME (Business only) -->
       @if (isBusiness()) {
         <section class="config-card">
           <div class="card-header">
@@ -211,12 +273,12 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label>{{ 'SETTINGS.BUSINESS_NAME' | translate }}</label>
-                <input type="text" formControlName="businessName" [placeholder]="'SETTINGS.BUSINESS_NAME_PH' | translate" />
+                <input type="text" formControlName="businessName" [placeholder]="'SETTINGS.BUSINESS_NAME_PLACEHOLDER' | translate" />
               </div>
 
               <div class="form-group">
                 <label>{{ 'SETTINGS.TAX_ID' | translate }}</label>
-                <input type="text" formControlName="taxId" [placeholder]="'SETTINGS.TAX_ID_PH' | translate" maxlength="11" />
+                <input type="text" formControlName="taxId" [placeholder]="'SETTINGS.TAX_ID_PLACEHOLDER' | translate" maxlength="11" />
               </div>
             </div>
 
@@ -224,30 +286,30 @@
               <div class="form-group">
                 <label>{{ 'SETTINGS.BUSINESS_TYPE' | translate }}</label>
                 <select formControlName="businessType">
-                  <option value="Restaurante">{{ 'SETTINGS.BIZ_RESTAURANT' | translate }}</option>
-                  <option value="Panadería">{{ 'SETTINGS.BIZ_BAKERY' | translate }}</option>
-                  <option value="Taller">{{ 'SETTINGS.BIZ_WORKSHOP' | translate }}</option>
-                  <option value="Bodega">{{ 'SETTINGS.BIZ_STORE' | translate }}</option>
-                  <option value="Oficina">{{ 'SETTINGS.BIZ_OFFICE' | translate }}</option>
-                  <option value="Gimnasio">{{ 'SETTINGS.BIZ_GYM' | translate }}</option>
-                  <option value="Otro">{{ 'SETTINGS.BIZ_OTHER' | translate }}</option>
+                  <option value="Restaurant">{{ 'SETTINGS.BIZ_RESTAURANT' | translate }}</option>
+                  <option value="Bakery">{{ 'SETTINGS.BIZ_BAKERY' | translate }}</option>
+                  <option value="Workshop">{{ 'SETTINGS.BIZ_WORKSHOP' | translate }}</option>
+                  <option value="Store">{{ 'SETTINGS.BIZ_STORE' | translate }}</option>
+                  <option value="Office">{{ 'SETTINGS.BIZ_OFFICE' | translate }}</option>
+                  <option value="Gym">{{ 'SETTINGS.BIZ_GYM' | translate }}</option>
+                  <option value="Other">{{ 'SETTINGS.BIZ_OTHER' | translate }}</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label>{{ 'SETTINGS.COMMERCIAL_TARIFF' | translate }}</label>
                 <select formControlName="commercialTariff">
-                  <option value="BT5B Comercial">{{ 'SETTINGS.TARIFF_BT5B' | translate }}</option>
+                  <option value="BT5B Commercial">{{ 'SETTINGS.TARIFF_BT5B' | translate }}</option>
                   <option value="BT2">{{ 'SETTINGS.TARIFF_BT2' | translate }}</option>
                   <option value="MT2">{{ 'SETTINGS.TARIFF_MT2' | translate }}</option>
-                  <option value="Otro">{{ 'SETTINGS.TARIFF_OTHER' | translate }}</option>
+                  <option value="Other">{{ 'SETTINGS.TARIFF_OTHER' | translate }}</option>
                 </select>
               </div>
             </div>
 
             <div class="form-group">
               <label>{{ 'SETTINGS.BUSINESS_ADDRESS' | translate }}</label>
-              <input type="text" formControlName="address" [placeholder]="'SETTINGS.BUSINESS_ADDRESS_PH' | translate" />
+              <input type="text" formControlName="address" [placeholder]="'SETTINGS.BUSINESS_ADDRESS_PLACEHOLDER' | translate" />
             </div>
 
             @if (businessMessage()) {
@@ -256,14 +318,14 @@
 
             <div class="action-btn-row">
               <button type="submit" class="btn-primary" [disabled]="savingBusiness()">
-                {{ (savingBusiness() ? 'SETTINGS.SAVING' : 'SETTINGS.SAVE_BUSINESS') | translate }}
+                {{ savingBusiness() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_BUSINESS_BTN' | translate) }}
               </button>
             </div>
           </form>
         </section>
       }
 
-      <!-- 5. Notificaciones -->
+      <!-- 5. Notifications -->
       <section class="config-card notification-card">
         <div class="card-header">
           <div class="icon-badge">
@@ -271,7 +333,7 @@
           </div>
           <div class="header-texts">
             <h2 class="card-title">{{ 'SETTINGS.NOTIFICATIONS' | translate }}</h2>
-            <p class="card-subtitle">{{ 'SETTINGS.NOTIF_SUB_HOME' | translate }}</p>
+            <p class="card-subtitle">{{ 'SETTINGS.NOTIFICATIONS_SUB' | translate }}</p>
           </div>
         </div>
 
@@ -280,8 +342,8 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">bar_chart</mat-icon>
               <div>
-                <strong class="notif-title">{{ 'SETTINGS.NOTIF_HIGH_TITLE' | translate }}</strong>
-                <p class="notif-desc">{{ 'SETTINGS.NOTIF_HIGH_DESC' | translate }}</p>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_HIGH_CONSUMPTION' | translate }}</strong>
+                <p class="notif-desc">{{ 'SETTINGS.NOTIF_HIGH_CONSUMPTION_DESC' | translate }}</p>
               </div>
             </div>
             <mat-slide-toggle
@@ -295,8 +357,8 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">build</mat-icon>
               <div>
-                <strong class="notif-title">{{ 'SETTINGS.NOTIF_MAINT_TITLE' | translate }}</strong>
-                <p class="notif-desc">{{ 'SETTINGS.NOTIF_MAINT_DESC' | translate }}</p>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_MAINTENANCE' | translate }}</strong>
+                <p class="notif-desc">{{ 'SETTINGS.NOTIF_MAINTENANCE_DESC' | translate }}</p>
               </div>
             </div>
             <mat-slide-toggle
@@ -310,7 +372,7 @@
             <div class="notif-info">
               <mat-icon class="notif-item-icon">eco</mat-icon>
               <div>
-                <strong class="notif-title">{{ 'SETTINGS.NOTIF_TIPS_TITLE' | translate }}</strong>
+                <strong class="notif-title">{{ 'SETTINGS.NOTIF_TIPS' | translate }}</strong>
                 <p class="notif-desc">{{ 'SETTINGS.NOTIF_TIPS_DESC' | translate }}</p>
               </div>
             </div>
@@ -327,9 +389,91 @@
         }
 
         <div class="action-btn-row">
-          <button type="button" class="btn-primary" (click)="saveNotifications()">{{ 'SETTINGS.SAVE_PREFS' | translate }}</button>
+          <button type="button" class="btn-primary" (click)="saveNotifications()">
+            {{ 'SETTINGS.SAVE_PREFERENCES_BTN' | translate }}
+          </button>
+        </div>
+      </section>
+
+      <!-- 6. Danger Zone: Account Deactivation (US-40) -->
+      <section class="config-card danger-zone-card">
+        <div class="card-header">
+          <div class="icon-badge danger-badge">
+            <mat-icon>warning_amber</mat-icon>
+          </div>
+          <div class="header-texts">
+            <h2 class="card-title danger-title">{{ 'SETTINGS.DANGER_ZONE_TITLE' | translate }}</h2>
+            <p class="card-subtitle">{{ 'SETTINGS.DANGER_ZONE_SUB' | translate }}</p>
+          </div>
+        </div>
+
+        <p class="danger-description">{{ 'SETTINGS.DEACTIVATE_DESC' | translate }}</p>
+
+        <div class="action-btn-row">
+          <button
+            type="button"
+            class="btn-danger"
+            (click)="openDeactivateModal()"
+          >
+            {{ 'SETTINGS.DEACTIVATE_ACCOUNT_BTN' | translate }}
+          </button>
         </div>
       </section>
     </div>
   </main>
+
+  <!-- US-40 Account Deactivation Confirmation Modal -->
+  @if (showDeactivateModal()) {
+    <div
+      class="modal-backdrop"
+      role="presentation"
+      (click)="closeDeactivateModal()"
+    >
+      <div
+        class="modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deactivate-modal-title"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="modal-header">
+          <div class="icon-badge danger-badge">
+            <mat-icon>no_accounts</mat-icon>
+          </div>
+          <h3 id="deactivate-modal-title" class="modal-title">
+            {{ 'SETTINGS.DEACTIVATE_MODAL_TITLE' | translate }}
+          </h3>
+        </div>
+
+        <p class="modal-body">{{ 'SETTINGS.DEACTIVATE_MODAL_BODY' | translate }}</p>
+
+        @if (deactivateError()) {
+          <p class="form-message error" role="alert">{{ deactivateError() }}</p>
+        }
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            [disabled]="deactivatingAccount()"
+            (click)="closeDeactivateModal()"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="deactivatingAccount()"
+            (click)="confirmDeactivateAccount()"
+          >
+            {{
+              deactivatingAccount()
+                ? ('SETTINGS.DEACTIVATING' | translate)
+                : ('SETTINGS.CONFIRM_DEACTIVATE_BTN' | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
