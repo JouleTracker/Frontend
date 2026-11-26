@@ -14,14 +14,14 @@ export const iamRoutes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () =>
           import('./views/sign-in-form/sign-in-form').then((m) => m.SignInFormComponent),
-        title: 'JouleTracker - Iniciar sesión'
+        title: 'ROUTES.SIGN_IN'
       },
       {
         path: 'registro',
         canActivate: [guestGuard],
         loadComponent: () =>
           import('./views/sign-up-form/sign-up-form').then((m) => m.SignUpFormComponent),
-        title: 'JouleTracker - Crear cuenta'
+        title: 'ROUTES.SIGN_UP'
       },
       {
         path: 'register',
@@ -35,7 +35,7 @@ export const iamRoutes: Routes = [
           import('./views/forgot-password-view/forgot-password-view.component').then(
             (m) => m.ForgotPasswordViewComponent
           ),
-        title: 'JouleTracker - Recuperar contraseña'
+        title: 'ROUTES.FORGOT_PASSWORD'
       },
       {
         path: 'verify-email',
@@ -43,7 +43,7 @@ export const iamRoutes: Routes = [
           import('./views/verify-email-view/verify-email-view.component').then(
             (m) => m.VerifyEmailViewComponent
           ),
-        title: 'JouleTracker - Verificar correo'
+        title: 'ROUTES.VERIFY_EMAIL'
       }
     ]
   }

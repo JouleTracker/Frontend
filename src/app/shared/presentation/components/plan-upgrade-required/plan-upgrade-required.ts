@@ -12,6 +12,6 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './plan-upgrade-required.css'
 })
 export class PlanUpgradeRequiredComponent {
-  readonly featureName = input<string>('esta funcionalidad');
+  readonly featureName = input<string>('this feature');
   readonly requiredPlan = input<'Plus' | 'Pro'>('Plus');
 }

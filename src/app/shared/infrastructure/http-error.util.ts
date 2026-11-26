@@ -7,11 +7,11 @@ import { HttpErrorResponse } from '@angular/common/http';
  */
 export function extractHttpErrorMessage(
   err: unknown,
-  fallback = 'Ocurrió un error al comunicarse con el servidor.'
+  fallback = 'An error occurred while communicating with the server.'
 ): string {
   if (err instanceof HttpErrorResponse) {
     if (err.status === 0) {
-      return 'No se pudo conectar con el servidor. Verifica que el backend esté activo.';
+      return 'Could not connect to the server. Verify that the backend is running.';
     }
 
     const body = err.error;
@@ -31,13 +31,13 @@ export function extractHttpErrorMessage(
     }
 
     if (err.status === 401) {
-      return 'Credenciales incorrectas.';
+      return 'Invalid credentials.';
     }
     if (err.status === 403) {
-      return 'Tu cuenta requiere verificación de correo o no tiene permisos para esta acción.';
+      return 'Your account requires email verification or lacks permission for this action.';
     }
     if (err.status === 404) {
-      return 'Recurso no disponible en el servidor.';
+      return 'Resource not found on the server.';
     }
     return fallback;
   }

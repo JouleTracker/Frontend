@@ -29,7 +29,7 @@ export class IamApi {
 
     return this.http.post<SignInResponse>(SignInApiEndpoint.getEndpoint(), payload).pipe(
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Credenciales incorrectas.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Invalid credentials.')))
       )
     );
   }
@@ -37,7 +37,7 @@ export class IamApi {
   signUp(request: SignUpRequest): Observable<SignUpResponse> {
     return this.http.post<SignUpResponse>(SignUpApiEndpoint.getEndpoint(), request).pipe(
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'No se pudo completar el registro.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Registration could not be completed.')))
       )
     );
   }
@@ -50,7 +50,7 @@ export class IamApi {
         throwError(
           () =>
             new Error(
-              extractHttpErrorMessage(err, 'El enlace de verificación es inválido o ha expirado.')
+              extractHttpErrorMessage(err, 'The verification link is invalid or has expired.')
             )
         )
       )

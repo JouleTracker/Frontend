@@ -95,7 +95,7 @@
             [(ngModel)]="alertForm.title"
             name="alertTitle"
             required
-            placeholder="Pico de consumo anómalo" />
+            [placeholder]="'ADMIN.ALERT_TITLE_PH' | translate" />
         </div>
 
         <div class="field">
@@ -114,7 +114,7 @@
             name="alertDesc"
             rows="4"
             required
-            placeholder="Escribe el detalle de la alerta que recibirá el usuario..."></textarea>
+            [placeholder]="'ADMIN.ALERT_MSG_PH' | translate"></textarea>
         </div>
 
         <button type="submit" class="btn-primary">
@@ -145,7 +145,7 @@
             [(ngModel)]="recForm.title"
             name="recTitle"
             required
-            placeholder="Optimización de temperatura nocturna" />
+            [placeholder]="'ADMIN.REC_TITLE_PH' | translate" />
         </div>
 
         <div class="form-row">
@@ -156,7 +156,7 @@
               [(ngModel)]="recForm.category"
               name="recCategory"
               required
-              placeholder="Climatización / Cocina" />
+              [placeholder]="'ADMIN.REC_CAT_PH' | translate" />
           </div>
 
           <div class="field col">
@@ -177,7 +177,7 @@
             name="recDesc"
             rows="4"
             required
-            placeholder="Describe la recomendación técnica para reducir el consumo..."></textarea>
+            [placeholder]="'ADMIN.REC_DESC_PH' | translate"></textarea>
         </div>
 
         <button type="submit" class="btn-primary">

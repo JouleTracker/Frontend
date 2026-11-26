@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -19,6 +19,7 @@ export class AdminDashboardComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
   private readonly iamApi = inject(IamApi);
+  private readonly translate = inject(TranslateService);
 
   // Usar apiBaseUrl directamente desde environment
   private readonly baseUrl = environment.apiBaseUrl;
@@ -71,10 +72,15 @@ export class AdminDashboardComponent implements OnInit {
     this.http.patch<User>(url, { banned: updatedStatus }).subscribe({
       next: () => {
         user.banned = updatedStatus;
-        this.notify(`Usuario ${user.name} ${updatedStatus ? 'baneado' : 'desbaneado'}.`);
+        this.notify(
+          this.translate.instant(
+            updatedStatus ? 'ADMIN.USER_BANNED_MSG' : 'ADMIN.USER_UNBANNED_MSG',
+            { name: user.name }
+          )
+        );
       },
       error: () =>
-        this.notify('La suspensión administrativa de cuentas estará disponible en el próximo sprint.'),
+        this.notify(this.translate.instant('ADMIN.BAN_NOT_READY')),
     });
   }
 
@@ -86,7 +92,7 @@ export class AdminDashboardComponent implements OnInit {
       message: this.alertForm.description,
       severity: this.alertForm.severity,
       status: 'Activa',
-      timeAgo: 'Reciente',
+      timeAgo: this.translate.instant('ALERTS.TIME_NOW'),
       actionUrl: '/consumo',
       timestamp: new Date().toISOString(),
       read: false,
@@ -95,11 +101,14 @@ export class AdminDashboardComponent implements OnInit {
     const url = `${this.baseUrl}${environment.alertsEndpointPath || '/alerts'}`;
     this.http.post(url, payload).subscribe({
       next: () => {
-        this.notify('Alerta enviada exitosamente.');
+        this.notify(this.translate.instant('ADMIN.ALERT_SENT'));
         this.alertForm.title = '';
         this.alertForm.description = '';
       },
-      error: (err) => console.error('Error al enviar alerta:', err),
+      error: (err) => {
+        console.error('Error sending alert:', err);
+        this.notify(this.translate.instant('ADMIN.ALERT_NOT_READY'));
+      },
     });
   }
 
@@ -115,11 +124,14 @@ export class AdminDashboardComponent implements OnInit {
     const url = `${this.baseUrl}${environment.recommendationsEndpointPath || '/recommendations'}`;
     this.http.post(url, payload).subscribe({
       next: () => {
-        this.notify('Recomendación enviada exitosamente.');
+        this.notify(this.translate.instant('ADMIN.REC_SENT'));
         this.recForm.title = '';
         this.recForm.description = '';
       },
-      error: (err) => console.error('Error al enviar recomendación:', err),
+      error: (err) => {
+        console.error('Error sending recommendation:', err);
+        this.notify(this.translate.instant('ADMIN.REC_NOT_READY'));
+      },
     });
   }
 

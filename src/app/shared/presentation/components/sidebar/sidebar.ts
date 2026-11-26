@@ -38,7 +38,7 @@ export class Sidebar {
   private readonly translate = inject(TranslateService);
 
   readonly currentLang = signal<string>(
-    localStorage.getItem('joule_lang') || 'es'
+    localStorage.getItem('joule_lang') === 'es' ? 'es' : 'en'
   );
 
   readonly isMobileDrawerOpen = signal<boolean>(false);
@@ -110,8 +110,8 @@ export class Sidebar {
       badge = `MYPE · ${badge}`;
     }
     return {
-      name: currentUser?.name || 'Usuario',
-      email: currentUser?.email || 'sin-correo@jouletracker.com',
+      name: currentUser?.name || this.translate.instant('COMMON.USER'),
+      email: currentUser?.email || 'no-email@jouletracker.com',
       role: role || 'homeowner',
       plan: this.currentPlan(),
       badge,
@@ -120,11 +120,13 @@ export class Sidebar {
 
   constructor() {
     const saved = this.currentLang();
+    document.documentElement.lang = saved;
     this.translate.use(saved);
   }
 
   switchLang(lang: string): void {
     this.currentLang.set(lang);
+    document.documentElement.lang = lang;
     this.translate.use(lang);
     localStorage.setItem('joule_lang', lang);
   }

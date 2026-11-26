@@ -28,7 +28,7 @@ export class AlertsApi extends BaseApi {
     ).pipe(
       map(res => this.alertAssembler.toEntities(res)),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar alertas.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading alerts.')))
       )
     );
   }
@@ -44,7 +44,7 @@ export class AlertsApi extends BaseApi {
     ).pipe(
       map(res => this.alertAssembler.toEntity(res)),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al marcar alerta como leída.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error marking alert as read.')))
       )
     );
   }

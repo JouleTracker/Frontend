@@ -16,7 +16,7 @@
   </header>
 
   <!-- Top Metric Cards Row -->
-  <section class="summary-cards" aria-label="Métricas de áreas del negocio">
+  <section class="summary-cards" [attr.aria-label]="'AREAS.METRICS_ARIA' | translate">
     <article class="metric-card">
       <div class="card-icon icon-bg-gray">
         <mat-icon>domain</mat-icon>
@@ -46,7 +46,7 @@
       <div class="card-content">
         <div class="card-value">{{ store.totalTodayKwh() }} kWh</div>
         <span class="card-label">{{ 'AREAS.TOTAL_CONSUMPTION' | translate }}</span>
-        <span class="card-subtext">S/ {{ store.totalTodayCostSoles() | number:'1.2-2' }} hoy</span>
+        <span class="card-subtext">S/ {{ store.totalTodayCostSoles() | number:'1.2-2' }} {{ 'AREAS.TODAY_LABEL' | translate }}</span>
       </div>
     </article>
 
@@ -56,8 +56,8 @@
       </div>
       <div class="card-content">
         <span class="card-label">{{ 'AREAS.HIGHEST_CONSUMPTION' | translate }}</span>
-        <div class="card-value highlight-area">{{ store.topConsumingArea()?.area?.name ?? 'Sin datos' }}</div>
-        <span class="card-subtext">{{ store.topConsumingArea()?.todayKwh ?? 0 }} kWh hoy</span>
+        <div class="card-value highlight-area">{{ store.topConsumingArea()?.area?.name ?? ('AREAS.NO_DATA' | translate) }}</div>
+        <span class="card-subtext">{{ store.topConsumingArea()?.todayKwh ?? 0 }} kWh {{ 'AREAS.TODAY_LABEL' | translate }}</span>
       </div>
     </article>
   </section>
@@ -69,7 +69,7 @@
         <h2 class="section-title">{{ 'AREAS.COMPARISON_TITLE' | translate }}</h2>
         <p class="section-subtitle">{{ 'AREAS.COMPARISON_SUBTITLE' | translate }}</p>
       </div>
-      <span class="badge-kwh">kWh acumulado hoy</span>
+      <span class="badge-kwh">{{ 'AREAS.ACCUMULATED_TODAY' | translate }}</span>
     </div>
 
     @if (store.areas().length > 0) {
@@ -86,7 +86,7 @@
   <section class="areas-grid-section">
     <div class="grid-header">
       <h2>{{ 'AREAS.REGISTERED_AREAS' | translate }}</h2>
-      <span class="areas-count-badge">{{ store.totalAreas() }} áreas</span>
+      <span class="areas-count-badge">{{ store.totalAreas() }} {{ 'AREAS.COUNT_SUFFIX' | translate }}</span>
     </div>
 
     @if (store.loading()) {
@@ -105,7 +105,7 @@
               <div class="area-header-info">
                 <div class="area-title-row">
                   <h3 class="area-name">{{ item.area.name }}</h3>
-                  <span class="floor-badge">{{ item.area.floor }}</span>
+                  <span class="floor-badge">{{ getFloorKey(item.area.floor) | translate }}</span>
                 </div>
                 @if (item.area.description) {
                   <p class="area-description">{{ item.area.description }}</p>
@@ -179,7 +179,7 @@
     <div class="modal-container" role="dialog" aria-modal="true" [attr.aria-labelledby]="'modal-title'">
       <header class="modal-header">
         <h2 id="modal-title">{{ (isEditing() ? 'AREAS.EDIT_TITLE' : 'AREAS.CREATE_TITLE') | translate }}</h2>
-        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar modal">
+        <button type="button" class="btn-close" (click)="closeModal()" [attr.aria-label]="'AREAS.CLOSE_MODAL_ARIA' | translate">
           <mat-icon>close</mat-icon>
         </button>
       </header>
@@ -203,7 +203,7 @@
             formControlName="name"
             class="form-input"
             [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
-            placeholder="Ej. Cocina, Almacén, Zona de Ventas, Terraza"
+            [placeholder]="'AREAS.NAME_PH' | translate"
           />
           @if (form.get('name')?.invalid && form.get('name')?.touched) {
             <span class="field-error">{{ 'AREAS.NAME_REQUIRED' | translate }}</span>
@@ -217,7 +217,7 @@
           </label>
           <select id="areaFloor" formControlName="floor" class="form-select">
             @for (f of availableFloors; track f) {
-              <option [value]="f">{{ f }}</option>
+              <option [value]="f">{{ getFloorKey(f) | translate }}</option>
             }
           </select>
         </div>
@@ -232,7 +232,7 @@
             formControlName="description"
             rows="2"
             class="form-textarea"
-            placeholder="Detalle de actividades o equipos principales en esta zona..."
+            [placeholder]="'AREAS.DESC_PH' | translate"
           ></textarea>
         </div>
 
@@ -279,8 +279,8 @@
       </div>
       <h3>{{ 'AREAS.DELETE_CONFIRM_TITLE' | translate }}</h3>
       <p>
-        ¿Estás seguro de que deseas eliminar el área
-        <strong>"{{ areaToDelete()?.name }}"</strong>? Los dispositivos asignados no serán eliminados.
+        {{ 'AREAS.DELETE_CONFIRM_MSG_1' | translate }}
+        <strong>"{{ areaToDelete()?.name }}"</strong>? {{ 'AREAS.DELETE_CONFIRM_MSG_2' | translate }}
       </p>
       <div class="modal-footer">
         <button type="button" class="btn-secondary" (click)="closeDeleteModal()">

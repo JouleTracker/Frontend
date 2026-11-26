@@ -1,4 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { RecommendationsApi } from '../infrastructure/recommendations-api';
 import { RecommendationItem, RecommendationMetrics } from '../domain/model/recommendation.entity';
 import { IamStore } from '../../iam/application/iam.store';
@@ -14,6 +16,8 @@ export class RecommendationsStore {
   private readonly consumptionStore = inject(ConsumptionStore);
   private readonly sensorsStore = inject(SensorsStore);
   private readonly devicesStore = inject(DevicesStore);
+  private readonly translate = inject(TranslateService);
+  private readonly langTick = toSignal(this.translate.onLangChange);
 
   private readonly _apiItems = signal<RecommendationItem[]>([]);
   readonly selectedCategory = signal<string>('Todas');
@@ -26,6 +30,7 @@ export class RecommendationsStore {
    * Generación reactiva de diagnósticos inteligentes a partir de la telemetría viva de sensores y dispositivos
    */
   readonly dynamicRecommendations = computed<RecommendationItem[]>(() => {
+    this.langTick();
     const list: RecommendationItem[] = [];
     const sensors = this.sensorsStore.sensors();
     const devices = this.devicesStore.devices();
@@ -45,8 +50,14 @@ export class RecommendationsStore {
 
         list.push({
           id: 8000 + s.id,
-          title: `Optimizar consumo en ${deviceName}`,
-          description: `Registra ${s.todayKwh.toFixed(2)} kWh hoy, superando la cuota de ${s.recommendedDailyKwh.toFixed(2)} kWh/día (+${excessPercent}%). Establecer un horario de apagado evitaría un sobrecosto mensual de S/ ${estimatedMonthlySavingSoles} (~${co2Kg} kg CO₂).`,
+          title: this.translate.instant('RECOMMENDATIONS.DYN_OPT_TITLE', { device: deviceName }),
+          description: this.translate.instant('RECOMMENDATIONS.DYN_OPT_DESC', {
+            today: s.todayKwh.toFixed(2),
+            limit: s.recommendedDailyKwh.toFixed(2),
+            pct: excessPercent,
+            saving: estimatedMonthlySavingSoles,
+            co2: co2Kg
+          }),
           potentialSaving: `${Math.min(excessPercent, 40)}%`,
           category: category,
           actionUrl: '/dispositivos'
@@ -61,8 +72,11 @@ export class RecommendationsStore {
 
         list.push({
           id: 8500 + s.id,
-          title: `Consumo vampiro detectado: ${deviceName}`,
-          description: `Consume ${watts} W continuos en modo reposo sin actividad registrada. Desconectarlo o programar el enchufe inteligente ahorraría S/ ${phantomSavingSoles} al mes.`,
+          title: this.translate.instant('RECOMMENDATIONS.DYN_VAMPIRE_TITLE', { device: deviceName }),
+          description: this.translate.instant('RECOMMENDATIONS.DYN_VAMPIRE_DESC', {
+            watts,
+            saving: phantomSavingSoles
+          }),
           potentialSaving: '8%',
           category: 'Eficiencia',
           actionUrl: '/dispositivos'
@@ -73,8 +87,10 @@ export class RecommendationsStore {
       if (category.toLowerCase() === 'climatización' && s.currentPowerKw >= 0.8) {
         list.push({
           id: 8800 + s.id,
-          title: `Ajuste térmico en ${deviceName}`,
-          description: `El equipo opera a ${s.currentPowerKw.toFixed(2)} kW sostenidos. Subir el termostato a 24°C reduce el trabajo del compresor entre 10% y 15% sin perder confort.`,
+          title: this.translate.instant('RECOMMENDATIONS.DYN_THERMAL_TITLE', { device: deviceName }),
+          description: this.translate.instant('RECOMMENDATIONS.DYN_THERMAL_DESC', {
+            kw: s.currentPowerKw.toFixed(2)
+          }),
           potentialSaving: '15%',
           category: 'Climatización',
           actionUrl: '/dispositivos'
@@ -162,7 +178,7 @@ export class RecommendationsStore {
         this.isLoading.set(false);
       },
       error: () => {
-        this.errorMessage.set('Error al cargar las recomendaciones');
+        this.errorMessage.set(this.translate.instant('RECOMMENDATIONS.LOAD_ERROR'));
         this.isLoading.set(false);
       }
     });

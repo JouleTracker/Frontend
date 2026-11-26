@@ -49,6 +49,18 @@ export class AreasViewComponent {
 
   readonly availableFloors: string[] = ['Piso 1', 'Piso 2', 'Piso 3', 'Sótano', 'Azotea'];
 
+  private readonly floorKeyMap: Record<string, string> = {
+    'Piso 1': 'AREAS.FLOOR_1',
+    'Piso 2': 'AREAS.FLOOR_2',
+    'Piso 3': 'AREAS.FLOOR_3',
+    'Sótano': 'AREAS.FLOOR_BASEMENT',
+    'Azotea': 'AREAS.FLOOR_ROOF',
+  };
+
+  getFloorKey(floor: string): string {
+    return this.floorKeyMap[floor] ?? floor;
+  }
+
   readonly form = this.fb.group({
     name: new FormControl<string>('', {
       nonNullable: true,

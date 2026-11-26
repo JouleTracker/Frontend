@@ -2,17 +2,18 @@ import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { TranslatePipe } from '@ngx-translate/core';
 import { EnergyReading } from '../../../domain/model/energy-reading.entity';
 
 @Component({
   selector: 'app-hourly-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, TranslatePipe],
   templateUrl: './hourly-chart.component.html',
   styleUrl: './hourly-chart.component.css'
 })
 export class HourlyChartComponent implements OnChanges {
-  @Input() title: string = 'Consumo durante el día';
+  @Input() title: string = '';
   @Input() showRealtimeHeader: boolean = false;
   @Input() realtimeKw: number = 1.24;
   @Input() reading: EnergyReading | null = null;

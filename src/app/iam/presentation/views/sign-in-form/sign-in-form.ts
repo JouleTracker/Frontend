@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { IamStore } from '../../../application/iam.store';
 import { SignInCommand } from '../../../domain/model/sign-in.command';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sign-in-form',
@@ -19,6 +19,7 @@ export class SignInFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly iamStore = inject(IamStore);
   private readonly route = inject(ActivatedRoute);
+  private readonly translate = inject(TranslateService);
 
   readonly errorMessage = signal<string | null>(null);
   readonly infoMessage = signal<string | null>(null);
@@ -35,9 +36,7 @@ export class SignInFormComponent implements OnInit {
   ngOnInit(): void {
     const params = this.route.snapshot.queryParamMap;
     if (params.get('registered') === '1') {
-      this.infoMessage.set(
-        '¡Cuenta creada! Revisa tu bandeja de correo y abre el enlace de verificación antes de iniciar sesión.'
-      );
+      this.infoMessage.set(this.translate.instant('AUTH.REGISTERED_INFO'));
     }
     const email = params.get('email');
     if (email) {
@@ -83,9 +82,9 @@ export class SignInFormComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (err: Error) => {
-        console.error('Error capturado en login:', err);
+        console.error('Login error:', err);
         this.isLoading.set(false);
-        this.errorMessage.set(err.message || 'Error al iniciar sesión');
+        this.errorMessage.set(err.message || this.translate.instant('AUTH.SIGN_IN_ERROR'));
       }
     });
   }

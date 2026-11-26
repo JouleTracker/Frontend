@@ -2,7 +2,7 @@
   @if (!canAccessSensors()) {
     <!-- Plan Starter: módulo de sensores bloqueado -->
     <app-plan-upgrade-required
-      featureName="el módulo de Sensores IoT"
+      [featureName]="'PAYWALL.FEATURE_SENSORS' | translate"
       requiredPlan="Plus">
     </app-plan-upgrade-required>
   } @else {
@@ -22,7 +22,7 @@
           [placeholder]="'IOT.SEARCH_PLACEHOLDER' | translate"
           [ngModel]="store.searchTerm()"
           (ngModelChange)="onSearch($event)"
-          aria-label="Buscar sensores"
+          [attr.aria-label]="'IOT.SEARCH_ARIA' | translate"
         />
       </div>
 
@@ -44,7 +44,7 @@
   </header>
 
   <!-- TOP SUMMARY METRIC CARDS -->
-  <section class="summary-cards" aria-label="Resumen de telemetría IoT">
+  <section class="summary-cards" [attr.aria-label]="'IOT.SUMMARY_ARIA' | translate">
 
     <!-- Card 1: Total Sensors -->
     <article class="metric-card">
@@ -101,24 +101,24 @@
 
     <!-- Filter tabs and order selector -->
     <div class="table-toolbar">
-      <nav class="category-tabs" aria-label="Filtro de sensores">
+      <nav class="category-tabs" [attr.aria-label]="'IOT.FILTERS_ARIA' | translate">
         @for (f of filters; track f) {
           <button
             type="button"
             [class.active]="store.selectedFilter() === f"
             (click)="selectFilter(f)">
-            {{ f }}
+            {{ getFilterKey(f) | translate }}
           </button>
         }
       </nav>
 
       <div class="sort-selector">
-        <label for="sensorSortSelect">Ordenar por</label>
+        <label for="sensorSortSelect">{{ 'RECOMMENDATIONS.SORT_BY' | translate }}</label>
         <select id="sensorSortSelect" [ngModel]="store.selectedSort()" (ngModelChange)="onSortChange($event)">
-          <option value="potencia-desc">Potencia (mayor a menor)</option>
-          <option value="potencia-asc">Potencia (menor a mayor)</option>
-          <option value="energia-desc">Consumo acumulado hoy</option>
-          <option value="nombre">Nombre</option>
+          <option value="potencia-desc">{{ 'IOT.SORT_POWER_DESC' | translate }}</option>
+          <option value="potencia-asc">{{ 'IOT.SORT_POWER_ASC' | translate }}</option>
+          <option value="energia-desc">{{ 'IOT.SORT_ENERGY_DESC' | translate }}</option>
+          <option value="nombre">{{ 'COMMON.SORT_NAME' | translate }}</option>
         </select>
       </div>
     </div>
@@ -126,20 +126,20 @@
     <!-- Data Table -->
     <div class="table-responsive">
       @if (store.loading()) {
-        <p class="state-message">Cargando sensores IoT...</p>
+        <p class="state-message">{{ 'IOT.LOADING_SENSORS' | translate }}</p>
       } @else if (store.error() && store.sensors().length === 0) {
         <p class="state-message error">{{ store.error() }}</p>
       } @else {
         <table class="sensors-table">
           <thead>
             <tr>
-              <th>Sensor / Modelo</th>
-              <th>Dispositivo Asignado</th>
-              <th>Estado IoT</th>
-              <th>Consumo actual</th>
-              <th>Consumo hoy</th>
-              <th>Límite Recomendado</th>
-              <th class="text-right">Acciones</th>
+              <th>{{ 'IOT.COL_MODEL_HEADER' | translate }}</th>
+              <th>{{ 'IOT.COL_DEVICE' | translate }}</th>
+              <th>{{ 'IOT.COL_IOT_STATUS' | translate }}</th>
+              <th>{{ 'IOT.COL_POWER' | translate }}</th>
+              <th>{{ 'IOT.COL_TODAY' | translate }}</th>
+              <th>{{ 'IOT.COL_LIMIT' | translate }}</th>
+              <th class="text-right">{{ 'IOT.COL_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -163,14 +163,14 @@
                       <div class="device-info">
                         <strong>{{ sensor.assignedDeviceName }}</strong>
                         @if (sensor.assignedDeviceCategory) {
-                          <span class="category-pill">{{ sensor.assignedDeviceCategory }}</span>
+                          <span class="category-pill">{{ getCategoryKey(sensor.assignedDeviceCategory) | translate }}</span>
                         }
                       </div>
                     </div>
                   } @else {
                     <span class="badge-unassigned">
                       <mat-icon>link_off</mat-icon>
-                      Sin asignar
+                      {{ 'IOT.UNASSIGNED' | translate }}
                     </span>
                   }
                 </td>
@@ -179,7 +179,7 @@
                 <td>
                   <span class="status-badge" [ngClass]="getStatusClass(sensor.status)">
                     <span class="status-dot"></span>
-                    {{ sensor.status }}
+                    {{ getStatusKey(sensor.status) | translate }}
                   </span>
                 </td>
 
@@ -193,8 +193,8 @@
                   <div class="today-kwh-cell">
                     <span>{{ sensor.todayKwh | number:'1.2-2' }} kWh</span>
                     @if (sensor.isOverRecommendedLimit) {
-                      <span class="alert-exceeded" title="Superó el consumo diario recomendado">
-                        Excedido
+                      <span class="alert-exceeded" [attr.title]="'IOT.EXCEEDED_TITLE' | translate">
+                        {{ 'IOT.EXCEEDED' | translate }}
                       </span>
                     }
                   </div>
@@ -204,7 +204,7 @@
                 <td>
                   @if (sensor.recommendedDailyKwh) {
                     <div class="limit-cell">
-                      <strong>{{ sensor.recommendedDailyKwh | number:'1.2-2' }} kWh/día</strong>
+                      <strong>{{ sensor.recommendedDailyKwh | number:'1.2-2' }} {{ 'IOT.KWH_DAY' | translate }}</strong>
                       <span class="limit-profile">{{ sensor.applianceProfileName }}</span>
                     </div>
                   } @else {
@@ -219,8 +219,8 @@
                       <button
                         type="button"
                         class="btn-action-icon btn-action-unlink"
-                        title="Desvincular del dispositivo (dejar disponible)"
-                        aria-label="Desvincular sensor"
+                        [attr.title]="'IOT.UNLINK_TITLE' | translate"
+                        [attr.aria-label]="'IOT.UNLINK_ARIA' | translate"
                         (click)="openUnlinkModal(sensor)">
                         <mat-icon>link_off</mat-icon>
                       </button>
@@ -228,16 +228,16 @@
                     <button
                       type="button"
                       class="btn-action-icon btn-action-edit"
-                      title="Editar y configurar sensor"
-                      aria-label="Editar sensor"
+                      [attr.title]="'IOT.EDIT_TITLE' | translate"
+                      [attr.aria-label]="'IOT.EDIT_ARIA' | translate"
                       (click)="editSensor(sensor.id)">
                       <mat-icon>edit</mat-icon>
                     </button>
                     <button
                       type="button"
                       class="btn-action-icon btn-action-delete"
-                      title="Dar de baja / Eliminar sensor"
-                      aria-label="Eliminar sensor"
+                      [attr.title]="'IOT.DELETE_TITLE' | translate"
+                      [attr.aria-label]="'IOT.DELETE_ARIA' | translate"
                       (click)="openDeleteModal(sensor)">
                       <mat-icon>delete_outline</mat-icon>
                     </button>
@@ -247,7 +247,7 @@
             } @empty {
               <tr>
                 <td colspan="7" class="empty-message">
-                  No se encontraron sensores que coincidan con los filtros actuales.
+                  {{ 'IOT.EMPTY' | translate }}
                 </td>
               </tr>
             }
@@ -267,11 +267,11 @@
           <mat-icon>tune</mat-icon>
         </div>
         <div class="banner-info">
-          <h3>Perfiles de consumo recomendado</h3>
-          <p>Al asignar un electrodoméstico recurrente, el sensor calibra el umbral para detectar consumos altos reales.</p>
+          <h3>{{ 'IOT.BANNER1_TITLE' | translate }}</h3>
+          <p>{{ 'IOT.BANNER1_DESC' | translate }}</p>
         </div>
       </div>
-      <button type="button" class="btn-banner btn-dark" (click)="addSensor()">Vincular nuevo sensor</button>
+      <button type="button" class="btn-banner btn-dark" (click)="addSensor()">{{ 'IOT.BANNER1_BTN' | translate }}</button>
     </article>
 
     <article class="banner-card">
@@ -280,8 +280,8 @@
           <mat-icon>sensors</mat-icon>
         </div>
         <div class="banner-info">
-          <h3>Medición en tiempo real</h3>
-          <p>Los sensores capturan micro-consumos en modo standby (vampiro) para alertar pérdidas de energía.</p>
+          <h3>{{ 'IOT.BANNER2_TITLE' | translate }}</h3>
+          <p>{{ 'IOT.BANNER2_DESC' | translate }}</p>
         </div>
       </div>
     </article>
@@ -298,7 +298,7 @@
             <mat-icon>{{ mode === 'unlink' ? 'link_off' : 'delete_outline' }}</mat-icon>
           </div>
           <div class="modal-title-group">
-            <h2>{{ mode === 'unlink' ? '¿Desvincular sensor?' : '¿Dar de baja este sensor?' }}</h2>
+            <h2>{{ (mode === 'unlink' ? 'IOT.MODAL_UNLINK_TITLE' : 'IOT.MODAL_DELETE_TITLE') | translate }}</h2>
             <p class="modal-subtitle">
               Sensor: <strong>{{ selectedSensor()?.name }}</strong> ({{ selectedSensor()?.model }})
             </p>
@@ -308,15 +308,15 @@
         <div class="modal-body">
           @if (mode === 'unlink') {
             <p class="modal-desc">
-              El sensor se desvinculará del electrodoméstico
-              <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong> y quedará en estado
-              <strong>Disponible (Sin asignar)</strong> listo para conectarse a otro aparato.
+              {{ 'IOT.MODAL_UNLINK_DESC_1' | translate }}
+              <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong>
+              {{ 'IOT.MODAL_UNLINK_DESC_2' | translate }}
             </p>
           } @else {
             <p class="modal-desc">
-              El sensor será retirado del listado operativo de monitoreo.
+              {{ 'IOT.MODAL_DELETE_DESC' | translate }}
               @if (selectedSensor()?.isAssigned) {
-                <span> Además, el electrodoméstico <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong> quedará liberado.</span>
+                <span> {{ 'IOT.MODAL_DELETE_DEVICE_FREE_1' | translate }} <strong>"{{ selectedSensor()?.assignedDeviceName }}"</strong> {{ 'IOT.MODAL_DELETE_DEVICE_FREE_2' | translate }}</span>
               }
             </p>
           }
@@ -325,25 +325,25 @@
           <div class="info-alert-box">
             <mat-icon class="alert-info-icon">info</mat-icon>
             <div class="alert-text">
-              <strong>El consumo histórico no se verá afectado</strong>
-              <p>Las mediciones acumuladas hasta la fecha en reportes, gráficas y costos no se borrarán ni se restarán, garantizando la exactitud de tu historial eléctrico.</p>
+              <strong>{{ 'IOT.HISTORY_TITLE' | translate }}</strong>
+              <p>{{ 'IOT.HISTORY_DESC' | translate }}</p>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn-modal-cancel" (click)="closeModal()" [disabled]="isProcessing()">
-            Cancelar
+            {{ 'COMMON.CANCEL' | translate }}
           </button>
           @if (mode === 'unlink') {
             <button type="button" class="btn-modal-warning" (click)="confirmUnlink()" [disabled]="isProcessing()">
               <mat-icon>link_off</mat-icon>
-              <span>{{ isProcessing() ? 'Desvinculando...' : 'Desvincular' }}</span>
+              <span>{{ (isProcessing() ? 'IOT.UNLINKING' : 'IOT.UNLINK_BTN') | translate }}</span>
             </button>
           } @else {
             <button type="button" class="btn-modal-danger" (click)="confirmDelete()" [disabled]="isProcessing()">
               <mat-icon>delete</mat-icon>
-              <span>{{ isProcessing() ? 'Eliminando...' : 'Dar de baja' }}</span>
+              <span>{{ (isProcessing() ? 'IOT.DELETING' : 'IOT.DELETE_BTN') | translate }}</span>
             </button>
           }
         </div>

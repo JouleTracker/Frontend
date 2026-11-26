@@ -60,7 +60,7 @@ export class ConsumptionApi extends BaseApi {
         return item ? this.summaryAssembler.toEntity(item) : null;
       }),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar resumen de consumo.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading consumption summary.')))
       )
     );
   }
@@ -88,7 +88,7 @@ export class ConsumptionApi extends BaseApi {
         return this.readingAssembler.toEntity(grouped);
       }),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar lecturas de energía.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading energy readings.')))
       )
     );
   }
@@ -99,7 +99,7 @@ export class ConsumptionApi extends BaseApi {
     ).pipe(
       map(res => this.distributionAssembler.toEntities(res)),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar distribución por dispositivos.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading device distribution.')))
       )
     );
   }
@@ -110,7 +110,7 @@ export class ConsumptionApi extends BaseApi {
     ).pipe(
       map(res => this.comparativeAssembler.toEntities(res)),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar comparativa de consumo.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading comparative consumption.')))
       )
     );
   }
@@ -121,7 +121,7 @@ export class ConsumptionApi extends BaseApi {
     ).pipe(
       map(res => this.historyAssembler.toEntities(res)),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar historial de consumo.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading consumption history.')))
       )
     );
   }

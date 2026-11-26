@@ -32,10 +32,28 @@ export class RecommendationsViewComponent implements OnInit {
   readonly store = inject(RecommendationsStore);
   readonly iamStore = inject(IamStore);
 
+  private readonly categoryKeyMap: Record<string, string> = {
+    'Todas': 'RECOMMENDATIONS.CAT_ALL',
+    'Eficiencia': 'RECOMMENDATIONS.CAT_EFFICIENCY',
+    'Hogar': 'DEVICES.CAT_HOME',
+    'Maquinaria': 'DEVICES.CAT_MACHINERY',
+    'Refrigeración': 'DEVICES.CAT_REFRIGERATION',
+    'Climatización': 'DEVICES.CAT_HVAC',
+    'Iluminación': 'DEVICES.CAT_LIGHTING',
+    'Oficina': 'DEVICES.CAT_OFFICE',
+    'Cocina': 'DEVICES.CAT_KITCHEN',
+    'Entretenimiento': 'DEVICES.CAT_ENTERTAINMENT',
+    'Otros': 'DEVICES.CAT_OTHER',
+  };
+
+  getCategoryKey(cat: string): string {
+    return this.categoryKeyMap[cat] ?? cat;
+  }
+
   /** Opciones de categoría derivadas dinámicamente con tipado explícito */
   readonly categories = computed<CategoryOption[]>(() => {
     return this.store.availableCategories().map((cat: string) => ({
-      label: cat,
+      label: this.getCategoryKey(cat),
       value: cat
     }));
   });

@@ -25,7 +25,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   return null;
 }
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sign-up-form',
@@ -39,6 +39,7 @@ export class SignUpFormComponent implements OnInit {
   private readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly translate = inject(TranslateService);
 
   readonly errorMessage = signal<string | null>(null);
   readonly isLoading = signal<boolean>(false);
@@ -130,7 +131,7 @@ export class SignUpFormComponent implements OnInit {
       },
       error: (err: Error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.message || 'Error al registrar la cuenta');
+        this.errorMessage.set(err.message || this.translate.instant('AUTH.SIGN_UP_ERROR'));
       }
     });
   }

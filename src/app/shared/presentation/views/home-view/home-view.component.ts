@@ -33,48 +33,48 @@ export class HomeViewComponent {
     {
       id: 'starter',
       name: 'Starter',
-      description: 'Monitoreo básico y organización del hogar.',
+      description: 'HOME.PLANS.STARTER.DESC',
       price: 19,
       originalPrice: 29,
-      discountBadge: 'Ahorra 34%',
-      highlightText: 'Menos de S/ 1 al día',
+      discountBadge: 'HOME.PLANS.STARTER.DISCOUNT',
+      highlightText: 'HOME.PLANS.STARTER.HIGHLIGHT',
       features: [
-        'Hasta 5 dispositivos',
-        'Módulo de sensores bloqueado',
-        'Recomendaciones inteligentes bloqueadas',
-        'Historial básico (últimos 7 días)'
+        'HOME.PLANS.STARTER.FEAT_1',
+        'HOME.PLANS.STARTER.FEAT_2',
+        'HOME.PLANS.STARTER.FEAT_3',
+        'HOME.PLANS.STARTER.FEAT_4'
       ]
     },
     {
       id: 'plus',
       name: 'Plus',
-      badge: 'Más elegido',
-      description: 'Optimización y análisis para oficinas o negocios.',
+      badge: 'HOME.PLANS.PLUS.BADGE',
+      description: 'HOME.PLANS.PLUS.DESC',
       price: 39,
       originalPrice: 59,
-      discountBadge: 'Ahorra 34%',
-      highlightText: 'Ideal para oficinas y negocios',
+      discountBadge: 'HOME.PLANS.PLUS.DISCOUNT',
+      highlightText: 'HOME.PLANS.PLUS.HIGHLIGHT',
       features: [
-        'Hasta 15 dispositivos',
-        'Hasta 3 sensores IoT',
-        'Recomendaciones inteligentes desbloqueadas',
-        'Historial ampliado (últimos 30 días)'
+        'HOME.PLANS.PLUS.FEAT_1',
+        'HOME.PLANS.PLUS.FEAT_2',
+        'HOME.PLANS.PLUS.FEAT_3',
+        'HOME.PLANS.PLUS.FEAT_4'
       ]
     },
     {
       id: 'pro',
       name: 'Pro',
-      description: 'Monitoreo avanzado integral con alta demanda.',
+      description: 'HOME.PLANS.PRO.DESC',
       price: 79,
       originalPrice: 119,
-      discountBadge: 'Ahorra 34%',
-      highlightText: 'Soporte prioritario incluido',
+      discountBadge: 'HOME.PLANS.PRO.DISCOUNT',
+      highlightText: 'HOME.PLANS.PRO.HIGHLIGHT',
       features: [
-        'Dispositivos ilimitados',
-        'Sensores IoT ilimitados',
-        'Recomendaciones inteligentes desbloqueadas',
-        'Historial completo y análisis detallado',
-        'Soporte prioritario'
+        'HOME.PLANS.PRO.FEAT_1',
+        'HOME.PLANS.PRO.FEAT_2',
+        'HOME.PLANS.PRO.FEAT_3',
+        'HOME.PLANS.PRO.FEAT_4',
+        'HOME.PLANS.PRO.FEAT_5'
       ]
     }
   ];

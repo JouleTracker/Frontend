@@ -6,7 +6,7 @@
   </header>
 
   <!-- Top summary metrics cards -->
-  <section class="summary-cards" aria-label="Resumen de alertas">
+  <section class="summary-cards" [attr.aria-label]="'ALERTS.SUMMARY_ARIA' | translate">
     <article class="metric-card">
       <div class="icon-box icon-red">
         <mat-icon>notifications</mat-icon>
@@ -48,7 +48,7 @@
       @if (store.activeCount() > 0) {
         <button type="button" class="btn-mark-all" (click)="markAllAsRead()">
           <mat-icon>done_all</mat-icon>
-          <span>Marcar todas como leídas</span>
+          <span>{{ 'ALERTS.MARK_ALL_READ' | translate }}</span>
         </button>
       }
     </div>
@@ -85,7 +85,7 @@
                 <td class="text-muted"><time>{{ alert.timeAgo }}</time></td>
                 <td>
                   <span class="pill" [ngClass]="getPillClass(alert.status)">
-                    {{ alert.status }}
+                    {{ (alert.status === 'Activa' ? 'ALERTS.STATUS_ACTIVE' : 'ALERTS.STATUS_READ') | translate }}
                   </span>
                 </td>
                 <td class="text-right">
@@ -95,20 +95,20 @@
                         type="button"
                         class="btn-mark-read"
                         (click)="markAsRead(alert.id, $event)"
-                        title="Marcar como leída"
+                        [attr.title]="'ALERTS.MARK_READ' | translate"
                       >
                         <mat-icon>done</mat-icon>
-                        <span>Leída</span>
+                        <span>{{ 'ALERTS.MARK_READ_BTN' | translate }}</span>
                       </button>
                     }
-                    <a class="alert-action-link" [routerLink]="alert.actionUrl">Ver detalle</a>
+                    <a class="alert-action-link" [routerLink]="alert.actionUrl">{{ 'ALERTS.VIEW_DETAIL' | translate }}</a>
                   </div>
                 </td>
               </tr>
             } @empty {
               <tr>
                 <td colspan="4" class="message">
-                  No hay alertas disponibles.
+                  {{ 'ALERTS.EMPTY' | translate }}
                 </td>
               </tr>
             }
@@ -126,11 +126,11 @@
           <mat-icon>notifications_active</mat-icon>
         </div>
         <div class="banner-text">
-          <h3>Personaliza tus alertas</h3>
-          <p>Elige qué tipos de notificaciones quieres recibir y por qué medios.</p>
+          <h3>{{ 'ALERTS.BANNER1_TITLE' | translate }}</h3>
+          <p>{{ 'ALERTS.BANNER1_DESC' | translate }}</p>
         </div>
       </div>
-      <button type="button" class="btn-action" (click)="goToSettings()">Ir a configuración</button>
+      <button type="button" class="btn-action" (click)="goToSettings()">{{ 'ALERTS.BANNER1_BTN' | translate }}</button>
     </article>
 
     <article class="banner-card">
@@ -139,11 +139,11 @@
           <mat-icon>mail_outline</mat-icon>
         </div>
         <div class="banner-text">
-          <h3>Recibe notificaciones</h3>
-          <p>Activa las notificaciones push, correo electrónico o SMS.</p>
+          <h3>{{ 'ALERTS.BANNER2_TITLE' | translate }}</h3>
+          <p>{{ 'ALERTS.BANNER2_DESC' | translate }}</p>
         </div>
       </div>
-      <button type="button" class="btn-action" (click)="goToSettings()">Configurar notificaciones</button>
+      <button type="button" class="btn-action" (click)="goToSettings()">{{ 'ALERTS.BANNER2_BTN' | translate }}</button>
     </article>
 
     <article class="banner-card">
@@ -152,11 +152,11 @@
           <mat-icon>bar_chart</mat-icon>
         </div>
         <div class="banner-text">
-          <h3>Mantén el control</h3>
-          <p>Las alertas te ayudan a detectar anomalías y ahorrar en tu consumo.</p>
+          <h3>{{ 'ALERTS.BANNER3_TITLE' | translate }}</h3>
+          <p>{{ 'ALERTS.BANNER3_DESC' | translate }}</p>
         </div>
       </div>
-      <button type="button" class="btn-action" (click)="goToRecommendations()">Conoce más</button>
+      <button type="button" class="btn-action" (click)="goToRecommendations()">{{ 'ALERTS.BANNER3_BTN' | translate }}</button>
     </article>
   </section>
 

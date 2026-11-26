@@ -10,7 +10,7 @@ import { Sensor } from '../../../domain/model/sensor.entity';
 import { ApplianceProfile } from '../../../domain/model/appliance-profile.entity';
 import { SensorResource } from '../../../infrastructure/sensors-response';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sensor-form',
@@ -26,6 +26,7 @@ export class SensorFormComponent implements OnInit {
   readonly store = inject(SensorsStore);
   private readonly api = inject(SensorsApi);
   readonly devicesStore = inject(DevicesStore);
+  private readonly translate = inject(TranslateService);
 
   isEditMode = false;
   sensorId = 0;
@@ -95,7 +96,7 @@ export class SensorFormComponent implements OnInit {
     this.sensorId = Number(idParam);
 
     if (isNaN(this.sensorId)) {
-      this.errorMessage.set('Identificador de sensor no válido');
+      this.errorMessage.set(this.translate.instant('IOT.INVALID_ID'));
       this.loading.set(false);
       return;
     }
@@ -111,7 +112,7 @@ export class SensorFormComponent implements OnInit {
           this.loading.set(false);
         },
         error: (err) => {
-          this.errorMessage.set('No se encontró el sensor especificado: ' + err.message);
+          this.errorMessage.set(this.translate.instant('IOT.NOT_FOUND_ERROR', { msg: err.message }));
           this.loading.set(false);
         },
       });
@@ -211,14 +212,14 @@ export class SensorFormComponent implements OnInit {
         },
         error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set('Error al actualizar el sensor: ' + err.message);
+          this.errorMessage.set(this.translate.instant('IOT.UPDATE_ERROR', { msg: err.message }));
         },
       });
     } else {
       payload.currentPowerKw = 0;
       payload.todayKwh = 0;
       payload.todayCostSoles = 0;
-      payload.lastSync = 'Recién registrado';
+      payload.lastSync = this.translate.instant('IOT.LAST_CREATED');
 
       this.store.createSensor(payload).subscribe({
         next: () => {
@@ -227,7 +228,7 @@ export class SensorFormComponent implements OnInit {
         },
         error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set('Error al registrar el sensor: ' + err.message);
+          this.errorMessage.set(this.translate.instant('IOT.CREATE_ERROR', { msg: err.message }));
         },
       });
     }

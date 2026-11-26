@@ -6,7 +6,7 @@
       <div class="welcome-text">
         <div class="user-greeting-line">
           <h1 class="welcome-title">
-            {{ 'HOME.GREETING' | translate:{ name: (iamStore.currentUser()?.name || 'Usuario') } }} 👋
+            {{ 'HOME.GREETING' | translate:{ name: (iamStore.currentUser()?.name || ('COMMON.USER' | translate)) } }} 👋
           </h1>
           <span class="current-plan-badge">
             {{ 'HOME.CURRENT_PLAN_BADGE' | translate:{ plan: (iamStore.currentPlan() | uppercase) } }}
@@ -62,12 +62,12 @@
             @if (isCurrentPlan(plan.id)) {
               <div class="plan-status-ribbon">{{ 'HOME.CURRENT_PLAN_RIBBON' | translate }}</div>
             } @else if (plan.badge) {
-              <div class="popular-ribbon">{{ plan.badge }}</div>
+              <div class="popular-ribbon">{{ plan.badge | translate }}</div>
             }
 
             <div class="plan-card-header">
               <h3 class="plan-name">{{ plan.name }}</h3>
-              <p class="plan-desc">{{ plan.description }}</p>
+              <p class="plan-desc">{{ plan.description | translate }}</p>
 
               <div class="price-box">
                 <span class="currency">S/</span>
@@ -77,10 +77,10 @@
 
               <div class="discount-row">
                 <span class="original-price">S/ {{ plan.originalPrice }}</span>
-                <span class="discount-badge">{{ plan.discountBadge }}</span>
+                <span class="discount-badge">{{ plan.discountBadge | translate }}</span>
               </div>
 
-              <p class="highlight-line">{{ plan.highlightText }}</p>
+              <p class="highlight-line">{{ plan.highlightText | translate }}</p>
             </div>
 
             <hr class="card-divider" />
@@ -89,7 +89,7 @@
               @for (feat of plan.features; track feat) {
                 <li class="feature-item">
                   <mat-icon class="check-icon">check</mat-icon>
-                  <span>{{ feat }}</span>
+                  <span>{{ feat | translate }}</span>
                 </li>
               }
             </ul>

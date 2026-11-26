@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 import { AlertsApi } from '../infrastructure/alerts-api';
 import { Alert } from '../domain/model/alert.entity';
 import { IamStore } from '../../iam/application/iam.store';
@@ -32,6 +33,7 @@ export class AlertsStore {
   readonly resolvedCount = computed(() => this.alertsSignal().filter(a => a.status === 'Leída').length);
 
   private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
 
   constructor(private api: AlertsApi, private iamStore: IamStore) {
     effect(() => {
@@ -68,9 +70,13 @@ export class AlertsStore {
                   new Alert({
                     id: 9000 + sensor.id,
                     sensorId: sensor.id,
-                    title: `Límite diario superado: ${sensor.name}`,
-                    description: `El electrodoméstico ${sensor.assignedDeviceName ?? sensor.name} consumió ${sensor.todayKwh.toFixed(2)} kWh hoy (límite sugerido: ${sensor.recommendedDailyKwh.toFixed(2)} kWh/día).`,
-                    timeAgo: 'Ahora',
+                    title: this.translate.instant('ALERTS.DYNAMIC_LIMIT_TITLE', { name: sensor.name }),
+                    description: this.translate.instant('ALERTS.DYNAMIC_LIMIT_DESC', {
+                      device: sensor.assignedDeviceName ?? sensor.name,
+                      today: sensor.todayKwh.toFixed(2),
+                      limit: sensor.recommendedDailyKwh.toFixed(2)
+                    }),
+                    timeAgo: this.translate.instant('ALERTS.TIME_NOW'),
                     severity: 'warning',
                     actionUrl: '/dispositivos',
                     status: 'Activa'

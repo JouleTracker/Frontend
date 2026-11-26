@@ -69,7 +69,7 @@ export function saveLocalUserPreferences(
 export function splitFullName(fullName: string): { firstName: string; lastName: string } {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) {
-    return { firstName: 'Usuario', lastName: 'JouleTracker' };
+    return { firstName: 'User', lastName: 'JouleTracker' };
   }
   if (parts.length === 1) {
     return { firstName: parts[0], lastName: parts[0] };

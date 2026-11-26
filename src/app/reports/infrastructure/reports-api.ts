@@ -32,7 +32,7 @@ export class ReportsApi {
     ).pipe(
       map(resources => (resources ?? []).map(r => this.toRecord(r))),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar el historial de consumo.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading consumption history.')))
       )
     );
   }

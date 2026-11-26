@@ -52,6 +52,6 @@ export class EnergyCalculationService {
    */
   static formatTreeEquivalence(avoidedEmissionsKg: number): string {
     const trees = this.calculateEquivalentTrees(avoidedEmissionsKg);
-    return trees === 1 ? 'Equivale a 1 árbol' : `Equivale a ${trees} árboles`;
+    return trees === 1 ? 'Equivalent to 1 tree' : `Equivalent to ${trees} trees`;
   }
 }

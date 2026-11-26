@@ -89,7 +89,7 @@
   <section class="charts-lower-row">
     <div class="col-third">
       <app-hourly-chart
-        title="Consumo durante el día"
+        [title]="'CONSUMPTION.HOURLY_TITLE' | translate"
         [showRealtimeHeader]="false"
         [reading]="store.hourlyReading()">
       </app-hourly-chart>

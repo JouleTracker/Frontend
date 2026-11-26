@@ -1,17 +1,17 @@
 <div class="table-card">
   <div class="card-header">
-    <h3 class="card-title">Historial de consumo</h3>
-    <a routerLink="/reportes" class="view-all-link">Ver todo</a>
+    <h3 class="card-title">{{ 'CONSUMPTION.HISTORY_TABLE' | translate }}</h3>
+    <a routerLink="/reportes" class="view-all-link">{{ 'CONSUMPTION.VIEW_ALL' | translate }}</a>
   </div>
 
   <div class="table-container">
     <table class="history-table">
       <thead>
         <tr>
-          <th>Fecha</th>
-          <th>Consumo</th>
-          <th>Costo</th>
-          <th>Estado</th>
+          <th>{{ 'CONSUMPTION.COL_DATE' | translate }}</th>
+          <th>{{ 'CONSUMPTION.COL_CONSUMPTION' | translate }}</th>
+          <th>{{ 'CONSUMPTION.COL_COST' | translate }}</th>
+          <th>{{ 'CONSUMPTION.COL_STATUS' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -23,7 +23,7 @@
             <td class="status-cell">
               <span class="status-badge" [class.normal]="item.status === 'Normal'" [class.high]="item.status === 'Alto'">
                 <span class="status-dot"></span>
-                {{ item.status }}
+                {{ (item.status === 'Alto' ? 'CONSUMPTION.STATUS_HIGH' : 'CONSUMPTION.STATUS_NORMAL') | translate }}
               </span>
             </td>
           </tr>

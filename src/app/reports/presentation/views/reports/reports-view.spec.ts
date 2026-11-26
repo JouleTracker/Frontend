@@ -50,9 +50,9 @@ describe('ReportsStore', () => {
     store.loadInitialData();
 
     expect(store.applyCustomRange('2026-10-10', '2026-10-01')).toBe(false);
-    expect(store.error()).toContain('posterior');
+    expect(store.error()).toContain('later than end date');
 
     expect(store.applyCustomRange('', '')).toBe(false);
-    expect(store.error()).toContain('ambas fechas');
+    expect(store.error()).toContain('both dates');
   });
 });

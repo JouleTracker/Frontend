@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password-view',
@@ -18,6 +18,7 @@ export class ForgotPasswordViewComponent {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   private readonly usersUrl = `${environment.apiBaseUrl}/users`;
 
@@ -48,7 +49,7 @@ export class ForgotPasswordViewComponent {
 
     this.isLoading.set(false);
     this.errorMessage.set(
-      'La recuperación de contraseña por correo estará disponible próximamente. Si necesitas ayuda, contacta al administrador.'
+      this.translate.instant('AUTH.FORGOT_EMAIL_UNAVAILABLE')
     );
   }
 
@@ -60,7 +61,7 @@ export class ForgotPasswordViewComponent {
 
     this.isLoading.set(false);
     this.errorMessage.set(
-      'El restablecimiento directo no está habilitado desde el navegador por seguridad.'
+      this.translate.instant('AUTH.FORGOT_DIRECT_DISABLED')
     );
   }
 }

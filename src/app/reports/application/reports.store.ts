@@ -70,7 +70,7 @@ export class ReportsStore {
         }
       },
       error: () => {
-        this.error.set('No se pudieron cargar los registros de consumo');
+        this.error.set('Could not load consumption records.');
         this.isLoading.set(false);
       }
     });
@@ -78,11 +78,11 @@ export class ReportsStore {
 
   applyCustomRange(start: string, end: string): boolean {
     if (!start || !end) {
-      this.error.set('Por favor ingresa ambas fechas.');
+      this.error.set('Please enter both dates.');
       return false;
     }
     if (start > end) {
-      this.error.set('La fecha inicial no puede ser posterior a la fecha final.');
+      this.error.set('Start date cannot be later than end date.');
       return false;
     }
 

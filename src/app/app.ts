@@ -19,7 +19,8 @@ export class App {
   private readonly translate = inject(TranslateService);
 
   constructor() {
-    const saved = localStorage.getItem('joule_lang') || 'es';
+    const saved = localStorage.getItem('joule_lang') === 'es' ? 'es' : 'en';
+    document.documentElement.lang = saved;
     this.translate.use(saved);
   }
 }

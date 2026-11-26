@@ -10,7 +10,7 @@ import { Device } from '../../../domain/model/device.entity';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 import { IamStore } from '../../../../iam/application/iam.store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Devices view component.
@@ -28,17 +28,50 @@ export class DevicesViewComponent {
   readonly store = inject(DevicesStore);
   readonly sensorsStore = inject(SensorsStore);
   readonly iamStore = inject(IamStore);
+  private readonly translate = inject(TranslateService);
 
   /** Límite de dispositivos del plan actual (Starter 5, Plus 15, Pro ilimitado) */
   readonly deviceLimit = this.store.deviceLimit;
   readonly deviceCount = this.store.deviceCount;
   readonly canAddDevice = this.store.canAddDevice;
 
-  /** Texto legible del límite alcanzado (ej. "5 de 15" o "3 de ilimitados") */
+  /** Texto legible del límite alcanzado (ej. "5 of 15" o "3 of unlimited") */
   get deviceLimitLabel(): string {
     const limit = this.deviceLimit();
     const count = this.deviceCount();
-    return Number.isFinite(limit) ? `${count} de ${limit}` : `${count} de ilimitados`;
+    return Number.isFinite(limit)
+      ? this.translate.instant('COMMON.LIMITED_COUNT', { count, limit })
+      : this.translate.instant('COMMON.UNLIMITED_COUNT', { count });
+  }
+
+  private readonly categoryKeyMap: Record<string, string> = {
+    'Todos': 'DEVICES.CAT_ALL',
+    'Hogar': 'DEVICES.CAT_HOME',
+    'Maquinaria': 'DEVICES.CAT_MACHINERY',
+    'Refrigeración': 'DEVICES.CAT_REFRIGERATION',
+    'Climatización': 'DEVICES.CAT_HVAC',
+    'Iluminación': 'DEVICES.CAT_LIGHTING',
+    'Oficina': 'DEVICES.CAT_OFFICE',
+    'Cocina': 'DEVICES.CAT_KITCHEN',
+    'Entretenimiento': 'DEVICES.CAT_ENTERTAINMENT',
+    'Otros': 'DEVICES.CAT_OTHER',
+  };
+
+  getCategoryKey(cat: string): string {
+    return this.categoryKeyMap[cat] ?? cat;
+  }
+
+  getStatusKey(status: string): string {
+    switch (status) {
+      case 'En línea':
+        return 'DEVICES.STATUS_ONLINE';
+      case 'En espera':
+        return 'DEVICES.STATUS_STANDBY';
+      case 'Apagado':
+        return 'DEVICES.STATUS_OFF';
+      default:
+        return status;
+    }
   }
 
   get categories(): string[] {

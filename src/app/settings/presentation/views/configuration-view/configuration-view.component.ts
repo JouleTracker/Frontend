@@ -7,7 +7,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { UserNotifications } from '../../../../iam/domain/model/user.entity';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-configuration-view',
@@ -28,6 +28,7 @@ export class ConfigurationViewComponent {
   private readonly fb = inject(FormBuilder);
   readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly user = this.iamStore.currentUser;
   readonly currentPlan = this.iamStore.currentPlan;
@@ -103,7 +104,7 @@ export class ConfigurationViewComponent {
       phone: (phone ?? '').trim()
     });
     this.savingProfile.set(false);
-    this.profileMessage.set('Información personal actualizada correctamente.');
+    this.profileMessage.set(this.translate.instant('SETTINGS.MSG_PROFILE_SAVED'));
   }
 
   updatePassword(): void {
@@ -119,13 +120,13 @@ export class ConfigurationViewComponent {
     this.passwordError.set(null);
 
     if (newPassword !== confirmPassword) {
-      this.passwordError.set('La confirmación no coincide con la nueva contraseña.');
+      this.passwordError.set(this.translate.instant('SETTINGS.ERR_PASS_MISMATCH'));
       return;
     }
 
     this.savingPassword.set(false);
     this.passwordError.set(
-      'El cambio de contraseña en línea estará disponible próximamente en una actualización del servidor.'
+      this.translate.instant('SETTINGS.ERR_PASS_UNAVAILABLE')
     );
   }
 
@@ -147,7 +148,7 @@ export class ConfigurationViewComponent {
       }
     });
     this.savingHome.set(false);
-    this.homeMessage.set('Información de tu hogar guardada correctamente.');
+    this.homeMessage.set(this.translate.instant('SETTINGS.MSG_HOME_SAVED'));
   }
 
   saveBusiness(): void {
@@ -169,7 +170,7 @@ export class ConfigurationViewComponent {
       }
     });
     this.savingBusiness.set(false);
-    this.businessMessage.set('Información del negocio guardada correctamente.');
+    this.businessMessage.set(this.translate.instant('SETTINGS.MSG_BUSINESS_SAVED'));
   }
 
   saveNotifications(): void {
@@ -179,7 +180,7 @@ export class ConfigurationViewComponent {
       personalizedTips: this.personalizedTips()
     };
     this.iamStore.updateProfile({ notifications });
-    this.notificationsMessage.set('Preferencias de notificación guardadas.');
+    this.notificationsMessage.set(this.translate.instant('SETTINGS.MSG_NOTIF_SAVED'));
   }
 
   goToPlans(): void {

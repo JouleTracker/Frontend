@@ -2,7 +2,7 @@
 
   <!-- Breadcrumb / Back button -->
   <nav class="breadcrumb-nav">
-    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver">
+    <button type="button" class="btn-back" (click)="onCancel()" [attr.aria-label]="'COMMON.BACK' | translate">
       <mat-icon>arrow_back</mat-icon>
       <span>{{ 'COMMON.BACK' | translate }}</span>
     </button>
@@ -25,13 +25,13 @@
     @if (loading()) {
       <div class="loading-state">
         <mat-icon class="spin-icon">autorenew</mat-icon>
-        <p>Cargando información del dispositivo...</p>
+        <p>{{ 'DEVICES.LOADING_DEVICE' | translate }}</p>
       </div>
     } @else if (errorMessage() && !device() && isEditMode) {
       <div class="error-banner">
         <mat-icon>error_outline</mat-icon>
         <p>{{ errorMessage() }}</p>
-        <button type="button" class="btn-secondary" (click)="onCancel()">Regresar</button>
+        <button type="button" class="btn-secondary" (click)="onCancel()">{{ 'DEVICES.RETURN' | translate }}</button>
       </div>
     } @else {
 
@@ -39,19 +39,19 @@
       @if (device(); as dev) {
         <div class="device-summary-strip">
           <div class="strip-item">
-            <span class="strip-label">ID Dispositivo</span>
+            <span class="strip-label">{{ 'DEVICES.STRIP_ID' | translate }}</span>
             <span class="strip-value">#{{ dev.id }}</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Estado</span>
-            <span class="strip-value status-badge">{{ dev.status }}</span>
+            <span class="strip-label">{{ 'DEVICES.COL_STATUS' | translate }}</span>
+            <span class="strip-value status-badge">{{ getStatusKey(dev.status) | translate }}</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Consumo actual</span>
+            <span class="strip-label">{{ 'DEVICES.COL_CONSUMPTION' | translate }}</span>
             <span class="strip-value">{{ dev.formattedCurrentPower }}</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Consumo hoy</span>
+            <span class="strip-label">{{ 'IOT.COL_TODAY' | translate }}</span>
             <span class="strip-value">{{ dev.todayKwh }} kWh</span>
           </div>
         </div>
@@ -69,7 +69,7 @@
         <!-- Name Field -->
         <div class="form-group">
           <label for="deviceName" class="form-label">
-            Nombre del dispositivo <span class="required">*</span>
+            {{ 'DEVICES.FIELD_NAME' | translate }} <span class="required">*</span>
           </label>
           <input
             id="deviceName"
@@ -77,11 +77,11 @@
             formControlName="name"
             class="form-input"
             [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
-            placeholder="Ej. Aire acondicionado, Refrigeradora, Smart TV 55"
+            [placeholder]="'DEVICES.NAME_PH' | translate"
           />
           @if (form.get('name')?.invalid && form.get('name')?.touched) {
             <span class="field-error">
-              El nombre del dispositivo es obligatorio (mínimo 2 caracteres).
+              {{ 'DEVICES.NAME_REQUIRED' | translate }}
             </span>
           }
         </div>
@@ -89,7 +89,7 @@
         <!-- Location Field con Datalist de Áreas registradas -->
         <div class="form-group">
           <label for="deviceLocation" class="form-label">
-            Ubicación <span class="required">*</span>
+            {{ 'DEVICES.FIELD_LOCATION' | translate }} <span class="required">*</span>
           </label>
           <input
             id="deviceLocation"
@@ -98,7 +98,7 @@
             class="form-input"
             list="areasList"
             [class.input-error]="form.get('location')?.invalid && form.get('location')?.touched"
-            placeholder="Ej. Sala principal, Cocina, Habitación 2"
+            [placeholder]="'DEVICES.LOCATION_PH' | translate"
           />
           <datalist id="areasList">
             @for (area of areasStore.areas(); track area.id) {
@@ -107,11 +107,11 @@
           </datalist>
           @if (form.get('location')?.invalid && form.get('location')?.touched) {
             <span class="field-error">
-              La ubicación es obligatoria (mínimo 2 caracteres).
+              {{ 'DEVICES.LOCATION_REQUIRED' | translate }}
             </span>
           } @else {
             <span class="field-hint">
-              Puedes escribir una ubicación personalizada o autocompletar una de tus Áreas registradas.
+              {{ 'DEVICES.LOCATION_HINT' | translate }}
             </span>
           }
         </div>
@@ -119,7 +119,7 @@
         <!-- Category Field -->
         <div class="form-group">
           <label for="deviceCategory" class="form-label">
-            Categoría <span class="required">*</span>
+            {{ 'DEVICES.FIELD_CATEGORY' | translate }} <span class="required">*</span>
           </label>
           <select
             id="deviceCategory"
@@ -127,11 +127,11 @@
             class="form-select"
           >
             @for (cat of categories; track cat) {
-              <option [value]="cat">{{ cat }}</option>
+              <option [value]="cat">{{ getCategoryKey(cat) | translate }}</option>
             }
           </select>
           <span class="field-hint">
-            Permite clasificar el consumo de energía en los gráficos y reportes del hogar.
+            {{ 'DEVICES.CATEGORY_HINT' | translate }}
           </span>
         </div>
 
@@ -140,38 +140,38 @@
         <!-- Status Field -->
         <div class="form-group">
           <label for="deviceStatus" class="form-label">
-            Estado del dispositivo <span class="required">*</span>
+            {{ 'DEVICES.STATUS_LABEL' | translate }} <span class="required">*</span>
           </label>
           <select
             id="deviceStatus"
             formControlName="status"
             class="form-select"
           >
-            <option value="En línea">En línea</option>
-            <option value="En espera">En espera</option>
-            <option value="Apagado">Apagado</option>
+            <option value="En línea">{{ 'DEVICES.STATUS_ONLINE' | translate }}</option>
+            <option value="En espera">{{ 'DEVICES.STATUS_STANDBY' | translate }}</option>
+            <option value="Apagado">{{ 'DEVICES.STATUS_OFF' | translate }}</option>
           </select>
           <span class="field-hint">
-            Define el estado operativo del dispositivo.
+            {{ 'DEVICES.STATUS_HINT' | translate }}
           </span>
         </div>
 
         <!-- IoT Sensor Assignment Section -->
         <div class="assignment-header">
-          <h3>Conectividad IoT</h3>
-          <p>Vincula este aparato a un sensor inteligente para capturar su consumo en tiempo real.</p>
+          <h3>{{ 'DEVICES.IOT_CONNECTIVITY_TITLE' | translate }}</h3>
+          <p>{{ 'DEVICES.IOT_CONNECTIVITY_DESC' | translate }}</p>
         </div>
 
         <div class="form-group">
           <label for="assignedSensor" class="form-label">
-            Sensor IoT asociado
+            {{ 'DEVICES.FIELD_SENSOR' | translate }}
           </label>
           <select
             id="assignedSensor"
             formControlName="assignedSensorId"
             class="form-select"
           >
-            <option [ngValue]="null">-- Ninguno (Registrar sin sensor por ahora) --</option>
+            <option [ngValue]="null">{{ 'DEVICES.SENSOR_NONE_OPT' | translate }}</option>
             @for (s of availableSensors(); track s.id) {
               <option [ngValue]="s.id">
                 {{ s.name }} ({{ s.model }} • {{ s.serialNumber }})
@@ -182,11 +182,11 @@
           @if (availableSensors().length === 0) {
             <span class="notice-info">
               <mat-icon>info</mat-icon>
-              Todos los sensores IoT están vinculados actualmente. Puedes registrar el aparato ahora y enlazar un sensor más adelante.
+              {{ 'DEVICES.NO_AVAILABLE_SENSORS' | translate }}
             </span>
           } @else {
             <span class="field-hint">
-              Solo se listan los sensores disponibles sin electrodoméstico asignado.
+              {{ 'DEVICES.AVAILABLE_SENSORS_HINT' | translate }}
             </span>
           }
         </div>
@@ -198,9 +198,9 @@
               <mat-icon>sensors</mat-icon>
             </div>
             <div class="preview-info">
-              <strong>Sensor vinculado: {{ sensor.name }}</strong>
+              <strong>{{ 'DEVICES.SENSOR_LINKED_PREVIEW' | translate:{ name: sensor.name } }}</strong>
               <p>
-                Telemetría en vivo: {{ sensor.formattedCurrentPower }} | Hoy: {{ sensor.todayKwh }} kWh | Estado: {{ sensor.status }}
+                {{ 'DEVICES.LIVE_TELEMETRY' | translate:{ power: sensor.formattedCurrentPower, kwh: sensor.todayKwh, status: (sensor.status === 'En línea' ? ('COMMON.ONLINE' | translate) : ('COMMON.OFFLINE' | translate)) } }}
               </p>
             </div>
           </div>

@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
@@ -17,6 +17,7 @@ import { IamApi } from '../../../../iam/infrastructure/iam-api';
 export class AdminRecommendationsComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly iamApi = inject(IamApi);
+  private readonly translate = inject(TranslateService);
   private readonly baseUrl = environment.apiBaseUrl;
 
   users: User[] = [];
@@ -50,13 +51,13 @@ export class AdminRecommendationsComponent implements OnInit {
 
     this.http.post(`${this.baseUrl}${environment.recommendationsEndpointPath}`, payload).subscribe({
       next: () => {
-        this.toastMsg = 'Recomendación enviada con éxito.';
+        this.toastMsg = this.translate.instant('ADMIN.REC_SENT');
         this.form.title = '';
         this.form.description = '';
         setTimeout(() => (this.toastMsg = null), 3000);
       },
       error: () => {
-        this.toastMsg = 'El envío manual de recomendaciones administrativas estará disponible en el próximo sprint del backend.';
+        this.toastMsg = this.translate.instant('ADMIN.REC_NOT_READY');
         setTimeout(() => (this.toastMsg = null), 4000);
       }
     });

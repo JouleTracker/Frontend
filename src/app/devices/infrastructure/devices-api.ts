@@ -34,7 +34,7 @@ export class DevicesApi extends BaseApi {
       `${this.baseUrl}${environment.devicesEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => this.deviceAssembler.toEntities(res)),
-      catchError(err => throwError(() => new Error('Error al cargar dispositivos: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading devices: ' + err.message)))
     );
   }
 
@@ -46,7 +46,7 @@ export class DevicesApi extends BaseApi {
       `${this.baseUrl}${environment.devicesEndpointPath}/${id}`
     ).pipe(
       map(res => this.deviceAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al cargar dispositivo: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading device: ' + err.message)))
     );
   }
 
@@ -61,7 +61,7 @@ export class DevicesApi extends BaseApi {
       payload
     ).pipe(
       map(res => this.deviceAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al registrar dispositivo: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error registering device: ' + err.message)))
     );
   }
 
@@ -74,7 +74,7 @@ export class DevicesApi extends BaseApi {
       partialDevice
     ).pipe(
       map(res => this.deviceAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al actualizar dispositivo: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error updating device: ' + err.message)))
     );
   }
 
@@ -89,7 +89,7 @@ export class DevicesApi extends BaseApi {
         const item = Array.isArray(res) ? res[0] : res;
         return item ? this.summaryAssembler.toEntity(item) : null;
       }),
-      catchError(err => throwError(() => new Error('Error al cargar resumen de dispositivos: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading device summary: ' + err.message)))
     );
   }
 
@@ -101,7 +101,7 @@ export class DevicesApi extends BaseApi {
     return this.http.delete<void>(
       `${this.baseUrl}${environment.devicesEndpointPath}/${id}`
     ).pipe(
-      catchError(err => throwError(() => new Error('Error al eliminar dispositivo: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error deleting device: ' + err.message)))
     );
   }
 }

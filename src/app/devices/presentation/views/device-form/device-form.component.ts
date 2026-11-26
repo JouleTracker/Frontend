@@ -11,7 +11,7 @@ import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { DeviceResource } from '../../../infrastructure/devices-response';
 import { AreasStore } from '../../../../business/application/areas.store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Component for creating and editing device information.
@@ -32,6 +32,36 @@ export class DeviceFormComponent implements OnInit {
   private readonly api = inject(DevicesApi);
   readonly sensorsStore = inject(SensorsStore);
   readonly areasStore = inject(AreasStore);
+  private readonly translate = inject(TranslateService);
+
+  private readonly categoryKeyMap: Record<string, string> = {
+    'Hogar': 'DEVICES.CAT_HOME',
+    'Cocina': 'DEVICES.CAT_KITCHEN',
+    'Climatización': 'DEVICES.CAT_HVAC',
+    'Iluminación': 'DEVICES.CAT_LIGHTING',
+    'Entretenimiento': 'DEVICES.CAT_ENTERTAINMENT',
+    'Oficina': 'DEVICES.CAT_OFFICE',
+    'Maquinaria': 'DEVICES.CAT_MACHINERY',
+    'Refrigeración': 'DEVICES.CAT_REFRIGERATION',
+    'Otros': 'DEVICES.CAT_OTHER',
+  };
+
+  getCategoryKey(cat: string): string {
+    return this.categoryKeyMap[cat] ?? cat;
+  }
+
+  getStatusKey(status: string): string {
+    switch (status) {
+      case 'En línea':
+        return 'DEVICES.STATUS_ONLINE';
+      case 'En espera':
+        return 'DEVICES.STATUS_STANDBY';
+      case 'Apagado':
+        return 'DEVICES.STATUS_OFF';
+      default:
+        return status;
+    }
+  }
 
   readonly categories: string[] = [
     'Hogar',
@@ -106,7 +136,7 @@ export class DeviceFormComponent implements OnInit {
     this.deviceId = Number(idParam);
 
     if (isNaN(this.deviceId)) {
-      this.errorMessage.set('Identificador de dispositivo no válido');
+      this.errorMessage.set(this.translate.instant('DEVICES.INVALID_ID'));
       this.loading.set(false);
       return;
     }
@@ -122,7 +152,7 @@ export class DeviceFormComponent implements OnInit {
           this.loading.set(false);
         },
         error: (err) => {
-          this.errorMessage.set('No se pudo encontrar el dispositivo especificado: ' + err.message);
+          this.errorMessage.set(this.translate.instant('DEVICES.NOT_FOUND_ERROR', { msg: err.message }));
           this.loading.set(false);
         }
       });
@@ -156,7 +186,7 @@ export class DeviceFormComponent implements OnInit {
 
     if (!this.isEditMode && !this.store.canAddDevice()) {
       this.errorMessage.set(
-        `Has alcanzado el límite de ${this.store.deviceLimit()} dispositivos de tu plan. Mejora tu plan para agregar más.`
+        this.translate.instant('DEVICES.LIMIT_ERROR', { limit: this.store.deviceLimit() })
       );
       return;
     }
@@ -189,8 +219,8 @@ export class DeviceFormComponent implements OnInit {
         currentPowerKw: power,
         todayKwh: kwh,
         lastActivity: chosenStatus === 'Apagado'
-          ? 'Apagado manualmente'
-          : (selectedSensor ? 'Telemetría IoT en vivo' : (this.device()?.lastActivity ?? 'Recién actualizado'))
+          ? this.translate.instant('DEVICES.LAST_MANUAL_OFF')
+          : (selectedSensor ? this.translate.instant('DEVICES.LAST_LIVE_IOT') : (this.device()?.lastActivity ?? this.translate.instant('DEVICES.LAST_UPDATED')))
       };
 
       this.store.updateDevice(this.deviceId, changes).subscribe({
@@ -201,7 +231,7 @@ export class DeviceFormComponent implements OnInit {
         },
         error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set('Error al guardar cambios: ' + err.message);
+          this.errorMessage.set(this.translate.instant('DEVICES.SAVE_ERROR', { msg: err.message }));
         }
       });
     } else {
@@ -213,8 +243,8 @@ export class DeviceFormComponent implements OnInit {
         currentPowerKw: power,
         todayKwh: kwh,
         lastActivity: chosenStatus === 'Apagado'
-          ? 'Apagado'
-          : (selectedSensor ? 'Telemetría IoT en vivo' : 'Recién registrado')
+          ? this.translate.instant('DEVICES.LAST_OFF')
+          : (selectedSensor ? this.translate.instant('DEVICES.LAST_LIVE_IOT') : this.translate.instant('DEVICES.LAST_CREATED'))
       };
 
       this.store.createDevice(newDevice).subscribe({
@@ -227,7 +257,7 @@ export class DeviceFormComponent implements OnInit {
         },
         error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set('Error al registrar dispositivo: ' + err.message);
+          this.errorMessage.set(this.translate.instant('DEVICES.CREATE_ERROR', { msg: err.message }));
         }
       });
     }

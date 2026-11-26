@@ -1,7 +1,7 @@
 <div class="chart-card">
   <div class="chart-header">
     <div class="header-left">
-      <h3 class="chart-title">Consumo de energía</h3>
+      <h3 class="chart-title">{{ 'CONSUMPTION.ENERGY_TITLE' | translate }}</h3>
       <span class="chart-unit">kWh</span>
     </div>
     <div class="period-selector">
@@ -10,28 +10,28 @@
         class="period-btn"
         [class.active]="selectedPeriod === 'dia'"
         (click)="selectPeriod('dia')">
-        Día
+        {{ 'CONSUMPTION.PERIOD_DAY' | translate }}
       </button>
       <button
         type="button"
         class="period-btn"
         [class.active]="selectedPeriod === 'semana'"
         (click)="selectPeriod('semana')">
-        Semana
+        {{ 'CONSUMPTION.PERIOD_WEEK' | translate }}
       </button>
       <button
         type="button"
         class="period-btn"
         [class.active]="selectedPeriod === 'mes'"
         (click)="selectPeriod('mes')">
-        Mes
+        {{ 'CONSUMPTION.PERIOD_MONTH' | translate }}
       </button>
       <button
         type="button"
         class="period-btn"
         [class.active]="selectedPeriod === 'ano'"
         (click)="selectPeriod('ano')">
-        Año
+        {{ 'CONSUMPTION.PERIOD_YEAR' | translate }}
       </button>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <div class="edit-page-container">
   <!-- Breadcrumb / Back button -->
   <nav class="breadcrumb-nav">
-    <button type="button" class="btn-back" (click)="onCancel()" aria-label="Volver">
+    <button type="button" class="btn-back" (click)="onCancel()" [attr.aria-label]="'COMMON.BACK' | translate">
       <mat-icon>arrow_back</mat-icon>
       <span>{{ 'COMMON.BACK' | translate }}</span>
     </button>
@@ -24,13 +24,13 @@
     @if (loading()) {
       <div class="loading-state">
         <mat-icon class="spin-icon">autorenew</mat-icon>
-        <p>Cargando información del sensor...</p>
+        <p>{{ 'IOT.LOADING_SENSOR' | translate }}</p>
       </div>
     } @else if (errorMessage() && !sensor() && isEditMode) {
       <div class="error-banner">
         <mat-icon>error_outline</mat-icon>
         <p>{{ errorMessage() }}</p>
-        <button type="button" class="btn-secondary" (click)="onCancel()">Regresar</button>
+        <button type="button" class="btn-secondary" (click)="onCancel()">{{ 'IOT.RETURN' | translate }}</button>
       </div>
     } @else {
 
@@ -38,19 +38,19 @@
       @if (sensor(); as s) {
         <div class="device-summary-strip">
           <div class="strip-item">
-            <span class="strip-label">ID Sensor</span>
+            <span class="strip-label">{{ 'IOT.STRIP_ID' | translate }}</span>
             <span class="strip-value">#{{ s.id }}</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Potencia actual</span>
+            <span class="strip-label">{{ 'IOT.COL_POWER' | translate }}</span>
             <span class="strip-value">{{ s.formattedCurrentPower }}</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Consumo hoy</span>
+            <span class="strip-label">{{ 'IOT.COL_TODAY' | translate }}</span>
             <span class="strip-value">{{ s.todayKwh | number:'1.2-2' }} kWh</span>
           </div>
           <div class="strip-item">
-            <span class="strip-label">Última sincr.</span>
+            <span class="strip-label">{{ 'IOT.LAST_SYNC' | translate }}</span>
             <span class="strip-value">{{ s.lastSync }}</span>
           </div>
         </div>
@@ -68,7 +68,7 @@
         <!-- Name Field -->
         <div class="form-group">
           <label for="sensorName" class="form-label">
-            Nombre del sensor <span class="required">*</span>
+            {{ 'IOT.FIELD_NAME' | translate }} <span class="required">*</span>
           </label>
           <input
             id="sensorName"
@@ -76,11 +76,11 @@
             formControlName="name"
             class="form-input"
             [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
-            placeholder="Ej. Smart Plug Sala 1, Medidor Cocina"
+            [placeholder]="'IOT.NAME_PH' | translate"
           />
           @if (form.get('name')?.invalid && form.get('name')?.touched) {
             <span class="field-error">
-              El nombre del sensor es obligatorio (mínimo 2 caracteres).
+              {{ 'IOT.NAME_REQUIRED' | translate }}
             </span>
           }
         </div>
@@ -88,7 +88,7 @@
         <!-- Hardware Model Selection (Serial number removed for simplicity) -->
         <div class="form-group">
           <label for="sensorModel" class="form-label">
-            Modelo de hardware <span class="required">*</span>
+            {{ 'IOT.MODEL_LABEL' | translate }} <span class="required">*</span>
           </label>
           <select id="sensorModel" formControlName="model" class="form-select">
             @for (m of availableModels; track m) {
@@ -96,7 +96,7 @@
             }
           </select>
           <span class="field-hint">
-            Selecciona el modelo de enchufe o medidor inteligente.
+            {{ 'IOT.MODEL_HINT' | translate }}
           </span>
         </div>
 
@@ -104,11 +104,11 @@
         <!-- Network Status -->
         <div class="form-group">
           <label for="sensorStatus" class="form-label">
-            Estado de red IoT <span class="required">*</span>
+            {{ 'IOT.STATUS_LABEL' | translate }} <span class="required">*</span>
           </label>
           <select id="sensorStatus" formControlName="status" class="form-select">
-            <option value="En línea">En línea (Conectado y transmitiendo)</option>
-            <option value="Desconectado">Desconectado (Fuera de línea)</option>
+            <option value="En línea">{{ 'IOT.STATUS_ONLINE_OPT' | translate }}</option>
+            <option value="Desconectado">{{ 'IOT.STATUS_OFFLINE_OPT' | translate }}</option>
           </select>
         </div>
 
@@ -116,14 +116,14 @@
 
         <!-- Device Assignment Section -->
         <div class="assignment-header">
-          <h3>Vinculación de Electrodoméstico</h3>
-          <p>Asigna un aparato de tu hogar para registrar su telemetría y activar el límite sugerido.</p>
+          <h3>{{ 'IOT.LINK_SECTION_TITLE' | translate }}</h3>
+          <p>{{ 'IOT.LINK_SECTION_DESC' | translate }}</p>
         </div>
 
         <!-- Assigned Device Select -->
         <div class="form-group">
           <label for="assignedDevice" class="form-label">
-            Dispositivo asignado
+            {{ 'IOT.COL_DEVICE' | translate }}
           </label>
           <select
             id="assignedDevice"
@@ -131,7 +131,7 @@
             (change)="onDeviceChange()"
             class="form-select"
           >
-            <option [ngValue]="null">-- Ninguno (Sensor disponible / Sin asignar) --</option>
+            <option [ngValue]="null">{{ 'IOT.DEVICE_NONE_OPT' | translate }}</option>
             @for (dev of availableDevices(); track dev.id) {
               <option [ngValue]="dev.id">
                 {{ dev.name }} ({{ dev.location }} • {{ dev.category }})
@@ -139,24 +139,24 @@
             }
           </select>
           <span class="field-hint">
-            Solo se listan los electrodomésticos sin otro sensor vinculado.
+            {{ 'IOT.DEVICE_HINT' | translate }}
           </span>
         </div>
 
         <!-- Appliance Recurring Profile -->
         <div class="form-group">
           <label for="applianceProfile" class="form-label">
-            Perfil de consumo recurrente
+            {{ 'IOT.PROFILE_LABEL' | translate }}
           </label>
           <select
             id="applianceProfile"
             formControlName="applianceProfileId"
             class="form-select"
           >
-            <option [ngValue]="null">-- Sin perfil de referencia --</option>
+            <option [ngValue]="null">{{ 'IOT.PROFILE_NONE_OPT' | translate }}</option>
             @for (prof of store.profiles(); track prof.id) {
               <option [ngValue]="prof.id">
-                {{ prof.name }} — Recomendado: {{ prof.recommendedDailyKwh | number:'1.2-2' }} kWh/día
+                {{ prof.name }} — {{ 'IOT.PROFILE_REC_PREFIX' | translate }} {{ prof.recommendedDailyKwh | number:'1.2-2' }} {{ 'IOT.KWH_DAY' | translate }}
               </option>
             }
           </select>
@@ -169,10 +169,9 @@
               <mat-icon>{{ prof.icon }}</mat-icon>
             </div>
             <div class="rec-details">
-              <strong>Límite recomendado: {{ prof.recommendedDailyKwh | number:'1.2-2' }} kWh / día</strong>
+              <strong>{{ 'IOT.PROFILE_BOX_TITLE' | translate:{ kwh: (prof.recommendedDailyKwh | number:'1.2-2') } }}</strong>
               <p>
-                Rango típico en operación: {{ prof.typicalPowerWatts }}.
-                JouleTracker alertará en la sección de Alertas si el consumo diario del aparato supera este umbral.
+                {{ 'IOT.PROFILE_BOX_DESC' | translate:{ range: prof.typicalPowerWatts } }}
               </p>
             </div>
           </div>

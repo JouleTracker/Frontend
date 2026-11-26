@@ -123,9 +123,9 @@ export class IamStore {
       tap((response) => {
         const user = SignInAssembler.toEntityFromResponse(response);
 
-        // Bloqueo de acceso si el usuario está baneado
+        // Block access if user is banned
         if (user.banned) {
-          throw new Error('Tu cuenta se encuentra suspendida temporalmente por un administrador.');
+          throw new Error('Your account has been temporarily suspended by an administrator.');
         }
 
         this._currentUser.set(user);

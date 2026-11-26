@@ -5,6 +5,6 @@ export const consumptionRoutes: Routes = [
   {
     path: '',
     component: ConsumptionViewComponent,
-    title: 'JouleTracker - Consumo'
+    title: 'ROUTES.CONSUMPTION'
   }
 ];
