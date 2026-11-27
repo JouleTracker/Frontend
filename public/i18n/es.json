@@ -281,6 +281,11 @@
     }
   },
   "IOT": {
+    "BUSINESS_AREA_LABEL": "Área comercial",
+    "BUSINESS_AREA_NONE": "Sin área asignada",
+    "BUSINESS_AREA_HINT": "Asocia el sensor al área donde se realiza el monitoreo.",
+    "BUSINESS_AREA_INVALID": "Selecciona un área comercial válida o deja el sensor sin área.",
+    "BUSINESS_AREA_LOAD_ERROR": "No se pudieron cargar las áreas comerciales.",
     "TITLE": "Sensores IoT",
     "SUBTITLE": "Monitorea los medidores de telemetría y gestiona la vinculación con tus electrodomésticos",
     "ADD_SENSOR": "Agregar sensor",

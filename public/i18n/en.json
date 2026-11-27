@@ -281,6 +281,11 @@
     }
   },
   "IOT": {
+    "BUSINESS_AREA_LABEL": "Business area",
+    "BUSINESS_AREA_NONE": "No assigned area",
+    "BUSINESS_AREA_HINT": "Assign the sensor to the area being monitored.",
+    "BUSINESS_AREA_INVALID": "Select a valid business area or leave the sensor unassigned.",
+    "BUSINESS_AREA_LOAD_ERROR": "Unable to load business areas.",
     "TITLE": "IoT Sensors",
     "SUBTITLE": "Monitor telemetry meters and manage device linkage with appliances",
     "ADD_SENSOR": "Add sensor",
