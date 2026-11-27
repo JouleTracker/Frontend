@@ -1,4 +1,19 @@
 {
+  "THRESHOLD": {
+      "TITLE": "Umbral mensual de consumo",
+      "SUBTITLE": "Configura tu límite energético mensual.",
+      "MONTHLY_LIMIT": "Límite mensual",
+      "CURRENT_CONSUMPTION": "Consumo actual",
+      "REMAINING": "Consumo restante",
+      "PROGRESS": "Consumo del límite mensual",
+      "REACHED": "Has alcanzado el límite mensual de consumo.",
+      "NOT_CONFIGURED": "Todavía no tienes un límite mensual configurado.",
+      "INVALID": "Ingresa un límite positivo con hasta tres decimales.",
+      "SAVE": "Guardar límite",
+      "SAVED": "Límite mensual guardado correctamente.",
+      "LOAD_ERROR": "No se pudo cargar el consumo mensual.",
+      "SAVE_ERROR": "No se pudo guardar el límite mensual."
+  },
   "SIDEBAR": {
     "HOME": "Inicio",
     "CONSUMPTION": "Consumo",

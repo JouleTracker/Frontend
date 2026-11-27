@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MonthlyConsumptionThresholdComponent } from '../../../../settings/presentation/components/monthly-consumption-threshold/monthly-consumption-threshold.component';
 import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertSeverity, AlertStatus } from '../../../domain/model/alert.entity';
@@ -10,7 +11,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-alerts-view',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, TranslatePipe],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    TranslatePipe,
+    MonthlyConsumptionThresholdComponent
+  ],
   templateUrl: './alerts-view.component.html',
   styleUrl: './alerts-view.component.css'
 })

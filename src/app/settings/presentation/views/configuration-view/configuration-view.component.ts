@@ -1,5 +1,6 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MonthlyConsumptionThresholdComponent } from '../../components/monthly-consumption-threshold/monthly-consumption-threshold.component';
 import { HomeConfigurationApi } from '../../../infrastructure/home-configuration.api';
 import { HomeType } from '../../../domain/model/home-configuration.entity';
 import { NotificationPreferencesApi } from '../../../infrastructure/notification-preferences.api';
@@ -34,7 +35,8 @@ import {
     RouterModule,
     MatIconModule,
     MatSlideToggleModule,
-    TranslatePipe
+    TranslatePipe,
+    MonthlyConsumptionThresholdComponent
   ],
   templateUrl: './configuration-view.component.html',
   styleUrl: './configuration-view.component.css'
