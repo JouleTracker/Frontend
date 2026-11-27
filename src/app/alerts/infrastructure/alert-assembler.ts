@@ -6,6 +6,8 @@ export class AlertAssembler {
   toEntity(resource: AlertResource): Alert {
     return new Alert({
       id: resource.id,
+      userId: resource.userId,
+      sensorId: resource.sensorId,
       category: resource.category,
       deviceId: resource.deviceId,
       deviceName: resource.deviceName || resource.device,
@@ -19,7 +21,9 @@ export class AlertAssembler {
       severity: resource.severity,
       title: resource.title,
       description: resource.description,
-      actionUrl: resource.actionUrl
+      message: resource.message,
+      actionUrl: resource.actionUrl,
+      read: resource.read
     });
   }
 
@@ -31,12 +35,12 @@ export class AlertAssembler {
 export class AlertSummaryAssembler {
   toEntity(resource: AlertSummaryResource): AlertSummary {
     return new AlertSummary({
-      id: resource.id,
-      activeCount: resource.activeCount,
-      resolvedCount: resource.resolvedCount,
-      totalCount: resource.totalCount,
-      reductionPercentage: resource.reductionPercentage,
-      reductionLabel: resource.reductionLabel
+      id: resource?.id ?? 1,
+      activeCount: resource?.activeCount ?? 0,
+      resolvedCount: resource?.resolvedCount ?? 0,
+      totalCount: resource?.totalCount ?? 0,
+      reductionPercentage: resource?.reductionPercentage ?? 0,
+      reductionLabel: resource?.reductionLabel ?? 'vs mes anterior'
     });
   }
 }

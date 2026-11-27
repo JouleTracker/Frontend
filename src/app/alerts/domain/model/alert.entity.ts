@@ -1,12 +1,14 @@
 import { BaseEntity } from '../../../shared/domain/model/base-entity';
 
-export type AlertSeverity = 'warning' | 'info' | 'error';
+export type AlertSeverity = 'warning' | 'info' | 'error' | 'critical';
 export type AlertStatus = 'Activa' | 'Leída' | 'Resuelta';
 export type AlertType = 'Consumo alto' | 'Dispositivo desconectado' | 'Mantenimiento';
 
 export interface AlertProps {
   id: number;
-  category: AlertType | string;
+  userId?: number;
+  sensorId?: number;
+  category?: AlertType | string;
   deviceId?: number;
   deviceName?: string;
   location?: string;
@@ -16,17 +18,16 @@ export interface AlertProps {
   timestamp?: string;
   timeAgo?: string;
   status?: AlertStatus;
-  severity?: AlertSeverity;
+  severity?: AlertSeverity | string;
   title?: string;
   description?: string;
+  message?: string;
   actionUrl?: string;
+  read?: boolean;
   device?: string;
   powerKw?: number;
 }
 
-/**
- * Función pura auxiliar para interpretar fechas en formatos ISO (YYYY-MM-DD) o local (DD/MM/YYYY).
- */
 function parseDateString(dateStr: string): Date | null {
   if (!dateStr) return null;
   const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -48,12 +49,22 @@ function formatDateString(date: Date): string {
   return `${day}/${month}/${year}`;
 }
 
-/**
- * Domain entity representing an alert notification or event in JouleTracker.
- */
+function normalizeSeverity(rawSeverity?: string, status?: AlertStatus): AlertSeverity {
+  const lower = (rawSeverity || '').toLowerCase();
+  if (lower === 'critical') return 'critical';
+  if (lower === 'error') return 'error';
+  if (lower === 'warning') return 'warning';
+  if (lower === 'info') return 'info';
+  if (status === 'Activa') return 'error';
+  if (status === 'Leída') return 'warning';
+  return 'info';
+}
+
 export class Alert implements BaseEntity {
   readonly id: number;
-  readonly category: AlertType;
+  readonly userId?: number;
+  readonly sensorId?: number;
+  readonly category: AlertType | string;
   readonly deviceId?: number;
   readonly deviceName: string;
   readonly location: string;
@@ -66,31 +77,39 @@ export class Alert implements BaseEntity {
   readonly severity: AlertSeverity;
   readonly title: string;
   readonly description: string;
+  readonly message: string;
   readonly actionUrl: string;
+  readonly read: boolean;
 
   constructor(props: AlertProps) {
     this.id = props.id;
-    // Normalizar tipos: 'Consumo inusual' se unifica en 'Consumo alto'
+    this.userId = props.userId;
+    this.sensorId = props.sensorId;
     const rawCat = props.category;
-    this.category = (rawCat === 'Consumo inusual' ? 'Consumo alto' : rawCat) as AlertType || 'Consumo alto';
+    this.category = (rawCat === 'Consumo inusual' ? 'Consumo alto' : rawCat) || 'Consumo alto';
     this.deviceId = props.deviceId;
-    this.deviceName = props.deviceName || props.device || 'Dispositivo';
+    this.deviceName = props.deviceName || props.device || (this.sensorId ? `Sensor #${this.sensorId}` : 'Dispositivo');
     this.location = props.location || 'Hogar';
     this.thresholdPowerKw = props.thresholdPowerKw;
     this.currentPowerKw = props.currentPowerKw ?? props.powerKw ?? 0;
     this.maintenanceDueDate = props.maintenanceDueDate;
     this.timestamp = props.timestamp || props.timeAgo || 'Reciente';
     this.timeAgo = props.timeAgo || props.timestamp || 'Reciente';
-    this.status = props.status || (props.severity === 'error' ? 'Activa' : props.severity === 'warning' ? 'Leída' : 'Resuelta');
-    this.severity = props.severity || (this.status === 'Activa' ? 'error' : this.status === 'Leída' ? 'warning' : 'info');
+
+    const resolvedRead = props.read ?? (props.status === 'Leída' || props.status === 'Resuelta');
+    this.read = resolvedRead;
+    this.status = props.status || (resolvedRead ? 'Leída' : 'Activa');
+    this.severity = normalizeSeverity(props.severity, this.status);
     this.title = props.title || `Alerta: ${this.category}`;
-    this.description = props.description || '';
+    this.description = props.description || props.message || '';
+    this.message = props.message || props.description || '';
     this.actionUrl = props.actionUrl || '/alertas';
   }
 
-  /**
-   * Comprueba si la fecha de mantenimiento ya venció respecto a la fecha actual (hoy).
-   */
+  get isCritical(): boolean {
+    return (this.severity === 'critical' || this.severity === 'error') && this.status === 'Activa' && !this.read;
+  }
+
   get isMaintenanceOverdue(): boolean {
     if (!this.maintenanceDueDate) return false;
     const dueDate = parseDateString(this.maintenanceDueDate);
@@ -101,9 +120,6 @@ export class Alert implements BaseEntity {
     return today.getTime() > dueDate.getTime();
   }
 
-  /**
-   * Calcula los días transcurridos desde que venció la fecha de mantenimiento respecto a hoy.
-   */
   get daysOverdue(): number {
     if (!this.maintenanceDueDate) return 0;
     const dueDate = parseDateString(this.maintenanceDueDate);
@@ -116,30 +132,23 @@ export class Alert implements BaseEntity {
     return diffDays > 0 ? diffDays : 0;
   }
 
-  /**
-   * Fecha de mantenimiento en formato legible DD/MM/YYYY.
-   */
   get formattedMaintenanceDate(): string {
     if (!this.maintenanceDueDate) return 'Pendiente';
     const dueDate = parseDateString(this.maintenanceDueDate);
     return dueDate ? formatDateString(dueDate) : this.maintenanceDueDate;
   }
 
-  /**
-   * Generación dinámica y justificada del mensaje según las reglas del dominio:
-   * - Consumo alto: {Nombre dispositivo} superó su límite de consumo ({valor})
-   * - Dispositivo desconectado: Se detectó {Nombre dispositivo} desconectado
-   * - Mantenimiento: Fecha de mantenimiento ({fecha}) vencida [con comparación de días si aplica]
-   */
   get dynamicMessage(): string {
+    if (this.message) {
+      return this.message;
+    }
     switch (this.category) {
       case 'Consumo alto': {
         const limitStr = this.thresholdPowerKw != null ? `${this.thresholdPowerKw.toFixed(2)} kW` : 'su límite';
         return `${this.deviceName} superó su límite de consumo (${limitStr})`;
       }
-      case 'Dispositivo desconectado': {
+      case 'Dispositivo desconectado':
         return `Se detectó ${this.deviceName} desconectado`;
-      }
       case 'Mantenimiento': {
         const dateStr = this.formattedMaintenanceDate;
         const days = this.daysOverdue;
@@ -153,7 +162,6 @@ export class Alert implements BaseEntity {
     }
   }
 
-  /** Propiedades de retrocompatibilidad */
   get device(): string {
     return this.deviceName;
   }
