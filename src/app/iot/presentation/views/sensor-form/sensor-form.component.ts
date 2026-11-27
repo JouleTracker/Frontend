@@ -1,5 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AreasApi } from '../../../../business/infrastructure/areas-api';
+import { Area } from '../../../../business/domain/model/area.entity';
+import { IamStore } from '../../../../iam/application/iam.store';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +28,14 @@ export class SensorFormComponent implements OnInit {
   private readonly router = inject(Router);
   readonly store = inject(SensorsStore);
   private readonly api = inject(SensorsApi);
+  private readonly areasApi = inject(AreasApi);
+  private readonly iamStore = inject(IamStore);
+
+  readonly isBusiness = this.iamStore.isBusiness;
+  readonly areas = signal<Area[]>([]);
+  readonly loadingAreas = signal(false);
+  readonly areasLoaded = signal(false);
+  readonly areasError = signal(false);
   readonly devicesStore = inject(DevicesStore);
   private readonly translate = inject(TranslateService);
 
@@ -59,6 +70,7 @@ export class SensorFormComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required],
     }),
+    businessAreaId: new FormControl<number | null>(null),
     assignedDeviceId: new FormControl<number | null>(null),
     applianceProfileId: new FormControl<number | null>(null),
   });
@@ -83,6 +95,9 @@ export class SensorFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.isBusiness()) {
+      this.loadBusinessAreas();
+    }
     const idParam = this.route.snapshot.paramMap.get('id');
 
     // Sensores nuevos
@@ -126,8 +141,40 @@ export class SensorFormComponent implements OnInit {
       name: s.name,
       model: s.model,
       status: s.status,
+      businessAreaId: s.businessAreaId,
       assignedDeviceId: s.assignedDeviceId,
       applianceProfileId: s.applianceProfileId,
+    });
+  }
+
+  loadBusinessAreas(): void {
+    const userId = this.iamStore.currentUserId();
+
+    if (!userId || this.loadingAreas()) return;
+
+    this.loadingAreas.set(true);
+    this.areasLoaded.set(false);
+    this.areasError.set(false);
+
+    this.areasApi.getAreas().subscribe({
+      next: areas => {
+        this.loadingAreas.set(false);
+
+        if (this.iamStore.currentUserId() !== userId) {
+          this.areasError.set(true);
+          return;
+        }
+
+        this.areas.set(
+          areas.filter(area => area.userId === userId)
+        );
+
+        this.areasLoaded.set(true);
+      },
+      error: () => {
+        this.loadingAreas.set(false);
+        this.areasError.set(true);
+      }
     });
   }
 
@@ -175,6 +222,23 @@ export class SensorFormComponent implements OnInit {
       return;
     }
 
+    if (this.isBusiness() && !this.areasLoaded()) {
+      return;
+    }
+
+    const areaId = this.form.controls.businessAreaId.value;
+
+    if (
+      this.isBusiness() &&
+      areaId !== null &&
+      !this.areas().some(area => area.id === areaId)
+    ) {
+      this.errorMessage.set(
+        this.translate.instant('IOT.BUSINESS_AREA_INVALID')
+      );
+      return;
+    }
+
     this.submitting.set(true);
     this.errorMessage.set(null);
 
@@ -196,6 +260,7 @@ export class SensorFormComponent implements OnInit {
       model: this.form.value.model!,
       serialNumber: serial,
       status: this.form.value.status!,
+      businessAreaId: areaId,
       assignedDeviceId: devId,
       assignedDeviceName: assignedDev ? assignedDev.name : null,
       assignedDeviceCategory: assignedDev ? assignedDev.category : null,

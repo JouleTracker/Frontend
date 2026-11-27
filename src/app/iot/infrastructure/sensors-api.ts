@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import { environment } from '../../../environments/environment';
 import { SensorResource, ApplianceProfileResource, SensorSummaryResource } from './sensors-response';
@@ -70,13 +70,30 @@ export class SensorsApi extends BaseApi {
   /**
    * Actualiza parcialmente un sensor (ej. nombre, dispositivo asignado, perfil).
    */
-  updateSensor(id: number, partialSensor: Partial<SensorResource>): Observable<Sensor> {
-    return this.http.patch<SensorResource>(
-      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}`,
-      partialSensor
-    ).pipe(
-      map(res => this.sensorAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error updating sensor: ' + err.message)))
+  updateSensor(
+    id: number,
+    partialSensor: Partial<SensorResource>
+  ): Observable<Sensor> {
+    const sendUpdate = (payload: Partial<SensorResource>) =>
+      this.http.patch<SensorResource>(
+        `${this.baseUrl}${environment.sensorsEndpointPath}/${id}${this.userQuery}`,
+        payload
+      ).pipe(
+        map(res => this.sensorAssembler.toEntity(res)),
+        catchError(err =>
+          throwError(() => new Error('Error updating sensor: ' + err.message))
+        )
+      );
+
+    if (partialSensor.businessAreaId !== undefined) {
+      return sendUpdate(partialSensor);
+    }
+
+    return this.getSensorById(id).pipe(
+      switchMap(sensor => sendUpdate({
+        ...partialSensor,
+        businessAreaId: sensor.businessAreaId
+      }))
     );
   }
 
@@ -114,7 +131,7 @@ export class SensorsApi extends BaseApi {
    */
   deleteSensor(id: number): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}`
+      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}${this.userQuery}`
     ).pipe(
       catchError(err => throwError(() => new Error('Error deleting sensor: ' + err.message)))
     );

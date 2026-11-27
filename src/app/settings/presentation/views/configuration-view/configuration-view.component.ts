@@ -1,5 +1,9 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MonthlyConsumptionThresholdComponent } from '../../components/monthly-consumption-threshold/monthly-consumption-threshold.component';
+import { HomeConfigurationApi } from '../../../infrastructure/home-configuration.api';
+import { HomeType } from '../../../domain/model/home-configuration.entity';
+import { NotificationPreferencesApi } from '../../../infrastructure/notification-preferences.api';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,7 +35,8 @@ import {
     RouterModule,
     MatIconModule,
     MatSlideToggleModule,
-    TranslatePipe
+    TranslatePipe,
+    MonthlyConsumptionThresholdComponent
   ],
   templateUrl: './configuration-view.component.html',
   styleUrl: './configuration-view.component.css'
@@ -40,6 +45,8 @@ export class ConfigurationViewComponent {
   private readonly fb = inject(FormBuilder);
   readonly iamStore = inject(IamStore);
   private readonly iamApi = inject(IamApi);
+  private readonly homeApi = inject(HomeConfigurationApi);
+  private readonly notificationsApi = inject(NotificationPreferencesApi);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
@@ -74,13 +81,22 @@ export class ConfigurationViewComponent {
     { validators: createPasswordMatchValidator('newPassword', 'confirmPassword') }
   );
 
-  // Homeowner profile form
-  readonly homeForm = this.fb.group({
-    homeType: [this.user()?.home?.homeType ?? 'House'],
-    occupants: [this.user()?.home?.occupants ?? 1],
-    location: [this.user()?.home?.location ?? ''],
-    tariff: [this.user()?.home?.tariff ?? '']
+  // Homeowner profile form (US-48)
+  readonly homeForm = this.fb.nonNullable.group({
+    homeType: ['House' as HomeType, Validators.required],
+    occupants: [1, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(2147483647),
+      Validators.pattern(/^[0-9]+$/)
+    ]],
+    location: ['', Validators.maxLength(255)],
+    tariff: ['', Validators.maxLength(100)]
   });
+
+  readonly loadingHome = signal(false);
+  readonly homeLoaded = signal(false);
+  readonly homeError = signal<string | null>(null);
 
   // Business / SME profile form
   readonly businessForm = this.fb.group({
@@ -93,6 +109,14 @@ export class ConfigurationViewComponent {
     ],
     address: [this.user()?.business?.address ?? '', Validators.required]
   });
+
+  // Notification channels (US-38)
+  readonly emailEnabled = signal(false);
+  readonly whatsappEnabled = signal(false);
+  readonly loadingNotifications = signal(false);
+  readonly savingNotifications = signal(false);
+  readonly notificationsLoaded = signal(false);
+  readonly notificationsError = signal<string | null>(null);
 
   // Notification preferences
   readonly highConsumptionAlerts = signal(
@@ -267,27 +291,147 @@ export class ConfigurationViewComponent {
     });
   }
 
+  constructor() {
+    if (this.isHomeowner() && this.user()?.id) {
+      this.loadHome();
+    }
+
+    if (this.user()?.id) {
+      this.loadNotifications();
+    }
+  }
+
+  loadHome(): void {
+    const user = this.user();
+    if (!user || !this.isHomeowner() || this.loadingHome()) return;
+
+    this.loadingHome.set(true);
+    this.homeLoaded.set(false);
+    this.homeError.set(null);
+    this.homeMessage.set(null);
+    this.homeForm.disable();
+
+    this.homeApi.getConfiguration().subscribe({
+      next: (configuration) => {
+        this.loadingHome.set(false);
+
+        if (configuration.userId !== this.user()?.id) {
+          this.homeError.set(
+            this.translateMessage(
+              'SETTINGS.HOME_LOAD_ERROR',
+              'No se pudo cargar la configuración del hogar.'
+            )
+          );
+          return;
+        }
+
+        const legacy = user.home;
+
+        const validTypes: HomeType[] = [
+          'House', 'Apartment', 'Office/Premises'
+        ];
+
+        const legacyType = legacy?.homeType as HomeType;
+
+        this.homeForm.reset({
+          homeType: configuration.configured
+            ? configuration.homeType
+            : validTypes.includes(legacyType)
+              ? legacyType
+              : configuration.homeType,
+          occupants: configuration.configured
+            ? configuration.occupants
+            : legacy?.occupants ?? configuration.occupants,
+          location: configuration.configured
+            ? configuration.location
+            : legacy?.location ?? configuration.location,
+          tariff: configuration.configured
+            ? configuration.tariff
+            : legacy?.tariff ?? configuration.tariff
+        });
+
+        this.homeLoaded.set(true);
+        this.homeForm.enable();
+      },
+      error: () => {
+        this.loadingHome.set(false);
+        this.homeError.set(
+          this.translateMessage(
+            'SETTINGS.HOME_LOAD_ERROR',
+            'No se pudo cargar la configuración del hogar.'
+          )
+        );
+      }
+    });
+  }
+
   saveHome(): void {
-    if (this.homeForm.invalid || this.savingHome()) {
+    if (
+      this.homeForm.invalid ||
+      this.savingHome() ||
+      !this.homeLoaded()
+    ) {
       this.homeForm.markAllAsTouched();
       return;
     }
+
     this.savingHome.set(true);
     this.homeMessage.set(null);
+    this.homeError.set(null);
 
-    const { homeType, occupants, location, tariff } = this.homeForm.getRawValue();
-    this.iamStore.updateProfile({
-      home: {
-        homeType: homeType ?? '',
-        occupants: Number(occupants) || 1,
-        location: (location ?? '').trim(),
-        tariff: (tariff ?? '').trim()
+    const values = this.homeForm.getRawValue();
+    this.homeForm.disable();
+
+    this.homeApi.updateConfiguration({
+      homeType: values.homeType,
+      occupants: Number(values.occupants),
+      location: values.location.trim(),
+      tariff: values.tariff.trim()
+    }).subscribe({
+      next: (configuration) => {
+        this.savingHome.set(false);
+
+        if (configuration.userId !== this.user()?.id) {
+          this.homeLoaded.set(false);
+          this.homeError.set(
+            this.translateMessage(
+              'SETTINGS.HOME_SAVE_ERROR',
+              'No se pudo guardar la configuración del hogar.'
+            )
+          );
+          return;
+        }
+
+        this.homeForm.reset({
+          homeType: configuration.homeType,
+          occupants: configuration.occupants,
+          location: configuration.location,
+          tariff: configuration.tariff
+        });
+
+        this.homeForm.enable();
+
+        const message = this.translateMessage(
+          'SETTINGS.HOME_SAVED',
+          'Información de tu hogar guardada correctamente.'
+        );
+
+        this.homeMessage.set(message);
+        this.showToast('success', message);
+      },
+      error: () => {
+        this.savingHome.set(false);
+        this.homeForm.enable();
+
+        const message = this.translateMessage(
+          'SETTINGS.HOME_SAVE_ERROR',
+          'No se pudo guardar la configuración del hogar.'
+        );
+
+        this.homeError.set(message);
+        this.showToast('error', message);
       }
     });
-    this.savingHome.set(false);
-    this.homeMessage.set(
-      this.translateMessage('SETTINGS.HOME_SAVED', 'Información de tu hogar guardada correctamente.')
-    );
   }
 
   saveBusiness(): void {
@@ -315,16 +459,109 @@ export class ConfigurationViewComponent {
     );
   }
 
+  loadNotifications(): void {
+    if (!this.user()?.id || this.loadingNotifications()) {
+      return;
+    }
+
+    this.loadingNotifications.set(true);
+    this.notificationsLoaded.set(false);
+    this.notificationsError.set(null);
+    this.notificationsMessage.set(null);
+
+    this.notificationsApi.getPreferences().subscribe({
+      next: (preferences) => {
+        this.loadingNotifications.set(false);
+
+        if (preferences.userId !== this.user()?.id) {
+          this.notificationsError.set(
+            this.translateMessage(
+              'SETTINGS.NOTIFICATIONS_LOAD_ERROR',
+              'No se pudieron cargar tus preferencias.'
+            )
+          );
+          return;
+        }
+
+        this.emailEnabled.set(preferences.emailEnabled);
+        this.whatsappEnabled.set(preferences.whatsappEnabled);
+        this.notificationsLoaded.set(true);
+      },
+      error: () => {
+        this.loadingNotifications.set(false);
+        this.notificationsError.set(
+          this.translateMessage(
+            'SETTINGS.NOTIFICATIONS_LOAD_ERROR',
+            'No se pudieron cargar tus preferencias.'
+          )
+        );
+      }
+    });
+  }
+
   saveNotifications(): void {
+    if (
+      this.savingNotifications() ||
+      !this.notificationsLoaded() ||
+      !this.user()?.id
+    ) {
+      return;
+    }
+
+    this.savingNotifications.set(true);
+    this.notificationsMessage.set(null);
+    this.notificationsError.set(null);
+
     const notifications: UserNotifications = {
       highConsumptionAlerts: this.highConsumptionAlerts(),
       maintenanceReminders: this.maintenanceReminders(),
       personalizedTips: this.personalizedTips()
     };
-    this.iamStore.updateProfile({ notifications });
-    this.notificationsMessage.set(
-      this.translateMessage('SETTINGS.NOTIFICATIONS_SAVED', 'Preferencias de notificación guardadas.')
-    );
+
+    this.notificationsApi.updatePreferences({
+      emailEnabled: this.emailEnabled(),
+      whatsappEnabled: this.whatsappEnabled()
+    }).subscribe({
+      next: (preferences) => {
+        this.savingNotifications.set(false);
+
+        if (preferences.userId !== this.user()?.id) {
+          this.notificationsLoaded.set(false);
+          this.notificationsError.set(
+            this.translateMessage(
+              'SETTINGS.NOTIFICATIONS_SAVE_ERROR',
+              'No se pudieron guardar tus preferencias.'
+            )
+          );
+          return;
+        }
+
+        this.emailEnabled.set(preferences.emailEnabled);
+        this.whatsappEnabled.set(preferences.whatsappEnabled);
+
+        // Preserve existing notification category preferences.
+        this.iamStore.updateProfile({ notifications });
+
+        const message = this.translateMessage(
+          'SETTINGS.NOTIFICATIONS_SAVED',
+          'Preferencias de notificación guardadas.'
+        );
+
+        this.notificationsMessage.set(message);
+        this.showToast('success', message);
+      },
+      error: () => {
+        this.savingNotifications.set(false);
+
+        const message = this.translateMessage(
+          'SETTINGS.NOTIFICATIONS_SAVE_ERROR',
+          'No se pudieron guardar tus preferencias.'
+        );
+
+        this.notificationsError.set(message);
+        this.showToast('error', message);
+      }
+    });
   }
 
   /**

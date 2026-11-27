@@ -1,0 +1,126 @@
+<section class="threshold-card">
+  <header class="threshold-header">
+    <div class="threshold-icon">
+      <mat-icon>bolt</mat-icon>
+    </div>
+
+    <div>
+      <h2>{{ 'THRESHOLD.TITLE' | translate }}</h2>
+      <p>{{ 'THRESHOLD.SUBTITLE' | translate }}</p>
+    </div>
+  </header>
+
+  <form (ngSubmit)="saveThreshold()" novalidate>
+    <label for="monthly-limit">
+      {{ 'THRESHOLD.MONTHLY_LIMIT' | translate }} (kWh)
+    </label>
+
+    <input
+      id="monthly-limit"
+      type="number"
+      min="0.001"
+      max="999999999.999"
+      step="0.001"
+      [formControl]="monthlyLimit"
+      placeholder="250"
+    />
+
+    @if (monthlyLimit.invalid && monthlyLimit.touched) {
+      <p class="threshold-error">
+        {{ 'THRESHOLD.INVALID' | translate }}
+      </p>
+    }
+
+    @if (status(); as current) {
+      <div class="threshold-metrics">
+        <div>
+          <span>{{ 'THRESHOLD.CURRENT_CONSUMPTION' | translate }}</span>
+          <strong>
+            {{ current.currentConsumptionKwh | number:'1.2-3' }} kWh
+          </strong>
+        </div>
+
+        @if (current.configured) {
+          <div>
+            <span>{{ 'THRESHOLD.REMAINING' | translate }}</span>
+            <strong>
+              {{ current.remainingKwh | number:'1.2-3' }} kWh
+            </strong>
+          </div>
+        }
+      </div>
+
+      @if (current.configured) {
+        <div class="progress-label">
+          <span>{{ 'THRESHOLD.PROGRESS' | translate }}</span>
+          <strong>
+            {{ current.consumptionPercentage | number:'1.1-2' }}%
+          </strong>
+        </div>
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          [attr.aria-label]="'THRESHOLD.PROGRESS' | translate"
+          [attr.aria-valuenow]="progress()"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div
+            class="progress-fill"
+            [class.reached]="current.thresholdReached"
+            [style.width.%]="progress()"
+          ></div>
+        </div>
+
+        @if (current.thresholdReached) {
+          <p class="threshold-error" role="status">
+            {{ 'THRESHOLD.REACHED' | translate }}
+          </p>
+        }
+      } @else {
+        <p class="threshold-description">
+          {{ 'THRESHOLD.NOT_CONFIGURED' | translate }}
+        </p>
+      }
+    }
+
+    @if (loading()) {
+      <p role="status">{{ 'COMMON.LOADING' | translate }}</p>
+    }
+
+    @if (error(); as errorKey) {
+      <p class="threshold-error" role="alert">
+        {{ errorKey | translate }}
+      </p>
+
+      @if (!loaded() && !loading()) {
+        <button type="button" (click)="loadThreshold()">
+          {{ 'SETTINGS.HOME_RETRY' | translate }}
+        </button>
+      }
+    }
+
+    @if (saved()) {
+      <p class="threshold-success" role="status">
+        {{ 'THRESHOLD.SAVED' | translate }}
+      </p>
+    }
+
+    <div class="threshold-actions">
+      <button
+        type="submit"
+        [disabled]="
+          !loaded() ||
+          loading() ||
+          saving() ||
+          monthlyLimit.invalid
+        "
+      >
+        {{ (saving()
+          ? 'SETTINGS.SAVING'
+          : 'THRESHOLD.SAVE') | translate }}
+      </button>
+    </div>
+  </form>
+</section>

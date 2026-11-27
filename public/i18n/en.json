@@ -1,4 +1,19 @@
 {
+  "THRESHOLD": {
+      "TITLE": "Monthly consumption threshold",
+      "SUBTITLE": "Configure your monthly energy limit.",
+      "MONTHLY_LIMIT": "Monthly limit",
+      "CURRENT_CONSUMPTION": "Current consumption",
+      "REMAINING": "Remaining consumption",
+      "PROGRESS": "Monthly limit usage",
+      "REACHED": "You have reached your monthly consumption limit.",
+      "NOT_CONFIGURED": "You have not configured a monthly limit yet.",
+      "INVALID": "Enter a positive limit with up to three decimal places.",
+      "SAVE": "Save limit",
+      "SAVED": "Monthly limit saved successfully.",
+      "LOAD_ERROR": "Unable to load monthly consumption.",
+      "SAVE_ERROR": "Unable to save the monthly limit."
+  },
   "SIDEBAR": {
     "HOME": "Home",
     "CONSUMPTION": "Consumption",
@@ -266,6 +281,11 @@
     }
   },
   "IOT": {
+    "BUSINESS_AREA_LABEL": "Business area",
+    "BUSINESS_AREA_NONE": "No assigned area",
+    "BUSINESS_AREA_HINT": "Assign the sensor to the area being monitored.",
+    "BUSINESS_AREA_INVALID": "Select a valid business area or leave the sensor unassigned.",
+    "BUSINESS_AREA_LOAD_ERROR": "Unable to load business areas.",
     "TITLE": "IoT Sensors",
     "SUBTITLE": "Monitor telemetry meters and manage device linkage with appliances",
     "ADD_SENSOR": "Add sensor",
@@ -476,6 +496,16 @@
     "LOAD_ERROR": "Error loading recommendations."
   },
   "SETTINGS": {
+    "NOTIF_EMAIL": "Email",
+    "NOTIF_EMAIL_DESC": "Receive critical alerts by email.",
+    "NOTIF_WHATSAPP": "WhatsApp",
+    "NOTIF_WHATSAPP_DESC": "Save WhatsApp as a preferred channel. Delivery is not yet available.",
+    "NOTIFICATIONS_LOAD_ERROR": "Unable to load your notification preferences.",
+    "NOTIFICATIONS_SAVE_ERROR": "Unable to save your notification preferences.",
+    "HOME_LOAD_ERROR": "Unable to load home configuration.",
+    "HOME_SAVE_ERROR": "Unable to save home configuration.",
+    "HOME_RETRY": "Try again",
+    "HOME_INVALID": "Check your details and number of occupants.",
     "TITLE": "Settings",
     "SUBTITLE": "Customize your account and your home energy preferences.",
     "PERSONAL_INFO": "Personal information",
@@ -836,6 +866,11 @@
     "TOAST_REC_ERROR": "Unable to send recommendation. Please try again."
   },
   "AREAS": {
+    "RECIPIENTS_LABEL": "Critical alert recipients",
+    "RECIPIENTS_PLACEHOLDER": "email@example.com, supervisor@example.com",
+    "RECIPIENTS_HINT": "Add authorized collaborator emails separated by commas, semicolons or line breaks. Enable email notifications in Settings as well.",
+    "RECIPIENTS_INVALID": "Make sure all email addresses are valid.",
+    "RECIPIENTS_COUNT": "Alert recipients",
     "TITLE": "Business Areas",
     "SUBTITLE": "Organize your facility into physical zones and analyze electricity consumption by area.",
     "ADD_AREA": "Add Area",

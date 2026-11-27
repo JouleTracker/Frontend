@@ -7,6 +7,7 @@ export interface AreaResource extends BaseResource {
   floor?: string;
   icon?: string;
   userId?: number;
+  notificationRecipients?: string[];
 }
 
 export interface AreaResponse extends BaseResponse {

@@ -143,6 +143,52 @@
           </span>
         </div>
 
+        <!-- US-32: Business area assignment -->
+        @if (isBusiness()) {
+          <div class="form-group">
+            <label for="businessArea" class="form-label">
+              {{ 'IOT.BUSINESS_AREA_LABEL' | translate }}
+            </label>
+
+            @if (areasLoaded()) {
+              <select
+                id="businessArea"
+                formControlName="businessAreaId"
+                class="form-select">
+                <option [ngValue]="null">
+                  {{ 'IOT.BUSINESS_AREA_NONE' | translate }}
+                </option>
+
+                @for (area of areas(); track area.id) {
+                  <option [ngValue]="area.id">
+                    {{ area.name }} ({{ area.floor }})
+                  </option>
+                }
+              </select>
+            }
+
+            <span class="field-hint">
+              {{ 'IOT.BUSINESS_AREA_HINT' | translate }}
+            </span>
+
+            @if (loadingAreas()) {
+              <p role="status">{{ 'COMMON.LOADING' | translate }}</p>
+            }
+
+            @if (areasError()) {
+              <p class="field-error" role="alert">
+                {{ 'IOT.BUSINESS_AREA_LOAD_ERROR' | translate }}
+              </p>
+              <button
+                type="button"
+                class="btn-secondary"
+                (click)="loadBusinessAreas()">
+                {{ 'SETTINGS.HOME_RETRY' | translate }}
+              </button>
+            }
+          </div>
+        }
+
         <!-- Appliance Recurring Profile -->
         <div class="form-group">
           <label for="applianceProfile" class="form-label">
@@ -190,7 +236,7 @@
           <button
             type="submit"
             class="btn-primary"
-            [disabled]="form.invalid || submitting()"
+            [disabled]="form.invalid || submitting() || (isBusiness() && !areasLoaded())"
           >
             @if (submitting()) {
               <mat-icon class="spin-icon">autorenew</mat-icon>

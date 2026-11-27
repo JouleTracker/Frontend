@@ -1,4 +1,19 @@
 {
+  "THRESHOLD": {
+      "TITLE": "Umbral mensual de consumo",
+      "SUBTITLE": "Configura tu límite energético mensual.",
+      "MONTHLY_LIMIT": "Límite mensual",
+      "CURRENT_CONSUMPTION": "Consumo actual",
+      "REMAINING": "Consumo restante",
+      "PROGRESS": "Consumo del límite mensual",
+      "REACHED": "Has alcanzado el límite mensual de consumo.",
+      "NOT_CONFIGURED": "Todavía no tienes un límite mensual configurado.",
+      "INVALID": "Ingresa un límite positivo con hasta tres decimales.",
+      "SAVE": "Guardar límite",
+      "SAVED": "Límite mensual guardado correctamente.",
+      "LOAD_ERROR": "No se pudo cargar el consumo mensual.",
+      "SAVE_ERROR": "No se pudo guardar el límite mensual."
+  },
   "SIDEBAR": {
     "HOME": "Inicio",
     "CONSUMPTION": "Consumo",
@@ -266,6 +281,11 @@
     }
   },
   "IOT": {
+    "BUSINESS_AREA_LABEL": "Área comercial",
+    "BUSINESS_AREA_NONE": "Sin área asignada",
+    "BUSINESS_AREA_HINT": "Asocia el sensor al área donde se realiza el monitoreo.",
+    "BUSINESS_AREA_INVALID": "Selecciona un área comercial válida o deja el sensor sin área.",
+    "BUSINESS_AREA_LOAD_ERROR": "No se pudieron cargar las áreas comerciales.",
     "TITLE": "Sensores IoT",
     "SUBTITLE": "Monitorea los medidores de telemetría y gestiona la vinculación con tus electrodomésticos",
     "ADD_SENSOR": "Agregar sensor",
@@ -476,6 +496,16 @@
     "LOAD_ERROR": "Error al cargar las recomendaciones."
   },
   "SETTINGS": {
+    "NOTIF_EMAIL": "Correo electrónico",
+    "NOTIF_EMAIL_DESC": "Recibe alertas críticas mediante correo electrónico.",
+    "NOTIF_WHATSAPP": "WhatsApp",
+    "NOTIF_WHATSAPP_DESC": "Guarda WhatsApp como canal preferido. Envío aún no disponible.",
+    "NOTIFICATIONS_LOAD_ERROR": "No se pudieron cargar tus preferencias.",
+    "NOTIFICATIONS_SAVE_ERROR": "No se pudieron guardar tus preferencias.",
+    "HOME_LOAD_ERROR": "No se pudo cargar la configuración del hogar.",
+    "HOME_SAVE_ERROR": "No se pudo guardar la configuración del hogar.",
+    "HOME_RETRY": "Reintentar",
+    "HOME_INVALID": "Verifica los datos y el número de ocupantes.",
     "TITLE": "Configuración",
     "SUBTITLE": "Personaliza tu cuenta y la configuración de tu hogar.",
     "PERSONAL_INFO": "Información personal",
@@ -836,6 +866,11 @@
     "TOAST_REC_ERROR": "No se pudo enviar la recomendación. Inténtalo nuevamente."
   },
   "AREAS": {
+    "RECIPIENTS_LABEL": "Destinatarios de alertas críticas",
+    "RECIPIENTS_PLACEHOLDER": "correo@ejemplo.com, supervisor@ejemplo.com",
+    "RECIPIENTS_HINT": "Agrega correos autorizados de tus colaboradores, separados por comas, punto y coma o saltos de línea. Activa también las notificaciones por correo en Configuración.",
+    "RECIPIENTS_INVALID": "Verifica que todos los correos electrónicos sean válidos.",
+    "RECIPIENTS_COUNT": "Destinatarios de alertas",
     "TITLE": "Áreas del Negocio",
     "SUBTITLE": "Organiza tu establecimiento en zonas físicas y analiza el consumo eléctrico por área.",
     "ADD_AREA": "Agregar Área",

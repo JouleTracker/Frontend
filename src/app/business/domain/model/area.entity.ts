@@ -8,6 +8,7 @@ export interface AreaProps {
   floor?: string;
   icon?: string;
   userId?: number;
+  notificationRecipients?: string[];
 }
 
 /**
@@ -20,6 +21,7 @@ export class Area implements BaseEntity {
   readonly floor: string;
   readonly icon: string;
   readonly userId: number;
+  readonly notificationRecipients: readonly string[];
 
   constructor(props: AreaProps) {
     this.id = props.id;
@@ -28,5 +30,8 @@ export class Area implements BaseEntity {
     this.floor = props.floor ?? 'Piso 1';
     this.icon = props.icon ?? 'storefront';
     this.userId = props.userId ?? 1;
+    this.notificationRecipients = [
+      ...(props.notificationRecipients ?? [])
+    ];
   }
 }
