@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DevicesStore } from '../../../application/devices.store';
+import { OverloadAlertBannerComponent } from '../../../../alerts/presentation/components/overload-alert-banner/overload-alert-banner.component';
 
 /**
  * Devices view component.
@@ -12,7 +13,7 @@ import { DevicesStore } from '../../../application/devices.store';
 @Component({
   selector: 'app-devices-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, OverloadAlertBannerComponent],
   templateUrl: './devices-view.component.html',
   styleUrls: ['./devices-view.component.css'],
 })
