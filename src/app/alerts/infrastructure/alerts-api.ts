@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import { environment } from '../../../environments/environment';
 import { AlertResource, AlertSummaryResource } from './alert-response';
@@ -19,29 +19,59 @@ export class AlertsApi extends BaseApi {
     super();
   }
 
-  /**
-   * Obtiene la lista completa de alertas registradas.
-   */
-  getAlerts(): Observable<Alert[]> {
-    return this.http.get<AlertResource[]>(`${this.baseUrl}${environment.alertsEndpointPath}`).pipe(
+  private getCurrentUserId(): number {
+    try {
+      const raw = localStorage.getItem('userId') || localStorage.getItem('currentUserId');
+      if (raw) {
+        const parsed = Number(raw);
+        if (!Number.isNaN(parsed) && parsed > 0) return parsed;
+      }
+    } catch {
+      // ignore storage errors in tests
+    }
+    return 1;
+  }
+
+  getAlerts(userId: number = this.getCurrentUserId()): Observable<Alert[]> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<AlertResource[]>(`${this.baseUrl}${environment.alertsEndpointPath}`, { params }).pipe(
       map(res => this.alertAssembler.toEntities(res)),
       catchError(err => throwError(() => new Error('Error al cargar alertas: ' + err.message)))
     );
   }
 
-  /**
-   * Obtiene las alertas recientes (compatible con widgets de dashboard).
-   */
-  getRecentAlerts(): Observable<Alert[]> {
-    return this.getAlerts();
+  getCriticalAlerts(userId: number = this.getCurrentUserId()): Observable<Alert[]> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.get<AlertResource[]>(`${this.baseUrl}${environment.alertsEndpointPath}/critical`, { params }).pipe(
+      map(res => this.alertAssembler.toEntities(res)),
+      catchError(() =>
+        this.getAlerts(userId).pipe(
+          map(alerts => alerts.filter(a => a.isCritical)),
+          catchError(() => of([]))
+        )
+      )
+    );
   }
 
-  /**
-   * Obtiene las métricas agregadas del resumen de alertas.
-   */
-  getSummary(): Observable<AlertSummary> {
+  markAsRead(alertId: number): Observable<Alert> {
+    return this.http.patch<AlertResource>(
+      `${this.baseUrl}${environment.alertsEndpointPath}/${alertId}/read`,
+      {}
+    ).pipe(
+      map(res => this.alertAssembler.toEntity(res)),
+      catchError(err => throwError(() => new Error('Error al marcar alerta como leída: ' + err.message)))
+    );
+  }
+
+  getRecentAlerts(userId: number = this.getCurrentUserId()): Observable<Alert[]> {
+    return this.getAlerts(userId);
+  }
+
+  getSummary(userId: number = this.getCurrentUserId()): Observable<AlertSummary> {
+    const params = new HttpParams().set('userId', userId);
     return this.http.get<AlertSummaryResource[] | AlertSummaryResource>(
-      `${this.baseUrl}${environment.alertSummariesEndpointPath}`
+      `${this.baseUrl}${environment.alertSummariesEndpointPath}`,
+      { params }
     ).pipe(
       map(res => {
         const item = Array.isArray(res) ? res[0] : res;
