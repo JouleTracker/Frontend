@@ -8,6 +8,7 @@ export const environment = {
   consumptionHistoriesEndpointPath: '/consumption-histories',
   alertsEndpointPath: '/alerts',
   alertSummariesEndpointPath: '/alert-summaries',
+  monthlyGoalsEndpointPath: '/monthly-goals',
   devicesEndpointPath: '/devices',
   deviceSummariesEndpointPath: '/device-summaries',
   recommendationsEndpointPath: '/recommendations',
