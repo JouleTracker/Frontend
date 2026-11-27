@@ -5,6 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AreasStore, AreaMetrics } from '../../../application/areas.store';
 import { Area } from '../../../domain/model/area.entity';
+import {
+  parseNotificationRecipients,
+  notificationRecipientsValidator
+} from '../../../domain/model/notification-recipients';
 import { AreaResource } from '../../../infrastructure/area-response';
 import { AreasComparisonChartComponent } from '../../components/areas-comparison-chart/areas-comparison-chart.component';
 
@@ -70,6 +74,10 @@ export class AreasViewComponent {
       nonNullable: true,
       validators: [Validators.required]
     }),
+    notificationRecipients: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [notificationRecipientsValidator]
+    }),
     description: new FormControl<string>('', { nonNullable: true }),
     icon: new FormControl<string>('storefront', { nonNullable: true })
   });
@@ -81,6 +89,7 @@ export class AreasViewComponent {
     this.form.reset({
       name: '',
       floor: 'Piso 1',
+      notificationRecipients: '',
       description: '',
       icon: 'storefront'
     });
@@ -94,6 +103,7 @@ export class AreasViewComponent {
     this.form.patchValue({
       name: area.name,
       floor: area.floor,
+      notificationRecipients: area.notificationRecipients.join(', '),
       description: area.description,
       icon: area.icon
     });
@@ -101,6 +111,7 @@ export class AreasViewComponent {
   }
 
   closeModal(): void {
+    if (this.isSubmitting()) return;
     this.showModal.set(false);
     this.isSubmitting.set(false);
     this.formError.set(null);
@@ -119,6 +130,9 @@ export class AreasViewComponent {
     const payload: Partial<AreaResource> = {
       name: formValues.name.trim(),
       floor: formValues.floor,
+      notificationRecipients: parseNotificationRecipients(
+        formValues.notificationRecipients
+      ),
       description: formValues.description.trim(),
       icon: formValues.icon
     };
@@ -126,6 +140,7 @@ export class AreasViewComponent {
     if (this.isEditing() && this.editingAreaId()) {
       this.store.updateArea(this.editingAreaId()!, payload).subscribe({
         next: () => {
+          this.isSubmitting.set(false);
           this.closeModal();
         },
         error: (err) => {
@@ -136,6 +151,7 @@ export class AreasViewComponent {
     } else {
       this.store.createArea(payload).subscribe({
         next: () => {
+          this.isSubmitting.set(false);
           this.closeModal();
         },
         error: (err) => {

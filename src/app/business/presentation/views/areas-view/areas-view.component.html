@@ -139,6 +139,15 @@
               </div>
             }
 
+            <div class="metric-item">
+              <span class="m-label">
+                {{ 'AREAS.RECIPIENTS_COUNT' | translate }}
+              </span>
+              <span class="m-val">
+                {{ item.area.notificationRecipients.length }}
+              </span>
+            </div>
+
             <footer class="area-card-actions">
               <button
                 type="button"
@@ -234,6 +243,31 @@
             class="form-textarea"
             [placeholder]="'AREAS.DESC_PH' | translate"
           ></textarea>
+        </div>
+
+        <!-- US-32 / TS-19: Shared critical alert recipients -->
+        <div class="form-group">
+          <label for="notificationRecipients" class="form-label">
+            {{ 'AREAS.RECIPIENTS_LABEL' | translate }}
+          </label>
+
+          <textarea
+            id="notificationRecipients"
+            formControlName="notificationRecipients"
+            rows="3"
+            class="form-textarea"
+            [placeholder]="'AREAS.RECIPIENTS_PLACEHOLDER' | translate"
+          ></textarea>
+
+          <p>
+            {{ 'AREAS.RECIPIENTS_HINT' | translate }}
+          </p>
+
+          @if (form.controls.notificationRecipients.hasError('invalidRecipients')) {
+            <span class="field-error" role="alert">
+              {{ 'AREAS.RECIPIENTS_INVALID' | translate }}
+            </span>
+          }
         </div>
 
         <!-- Selector de Ícono -->

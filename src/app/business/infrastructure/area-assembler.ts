@@ -9,7 +9,8 @@ export class AreaAssembler {
       description: resource.description,
       floor: resource.floor,
       icon: resource.icon,
-      userId: resource.userId
+      userId: resource.userId,
+      notificationRecipients: resource.notificationRecipients ?? []
     });
   }
 
@@ -24,7 +25,8 @@ export class AreaAssembler {
       description: entity.description,
       floor: entity.floor,
       icon: entity.icon,
-      userId: entity.userId
+      userId: entity.userId,
+      notificationRecipients: [...entity.notificationRecipients]
     };
   }
 }

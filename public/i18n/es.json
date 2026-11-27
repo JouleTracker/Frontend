@@ -866,6 +866,11 @@
     "TOAST_REC_ERROR": "No se pudo enviar la recomendación. Inténtalo nuevamente."
   },
   "AREAS": {
+    "RECIPIENTS_LABEL": "Destinatarios de alertas críticas",
+    "RECIPIENTS_PLACEHOLDER": "correo@ejemplo.com, supervisor@ejemplo.com",
+    "RECIPIENTS_HINT": "Agrega correos autorizados de tus colaboradores, separados por comas, punto y coma o saltos de línea. Activa también las notificaciones por correo en Configuración.",
+    "RECIPIENTS_INVALID": "Verifica que todos los correos electrónicos sean válidos.",
+    "RECIPIENTS_COUNT": "Destinatarios de alertas",
     "TITLE": "Áreas del Negocio",
     "SUBTITLE": "Organiza tu establecimiento en zonas físicas y analiza el consumo eléctrico por área.",
     "ADD_AREA": "Agregar Área",

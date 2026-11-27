@@ -866,6 +866,11 @@
     "TOAST_REC_ERROR": "Unable to send recommendation. Please try again."
   },
   "AREAS": {
+    "RECIPIENTS_LABEL": "Critical alert recipients",
+    "RECIPIENTS_PLACEHOLDER": "email@example.com, supervisor@example.com",
+    "RECIPIENTS_HINT": "Add authorized collaborator emails separated by commas, semicolons or line breaks. Enable email notifications in Settings as well.",
+    "RECIPIENTS_INVALID": "Make sure all email addresses are valid.",
+    "RECIPIENTS_COUNT": "Alert recipients",
     "TITLE": "Business Areas",
     "SUBTITLE": "Organize your facility into physical zones and analyze electricity consumption by area.",
     "ADD_AREA": "Add Area",
