@@ -1,0 +1,44 @@
+.sensors-container {
+  padding: 32px 40px;
+  background-color: #eef3f0;
+  min-height: 100vh;
+}
+.sensors-header { margin-bottom: 20px; }
+.sensors-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 4px;
+}
+.subtitle { font-size: 13px; color: #4b5563; margin: 0; }
+.sensors-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.table-responsive { overflow-x: auto; }
+.sensors-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sensors-table th {
+  background: #f4f5f6;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+}
+.sensors-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+.cond-pill {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.cond-over { background: #fee2e2; color: #b91c1c; }
+.cond-ok { background: #dcfce7; color: #15803d; }
+.empty-msg { text-align: center; color: #6b7280; padding: 24px; }

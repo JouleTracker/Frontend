@@ -1,0 +1,47 @@
+<div class="sensors-container">
+  <app-overload-alert-banner />
+
+  <header class="sensors-header">
+    <div>
+      <h1>Sensores</h1>
+      <p class="subtitle">Monitoreo de telemetría y umbrales de sobrecarga por sensor</p>
+    </div>
+  </header>
+
+  <section class="sensors-card">
+    <div class="table-responsive">
+      <table class="sensors-table">
+        <thead>
+          <tr>
+            <th>Sensor / Dispositivo</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Potencia actual</th>
+            <th>Límite configurado</th>
+            <th>Condición</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (device of store.devices(); track device.id) {
+            <tr>
+              <td><strong>{{ device.name }}</strong></td>
+              <td>{{ device.location }}</td>
+              <td>{{ device.status }}</td>
+              <td>{{ device.currentPowerKw | number:'1.2-2' }} kW</td>
+              <td>{{ device.powerLimitKw | number:'1.2-2' }} kW</td>
+              <td>
+                <span class="cond-pill" [class.cond-over]="device.currentPowerKw > device.powerLimitKw" [class.cond-ok]="device.currentPowerKw <= device.powerLimitKw">
+                  {{ device.currentPowerKw > device.powerLimitKw ? 'Sobrecarga' : 'Normal' }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-msg">No hay sensores registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -9,6 +9,9 @@ const consumptionRoutes = () =>
 const devicesRoutes = () =>
   import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
 
+const sensorsView = () =>
+  import('./devices/presentation/views/sensors-view/sensors-view.component').then((m) => m.SensorsViewComponent);
+
 const alertsRoutes = () =>
   import('./alerts/presentation/alerts.routes').then((m) => m.alertsRoutes);
 
@@ -17,15 +20,11 @@ const blankPage = () =>
 
 const baseTitle = 'JouleTracker';
 
-/**
- * Root routing configuration for JouleTracker.
- *
- * Implements Domain-Driven Design (DDD) with lazy-loaded bounded context routes.
- */
 export const routes: Routes = [
   { path: 'inicio', loadComponent: homeView, title: `${baseTitle} - Inicio` },
   { path: 'consumo', loadChildren: consumptionRoutes },
   { path: 'dispositivos', loadChildren: devicesRoutes },
+  { path: 'sensores', loadComponent: sensorsView, title: `${baseTitle} - Sensores` },
   { path: 'alertas', loadChildren: alertsRoutes },
   { path: 'reportes', loadComponent: blankPage, title: `${baseTitle} - Reportes` },
   { path: 'recomendaciones', loadComponent: blankPage, title: `${baseTitle} - Recomendaciones` },
