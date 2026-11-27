@@ -40,6 +40,30 @@ export interface ConsumptionHistoryResource extends BaseResource {
   status: 'Normal' | 'Alto';
 }
 
+export interface MonthlyGoalResource extends BaseResource {
+  userId: number;
+  targetKwh: number;
+  year: number;
+  month: number;
+  currentKwh: number;
+  progressPercentage: number;
+  remainingKwh: number;
+  exceeded: boolean;
+}
+
+export interface CreateMonthlyGoalPayload {
+  userId: number;
+  targetKwh: number;
+  year?: number;
+  month?: number;
+}
+
+export interface UpdateMonthlyGoalPayload {
+  targetKwh: number;
+  year?: number;
+  month?: number;
+}
+
 export type ConsumptionSummaryResponse = ConsumptionSummaryResource;
 export type EnergyReadingResponse = EnergyReadingResource[];
 export type DeviceDistributionResponse = DeviceDistributionResource[];
