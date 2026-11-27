@@ -248,7 +248,22 @@
     "LAST_LIVE_IOT": "Telemetría IoT en vivo",
     "LAST_UPDATED": "Recién actualizado",
     "LAST_OFF": "Apagado",
-    "LAST_CREATED": "Recién registrado"
+    "LAST_CREATED": "Recién registrado",
+    "FIELD_ICON": "Ícono o Avatar Visual del Equipo",
+    "ICON_HINT": "Elige un ícono distintivo para identificar rápidamente equipos comerciales o del hogar.",
+    "ICON_ARIA": "Seleccionar ícono visual del equipo",
+    "ICON_LABELS": {
+      "REFRIGERATION": "Refrigeración",
+      "OVEN": "Horno / Cocina",
+      "HVAC": "Climatización",
+      "LIGHTING": "Iluminación",
+      "MACHINERY": "Maquinaria",
+      "OFFICE": "Oficina / POS",
+      "ENTERTAINMENT": "Entretenimiento",
+      "COFFEE": "Cafetería",
+      "HOME": "Hogar",
+      "GENERAL": "General"
+    }
   },
   "IOT": {
     "TITLE": "Sensores IoT",

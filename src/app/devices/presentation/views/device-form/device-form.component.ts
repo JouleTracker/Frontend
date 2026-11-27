@@ -6,6 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { DevicesStore } from '../../../application/devices.store';
 import { DevicesApi } from '../../../infrastructure/devices-api';
 import { Device, DeviceStatus } from '../../../domain/model/device.entity';
+import {
+  DEVICE_ICON_OPTIONS,
+  DeviceIconOption,
+  getDefaultIconIdForCategory,
+  getDeviceIconOption,
+  getSavedDeviceIconId,
+  saveDeviceIconId
+} from '../../../domain/model/device-icon.util';
 import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { DeviceResource } from '../../../infrastructure/devices-response';
@@ -75,6 +83,9 @@ export class DeviceFormComponent implements OnInit {
     'Otros'
   ];
 
+  readonly iconOptions = DEVICE_ICON_OPTIONS;
+  private userPickedIcon = false;
+
   isEditMode = false;
   deviceId = 0;
   initialSensorId: number | null = null;
@@ -96,6 +107,9 @@ export class DeviceFormComponent implements OnInit {
     category: new FormControl<string>('Hogar', {
       nonNullable: true,
       validators: [Validators.required]
+    }),
+    icon: new FormControl<string>(getDefaultIconIdForCategory('Hogar'), {
+      nonNullable: true
     }),
     status: new FormControl<DeviceStatus>('Apagado', {
       nonNullable: true,
@@ -124,6 +138,12 @@ export class DeviceFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.form.controls.category.valueChanges.subscribe((category) => {
+      if (!this.isEditMode && !this.userPickedIcon) {
+        this.form.controls.icon.setValue(getDefaultIconIdForCategory(category));
+      }
+    });
+
     const idParam = this.route.snapshot.paramMap.get('id');
 
     if (!idParam || idParam === 'nuevo') {
@@ -159,6 +179,15 @@ export class DeviceFormComponent implements OnInit {
     }
   }
 
+  selectIcon(iconId: string): void {
+    this.userPickedIcon = true;
+    this.form.controls.icon.setValue(iconId);
+  }
+
+  selectedIconOption(): DeviceIconOption {
+    return getDeviceIconOption(this.form.controls.icon.value, this.form.controls.category.value);
+  }
+
   private populateForm(dev: Device): void {
     this.device.set(dev);
 
@@ -169,10 +198,13 @@ export class DeviceFormComponent implements OnInit {
     if ((initialStatus as unknown as string) === 'Encendido') initialStatus = 'En línea';
     if ((initialStatus as unknown as string) === 'Standby') initialStatus = 'En espera';
 
+    const savedIconId = getSavedDeviceIconId(dev.id) ?? getDefaultIconIdForCategory(dev.category);
+
     this.form.patchValue({
       name: dev.name,
       location: dev.location,
       category: dev.category,
+      icon: savedIconId,
       status: initialStatus,
       assignedSensorId: this.initialSensorId
     });
@@ -225,6 +257,7 @@ export class DeviceFormComponent implements OnInit {
 
       this.store.updateDevice(this.deviceId, changes).subscribe({
         next: () => {
+          saveDeviceIconId(this.deviceId, formValues.icon);
           this.syncSensorAssignment(this.deviceId, changes.name!, changes.category!, sensorId);
           this.submitting.set(false);
           this.router.navigate(['/dispositivos']);
@@ -249,6 +282,7 @@ export class DeviceFormComponent implements OnInit {
 
       this.store.createDevice(newDevice).subscribe({
         next: (createdDev) => {
+          saveDeviceIconId(createdDev.id, formValues.icon);
           if (sensorId) {
             this.syncSensorAssignment(createdDev.id, createdDev.name, createdDev.category, sensorId);
           }

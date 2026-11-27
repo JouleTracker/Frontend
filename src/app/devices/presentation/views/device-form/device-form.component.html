@@ -135,6 +135,42 @@
           </span>
         </div>
 
+        <!-- Visual Equipment Icon / Avatar Selector (Heuristic #4) -->
+        <div class="form-group">
+          <span class="form-label" id="deviceIconLabel">
+            {{ 'DEVICES.FIELD_ICON' | translate }}
+          </span>
+          <div
+            class="icon-picker-grid"
+            role="radiogroup"
+            aria-labelledby="deviceIconLabel"
+            [attr.aria-label]="'DEVICES.ICON_ARIA' | translate"
+          >
+            @for (opt of iconOptions; track opt.id) {
+              <button
+                type="button"
+                class="icon-option-btn"
+                role="radio"
+                [attr.aria-checked]="form.controls.icon.value === opt.id"
+                [class.selected]="form.controls.icon.value === opt.id"
+                (click)="selectIcon(opt.id)"
+              >
+                <span
+                  class="icon-option-avatar"
+                  [style.background]="opt.bgColor"
+                  [style.color]="opt.color"
+                >
+                  <mat-icon>{{ opt.icon }}</mat-icon>
+                </span>
+                <span class="icon-option-label">{{ opt.labelKey | translate }}</span>
+              </button>
+            }
+          </div>
+          <span class="field-hint">
+            {{ 'DEVICES.ICON_HINT' | translate }}
+          </span>
+        </div>
+
         <div class="section-divider"></div>
 
         <!-- Status Field -->

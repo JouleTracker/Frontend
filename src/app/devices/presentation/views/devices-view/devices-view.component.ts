@@ -7,6 +7,7 @@ import { DevicesStore } from '../../../application/devices.store';
 import { SensorsStore } from '../../../../iot/application/sensors.store';
 import { Sensor } from '../../../../iot/domain/model/sensor.entity';
 import { Device } from '../../../domain/model/device.entity';
+import { DeviceIconOption, resolveDeviceIconOption } from '../../../domain/model/device-icon.util';
 import { Sidebar } from '../../../../shared/presentation/components/sidebar/sidebar';
 import { IamStore } from '../../../../iam/application/iam.store';
 
@@ -109,6 +110,10 @@ export class DevicesViewComponent {
 
   getSensorForDevice(deviceId: number): Sensor | undefined {
     return this.sensorsStore.sensors().find((s) => s.assignedDeviceId === deviceId);
+  }
+
+  getDeviceIcon(device: Device): DeviceIconOption {
+    return resolveDeviceIconOption(device.id, device.category);
   }
 
   /** True si el dispositivo tiene un sensor vinculado que está desconectado (sin telemetría). */
