@@ -1,115 +1,36 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { RecommendationsApi } from '../infrastructure/recommendations-api';
-import { RecommendationItem, RecommendationMetrics } from '../domain/model/recommendation.entity';
+import {
+  CreateRecommendationPayload,
+  RecommendationItem,
+  RecommendationMetrics
+} from '../domain/model/recommendation.entity';
 import { IamStore } from '../../iam/application/iam.store';
-import { ConsumptionStore } from '../../consumption/application/consumption.store';
-import { SensorsStore } from '../../iot/application/sensors.store';
-import { DevicesStore } from '../../devices/application/devices.store';
-import { EnergyCalculationService, ELECTRICITY_TARIFF_PER_KWH } from '../../shared/domain/model/energy-calculation.constants';
+import { EnergyCalculationService } from '../../shared/domain/model/energy-calculation.constants';
 
 @Injectable({ providedIn: 'root' })
 export class RecommendationsStore {
   private readonly api = inject(RecommendationsApi);
   private readonly iamStore = inject(IamStore);
-  private readonly consumptionStore = inject(ConsumptionStore);
-  private readonly sensorsStore = inject(SensorsStore);
-  private readonly devicesStore = inject(DevicesStore);
   private readonly translate = inject(TranslateService);
-  private readonly langTick = toSignal(this.translate.onLangChange);
 
-  private readonly _apiItems = signal<RecommendationItem[]>([]);
+  private readonly _items = signal<RecommendationItem[]>([]);
   readonly selectedCategory = signal<string>('Todas');
   readonly selectedSort = signal<'impact' | 'name'>('impact');
 
   readonly isLoading = signal<boolean>(false);
+  readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
-  /**
-   * Generación reactiva de diagnósticos inteligentes a partir de la telemetría viva de sensores y dispositivos
-   */
-  readonly dynamicRecommendations = computed<RecommendationItem[]>(() => {
-    this.langTick();
-    const list: RecommendationItem[] = [];
-    const sensors = this.sensorsStore.sensors();
-    const devices = this.devicesStore.devices();
-
-    sensors.forEach((s) => {
-      const matchedDevice = devices.find(d => d.id === s.assignedDeviceId);
-      const deviceName = matchedDevice?.name || s.assignedDeviceName || s.name;
-      const category = matchedDevice?.category || s.assignedDeviceCategory || 'Hogar';
-
-      // 1. REGLA: Sensor superó su límite recomendado diario
-      if (s.recommendedDailyKwh && s.todayKwh > s.recommendedDailyKwh) {
-        const excessKwh = Number((s.todayKwh - s.recommendedDailyKwh).toFixed(2));
-        const excessPercent = Math.round((excessKwh / s.recommendedDailyKwh) * 100);
-        const monthlyExcessKwh = Number((excessKwh * 30).toFixed(1));
-        const estimatedMonthlySavingSoles = (monthlyExcessKwh * ELECTRICITY_TARIFF_PER_KWH).toFixed(2);
-        const co2Kg = (monthlyExcessKwh * 0.25).toFixed(1);
-
-        list.push({
-          id: 8000 + s.id,
-          title: this.translate.instant('RECOMMENDATIONS.DYN_OPT_TITLE', { device: deviceName }),
-          description: this.translate.instant('RECOMMENDATIONS.DYN_OPT_DESC', {
-            today: s.todayKwh.toFixed(2),
-            limit: s.recommendedDailyKwh.toFixed(2),
-            pct: excessPercent,
-            saving: estimatedMonthlySavingSoles,
-            co2: co2Kg
-          }),
-          potentialSaving: `${Math.min(excessPercent, 40)}%`,
-          category: category,
-          actionUrl: '/dispositivos'
-        } as unknown as RecommendationItem);
-      }
-
-      // 2. REGLA: Consumo fantasma
-      if (s.currentPowerKw > 0.015 && s.currentPowerKw < 0.08 && s.todayKwh > 0.3) {
-        const watts = Math.round(s.currentPowerKw * 1000);
-        const phantomMonthlyKwh = Number((s.currentPowerKw * 24 * 30).toFixed(1));
-        const phantomSavingSoles = (phantomMonthlyKwh * ELECTRICITY_TARIFF_PER_KWH).toFixed(2);
-
-        list.push({
-          id: 8500 + s.id,
-          title: this.translate.instant('RECOMMENDATIONS.DYN_VAMPIRE_TITLE', { device: deviceName }),
-          description: this.translate.instant('RECOMMENDATIONS.DYN_VAMPIRE_DESC', {
-            watts,
-            saving: phantomSavingSoles
-          }),
-          potentialSaving: '8%',
-          category: 'Eficiencia',
-          actionUrl: '/dispositivos'
-        } as unknown as RecommendationItem);
-      }
-
-      // 3. REGLA: Climatización de alta potencia sostenida
-      if (category.toLowerCase() === 'climatización' && s.currentPowerKw >= 0.8) {
-        list.push({
-          id: 8800 + s.id,
-          title: this.translate.instant('RECOMMENDATIONS.DYN_THERMAL_TITLE', { device: deviceName }),
-          description: this.translate.instant('RECOMMENDATIONS.DYN_THERMAL_DESC', {
-            kw: s.currentPowerKw.toFixed(2)
-          }),
-          potentialSaving: '15%',
-          category: 'Climatización',
-          actionUrl: '/dispositivos'
-        } as unknown as RecommendationItem);
-      }
-    });
-
-    return list;
-  });
-
-  /** Lista unificada: Recomendaciones de analítica viva + catálogo de la API */
-  readonly allRecommendations = computed<RecommendationItem[]>(() => {
-    return [...this.dynamicRecommendations(), ...this._apiItems()];
-  });
+  /** Lista de recomendaciones obtenidas directamente desde el backend */
+  readonly allRecommendations = computed<RecommendationItem[]>(() => this._items());
 
   /** Categorías dinámicas disponibles para el filtro */
   readonly availableCategories = computed<string[]>(() => {
     const set = new Set<string>();
-    this.allRecommendations().forEach((r: RecommendationItem) => {
+    this._items().forEach((r) => {
       if (r.category) {
         set.add(r.category);
       }
@@ -118,17 +39,21 @@ export class RecommendationsStore {
   });
 
   readonly filteredRecommendations = computed<RecommendationItem[]>(() => {
-    let result = [...this.allRecommendations()];
+    let result = [...this._items()];
     const category = this.selectedCategory();
 
     if (category !== 'Todas') {
-      result = result.filter((item) =>
-        this.normalizeText(item.category) === this.normalizeText(category)
+      result = result.filter(
+        (item) => this.normalizeText(item.category) === this.normalizeText(category)
       );
     }
 
     if (this.selectedSort() === 'impact') {
-      result.sort((a, b) => this.parseSaving(b.potentialSaving) - this.parseSaving(a.potentialSaving));
+      result.sort(
+        (a, b) =>
+          b.estimatedSavingKwh - a.estimatedSavingKwh ||
+          b.estimatedSavingAmount - a.estimatedSavingAmount
+      );
     } else {
       result.sort((a, b) => a.title.localeCompare(b.title));
     }
@@ -136,26 +61,27 @@ export class RecommendationsStore {
     return result;
   });
 
-  /** Métricas de impacto y ahorro proyectado */
+  /** Métricas reales calculadas exclusivamente a partir de las recomendaciones del backend */
   readonly metrics = computed<RecommendationMetrics>(() => {
-    const items = this.allRecommendations();
+    const items = this._items();
 
-    let savedKwhMonthly = this.consumptionStore.summary()?.savedKwhMonthly ?? 0;
-    if (savedKwhMonthly === 0) {
-      const dailyKwh = this.devicesStore.devices().reduce((acc, d) => acc + d.todayKwh, 0);
-      savedKwhMonthly = Number((dailyKwh * 30 * 0.15).toFixed(2));
-    }
-
-    const maxReduction = items.reduce(
-      (max, item) => Math.max(max, this.parseSaving(item.potentialSaving)),
-      0
+    const totalEstimatedSavingKwh = Number(
+      items.reduce((acc, item) => acc + (item.estimatedSavingKwh ?? 0), 0).toFixed(2)
     );
+    const totalEstimatedSavingAmount = Number(
+      items.reduce((acc, item) => acc + (item.estimatedSavingAmount ?? 0), 0).toFixed(2)
+    );
+    const activeCount = items.filter((item) => !item.completed).length;
+    const completedCount = items.filter((item) => item.completed).length;
 
     return {
-      potentialSavings: `S/ ${EnergyCalculationService.calculateCost(savedKwhMonthly).toFixed(2)}`,
-      estimatedReduction: `${maxReduction || 15}%`,
-      co2Avoided: `${EnergyCalculationService.calculateAvoidedEmissions(savedKwhMonthly)} Kg`,
-      activeCount: items.length
+      totalEstimatedSavingKwh,
+      totalEstimatedSavingAmount,
+      potentialSavings: `S/ ${totalEstimatedSavingAmount.toFixed(2)}`,
+      estimatedReduction: `${totalEstimatedSavingKwh.toFixed(1)} kWh`,
+      co2Avoided: `${EnergyCalculationService.calculateAvoidedEmissions(totalEstimatedSavingKwh)} Kg`,
+      activeCount,
+      completedCount
     };
   });
 
@@ -163,18 +89,26 @@ export class RecommendationsStore {
     effect(() => {
       const userId = this.iamStore.currentUserId();
       if (userId) {
-        this.loadAll();
+        this.loadAll(userId);
+      } else {
+        this._items.set([]);
       }
     });
   }
 
-  loadAll(): void {
+  loadAll(targetUserId?: number): void {
+    const userId = targetUserId ?? this.iamStore.currentUserId();
+    if (!userId) {
+      this._items.set([]);
+      return;
+    }
+
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.api.getRecommendations().subscribe({
+    this.api.getRecommendations(userId).subscribe({
       next: (items) => {
-        this._apiItems.set(items);
+        this._items.set(items);
         this.isLoading.set(false);
       },
       error: () => {
@@ -184,18 +118,31 @@ export class RecommendationsStore {
     });
   }
 
+  async createRecommendation(payload: CreateRecommendationPayload): Promise<RecommendationItem | null> {
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+
+    try {
+      const created = await firstValueFrom(this.api.createRecommendation(payload));
+      const currentUserId = this.iamStore.currentUserId();
+      if (currentUserId && created.userId === currentUserId) {
+        this._items.update((prev) => [created, ...prev]);
+      }
+      this.isSubmitting.set(false);
+      return created;
+    } catch {
+      this.errorMessage.set(this.translate.instant('RECOMMENDATIONS.CREATE_ERROR'));
+      this.isSubmitting.set(false);
+      return null;
+    }
+  }
+
   setCategory(category: string): void {
     this.selectedCategory.set(category);
   }
 
   setSort(sort: 'impact' | 'name'): void {
     this.selectedSort.set(sort);
-  }
-
-  private parseSaving(potentialSaving: string | undefined): number {
-    if (!potentialSaving) return 0;
-    const parsed = Number(String(potentialSaving).replace('%', '').trim());
-    return isNaN(parsed) ? 0 : parsed;
   }
 
   private normalizeText(text: string): string {

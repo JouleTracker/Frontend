@@ -2,6 +2,7 @@ import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RecommendationsStore } from '../../../application/recommendations.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import {
@@ -12,8 +13,6 @@ interface CategoryOption {
   label: string;
   value: string;
 }
-
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-recommendations-view',
@@ -34,6 +33,10 @@ export class RecommendationsViewComponent implements OnInit {
 
   private readonly categoryKeyMap: Record<string, string> = {
     'Todas': 'RECOMMENDATIONS.CAT_ALL',
+    'SAVING': 'RECOMMENDATIONS.CAT_SAVING',
+    'EFFICIENCY': 'RECOMMENDATIONS.CAT_EFFICIENCY',
+    'MAINTENANCE': 'RECOMMENDATIONS.CAT_MAINTENANCE',
+    'GENERAL': 'RECOMMENDATIONS.CAT_GENERAL',
     'Eficiencia': 'RECOMMENDATIONS.CAT_EFFICIENCY',
     'Hogar': 'DEVICES.CAT_HOME',
     'Maquinaria': 'DEVICES.CAT_MACHINERY',

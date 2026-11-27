@@ -458,3 +458,113 @@
   text-decoration: underline;
 }
 
+/* Barra compacta de accesibilidad (A- / A+ y Alto Contraste) */
+.sidebar-a11y-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.a11y-font-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 3px 6px;
+}
+
+.a11y-pill-btn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1f2937;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.a11y-pill-btn:hover:not(:disabled) {
+  background-color: #dff2e1;
+  color: #14532d;
+}
+
+.a11y-pill-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.a11y-scale-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #4b5563;
+  min-width: 30px;
+  text-align: center;
+}
+
+.a11y-contrast-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.a11y-contrast-btn.active {
+  background-color: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.a11y-contrast-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* Soporte global de alto contraste aplicado al root */
+:host-context(html.high-contrast) .sidebar {
+  background-color: #090d16;
+  color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+:host-context(html.high-contrast) .nav-item {
+  color: #ffffff !important;
+}
+
+:host-context(html.high-contrast) .nav-item.active {
+  background-color: #facc15 !important;
+  color: #090d16 !important;
+}
+
+:host-context(html.high-contrast) .nav-item.active .nav-icon,
+:host-context(html.high-contrast) .nav-item.active .nav-label {
+  color: #090d16 !important;
+}
+
+:host-context(html.high-contrast) .user-card,
+:host-context(html.high-contrast) .a11y-font-group,
+:host-context(html.high-contrast) .a11y-contrast-btn {
+  background-color: #111827;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+:host-context(html.high-contrast) .user-name,
+:host-context(html.high-contrast) .user-email,
+:host-context(html.high-contrast) .a11y-scale-label {
+  color: #ffffff;
+}

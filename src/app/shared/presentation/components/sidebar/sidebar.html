@@ -45,8 +45,10 @@
 }
 
 <aside
+  #sidebarAside
   class="sidebar"
   [class.drawer-open]="isMobileDrawerOpen()"
+  (keydown.escape)="closeMobileDrawer()"
   [attr.aria-label]="'SIDEBAR.MAIN_NAV' | translate">
 
   <!-- Cabecera del Drawer en Mobile (Logo + Botón de cerrar) -->
@@ -137,6 +139,39 @@
 
   <!-- Perfil de usuario en el pie -->
   <div class="sidebar-footer">
+    <!-- Barra compacta de accesibilidad (A- / A+ y Alto Contraste) -->
+    <div class="sidebar-a11y-bar" role="group" aria-label="Accessibility controls">
+      <div class="a11y-font-group">
+        <button
+          type="button"
+          class="a11y-pill-btn"
+          (click)="decreaseFontSize()"
+          [disabled]="fontScalePercent() <= 85"
+          aria-label="Decrease font size">
+          A-
+        </button>
+        <span class="a11y-scale-label">{{ fontScalePercent() }}%</span>
+        <button
+          type="button"
+          class="a11y-pill-btn"
+          (click)="increaseFontSize()"
+          [disabled]="fontScalePercent() >= 130"
+          aria-label="Increase font size">
+          A+
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="a11y-contrast-btn"
+        [class.active]="highContrast()"
+        [attr.aria-pressed]="highContrast()"
+        (click)="toggleHighContrast()">
+        <mat-icon class="a11y-contrast-icon">contrast</mat-icon>
+        <span>Contraste</span>
+      </button>
+    </div>
+
     <div class="user-card">
       <div class="user-info-wrapper">
         <div class="user-avatar">
