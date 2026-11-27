@@ -136,21 +136,33 @@
             @for (device of store.filteredDevices(); track device.id) {
               <tr>
                 <td>
-                  <div class="device-name-cell">
-                    <strong>{{ device.name }}</strong>
-                    <div class="meta-tags">
-                      <span class="location-tag">{{ device.location }}</span>
-                      @if (getSensorForDevice(device.id); as sensor) {
-                        <span class="sensor-tag" [attr.title]="'DEVICES.MONITORED_BY' | translate:{ name: sensor.name, model: sensor.model }">
-                          <mat-icon>sensors</mat-icon> {{ sensor.model }}
-                        </span>
-                      } @else {
-                        <span class="sensor-tag tag-unassigned" [attr.title]="'DEVICES.NO_SENSOR_TITLE' | translate">
-                          <mat-icon>link_off</mat-icon> {{ 'DEVICES.NO_SENSOR' | translate }}
-                        </span>
-                      }
+                  @if (getDeviceIcon(device); as icon) {
+                    <div class="device-identity">
+                      <span
+                        class="device-avatar"
+                        [style.background]="icon.bgColor"
+                        [style.color]="icon.color"
+                        [attr.title]="icon.labelKey | translate"
+                      >
+                        <mat-icon>{{ icon.icon }}</mat-icon>
+                      </span>
+                      <div class="device-name-cell">
+                        <strong>{{ device.name }}</strong>
+                        <div class="meta-tags">
+                          <span class="location-tag">{{ device.location }}</span>
+                          @if (getSensorForDevice(device.id); as sensor) {
+                            <span class="sensor-tag" [attr.title]="'DEVICES.MONITORED_BY' | translate:{ name: sensor.name, model: sensor.model }">
+                              <mat-icon>sensors</mat-icon> {{ sensor.model }}
+                            </span>
+                          } @else {
+                            <span class="sensor-tag tag-unassigned" [attr.title]="'DEVICES.NO_SENSOR_TITLE' | translate">
+                              <mat-icon>link_off</mat-icon> {{ 'DEVICES.NO_SENSOR' | translate }}
+                            </span>
+                          }
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  }
                 </td>
                 <td>
                   <span class="status-badge" [ngClass]="getStatusClass(device.status)">
