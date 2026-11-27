@@ -270,12 +270,34 @@
               </div>
             </div>
 
+            @if (loadingHome()) {
+              <p role="status">{{ 'COMMON.LOADING' | translate }}</p>
+            }
+
+            @if (homeError()) {
+              <p class="form-message error" role="alert">
+                {{ homeError() }}
+              </p>
+              @if (!homeLoaded() && !loadingHome()) {
+                <button type="button" class="btn-primary"
+                  (click)="loadHome()">
+                  {{ 'SETTINGS.HOME_RETRY' | translate }}
+                </button>
+              }
+            }
+
+            @if (homeForm.invalid && homeForm.touched && homeLoaded()) {
+              <p class="field-error">
+                {{ 'SETTINGS.HOME_INVALID' | translate }}
+              </p>
+            }
+
             @if (homeMessage()) {
               <p class="form-message success">{{ homeMessage() }}</p>
             }
 
             <div class="action-btn-row">
-              <button type="submit" class="btn-primary" [disabled]="savingHome()">
+              <button type="submit" class="btn-primary" [disabled]="savingHome() || loadingHome() || !homeLoaded() || homeForm.invalid">
                 {{ savingHome() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_HOME_BTN' | translate) }}
               </button>
             </div>

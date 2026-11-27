@@ -476,6 +476,10 @@
     "LOAD_ERROR": "Error al cargar las recomendaciones."
   },
   "SETTINGS": {
+    "HOME_LOAD_ERROR": "No se pudo cargar la configuración del hogar.",
+    "HOME_SAVE_ERROR": "No se pudo guardar la configuración del hogar.",
+    "HOME_RETRY": "Reintentar",
+    "HOME_INVALID": "Verifica los datos y el número de ocupantes.",
     "TITLE": "Configuración",
     "SUBTITLE": "Personaliza tu cuenta y la configuración de tu hogar.",
     "PERSONAL_INFO": "Información personal",

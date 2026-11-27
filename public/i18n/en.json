@@ -476,6 +476,10 @@
     "LOAD_ERROR": "Error loading recommendations."
   },
   "SETTINGS": {
+    "HOME_LOAD_ERROR": "Unable to load home configuration.",
+    "HOME_SAVE_ERROR": "Unable to save home configuration.",
+    "HOME_RETRY": "Try again",
+    "HOME_INVALID": "Check your details and number of occupants.",
     "TITLE": "Settings",
     "SUBTITLE": "Customize your account and your home energy preferences.",
     "PERSONAL_INFO": "Personal information",
