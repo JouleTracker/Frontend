@@ -3,13 +3,15 @@ import {
   EnergyReadingResource,
   DeviceDistributionResource,
   ComparativeConsumptionResource,
-  ConsumptionHistoryResource
+  ConsumptionHistoryResource,
+  MonthlyGoalResource
 } from './consumption-response';
 import { ConsumptionSummary } from '../domain/model/consumption-summary.entity';
 import { EnergyReading } from '../domain/model/energy-reading.entity';
 import { DeviceDistribution } from '../domain/model/device-distribution.entity';
 import { ComparativeConsumption } from '../domain/model/comparative-consumption.entity';
 import { ConsumptionHistory } from '../domain/model/consumption-history.entity';
+import { MonthlyGoal } from '../domain/model/monthly-goal.entity';
 
 export class ConsumptionSummaryAssembler {
   toEntity(resource: ConsumptionSummaryResource): ConsumptionSummary {
@@ -88,5 +90,25 @@ export class ConsumptionHistoryAssembler {
 
   toEntities(resources: ConsumptionHistoryResource[]): ConsumptionHistory[] {
     return resources.map(r => this.toEntity(r));
+  }
+}
+
+export class MonthlyGoalAssembler {
+  toEntity(resource: MonthlyGoalResource): MonthlyGoal {
+    return new MonthlyGoal({
+      id: resource.id,
+      userId: resource.userId,
+      targetKwh: resource.targetKwh,
+      year: resource.year,
+      month: resource.month,
+      currentKwh: resource.currentKwh,
+      progressPercentage: resource.progressPercentage,
+      remainingKwh: resource.remainingKwh,
+      exceeded: resource.exceeded
+    });
+  }
+
+  toEntities(resources: MonthlyGoalResource[]): MonthlyGoal[] {
+    return (resources ?? []).map(r => this.toEntity(r));
   }
 }
