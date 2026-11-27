@@ -476,6 +476,12 @@
     "LOAD_ERROR": "Error loading recommendations."
   },
   "SETTINGS": {
+    "NOTIF_EMAIL": "Email",
+    "NOTIF_EMAIL_DESC": "Receive critical alerts by email.",
+    "NOTIF_WHATSAPP": "WhatsApp",
+    "NOTIF_WHATSAPP_DESC": "Save WhatsApp as a preferred channel. Delivery is not yet available.",
+    "NOTIFICATIONS_LOAD_ERROR": "Unable to load your notification preferences.",
+    "NOTIFICATIONS_SAVE_ERROR": "Unable to save your notification preferences.",
     "HOME_LOAD_ERROR": "Unable to load home configuration.",
     "HOME_SAVE_ERROR": "Unable to save home configuration.",
     "HOME_RETRY": "Try again",

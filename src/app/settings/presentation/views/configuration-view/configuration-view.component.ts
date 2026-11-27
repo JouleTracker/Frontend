@@ -2,6 +2,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeConfigurationApi } from '../../../infrastructure/home-configuration.api';
 import { HomeType } from '../../../domain/model/home-configuration.entity';
+import { NotificationPreferencesApi } from '../../../infrastructure/notification-preferences.api';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,6 +44,7 @@ export class ConfigurationViewComponent {
   readonly iamStore = inject(IamStore);
   private readonly iamApi = inject(IamApi);
   private readonly homeApi = inject(HomeConfigurationApi);
+  private readonly notificationsApi = inject(NotificationPreferencesApi);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
@@ -105,6 +107,14 @@ export class ConfigurationViewComponent {
     ],
     address: [this.user()?.business?.address ?? '', Validators.required]
   });
+
+  // Notification channels (US-38)
+  readonly emailEnabled = signal(false);
+  readonly whatsappEnabled = signal(false);
+  readonly loadingNotifications = signal(false);
+  readonly savingNotifications = signal(false);
+  readonly notificationsLoaded = signal(false);
+  readonly notificationsError = signal<string | null>(null);
 
   // Notification preferences
   readonly highConsumptionAlerts = signal(
@@ -283,6 +293,10 @@ export class ConfigurationViewComponent {
     if (this.isHomeowner() && this.user()?.id) {
       this.loadHome();
     }
+
+    if (this.user()?.id) {
+      this.loadNotifications();
+    }
   }
 
   loadHome(): void {
@@ -443,16 +457,109 @@ export class ConfigurationViewComponent {
     );
   }
 
+  loadNotifications(): void {
+    if (!this.user()?.id || this.loadingNotifications()) {
+      return;
+    }
+
+    this.loadingNotifications.set(true);
+    this.notificationsLoaded.set(false);
+    this.notificationsError.set(null);
+    this.notificationsMessage.set(null);
+
+    this.notificationsApi.getPreferences().subscribe({
+      next: (preferences) => {
+        this.loadingNotifications.set(false);
+
+        if (preferences.userId !== this.user()?.id) {
+          this.notificationsError.set(
+            this.translateMessage(
+              'SETTINGS.NOTIFICATIONS_LOAD_ERROR',
+              'No se pudieron cargar tus preferencias.'
+            )
+          );
+          return;
+        }
+
+        this.emailEnabled.set(preferences.emailEnabled);
+        this.whatsappEnabled.set(preferences.whatsappEnabled);
+        this.notificationsLoaded.set(true);
+      },
+      error: () => {
+        this.loadingNotifications.set(false);
+        this.notificationsError.set(
+          this.translateMessage(
+            'SETTINGS.NOTIFICATIONS_LOAD_ERROR',
+            'No se pudieron cargar tus preferencias.'
+          )
+        );
+      }
+    });
+  }
+
   saveNotifications(): void {
+    if (
+      this.savingNotifications() ||
+      !this.notificationsLoaded() ||
+      !this.user()?.id
+    ) {
+      return;
+    }
+
+    this.savingNotifications.set(true);
+    this.notificationsMessage.set(null);
+    this.notificationsError.set(null);
+
     const notifications: UserNotifications = {
       highConsumptionAlerts: this.highConsumptionAlerts(),
       maintenanceReminders: this.maintenanceReminders(),
       personalizedTips: this.personalizedTips()
     };
-    this.iamStore.updateProfile({ notifications });
-    this.notificationsMessage.set(
-      this.translateMessage('SETTINGS.NOTIFICATIONS_SAVED', 'Preferencias de notificación guardadas.')
-    );
+
+    this.notificationsApi.updatePreferences({
+      emailEnabled: this.emailEnabled(),
+      whatsappEnabled: this.whatsappEnabled()
+    }).subscribe({
+      next: (preferences) => {
+        this.savingNotifications.set(false);
+
+        if (preferences.userId !== this.user()?.id) {
+          this.notificationsLoaded.set(false);
+          this.notificationsError.set(
+            this.translateMessage(
+              'SETTINGS.NOTIFICATIONS_SAVE_ERROR',
+              'No se pudieron guardar tus preferencias.'
+            )
+          );
+          return;
+        }
+
+        this.emailEnabled.set(preferences.emailEnabled);
+        this.whatsappEnabled.set(preferences.whatsappEnabled);
+
+        // Preserve existing notification category preferences.
+        this.iamStore.updateProfile({ notifications });
+
+        const message = this.translateMessage(
+          'SETTINGS.NOTIFICATIONS_SAVED',
+          'Preferencias de notificación guardadas.'
+        );
+
+        this.notificationsMessage.set(message);
+        this.showToast('success', message);
+      },
+      error: () => {
+        this.savingNotifications.set(false);
+
+        const message = this.translateMessage(
+          'SETTINGS.NOTIFICATIONS_SAVE_ERROR',
+          'No se pudieron guardar tus preferencias.'
+        );
+
+        this.notificationsError.set(message);
+        this.showToast('error', message);
+      }
+    });
   }
 
   /**
