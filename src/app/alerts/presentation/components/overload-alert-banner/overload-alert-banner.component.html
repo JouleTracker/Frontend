@@ -1,0 +1,93 @@
+@if (store.primaryOverloadAlert(); as primary) {
+  <section class="overload-banner" role="alert" aria-live="assertive">
+    <div class="banner-left">
+      <div class="banner-badge-icon">
+        <mat-icon>warning_amber</mat-icon>
+      </div>
+      <div class="banner-copy">
+        <div class="banner-title-row">
+          <span class="critical-pill">SOBRECARGA DETECTADA</span>
+          <strong class="banner-title">{{ primary.title }}</strong>
+          @if (store.criticalOverloadAlerts().length > 1) {
+            <span class="extra-count">+{{ store.criticalOverloadAlerts().length - 1 }} más</span>
+          }
+        </div>
+        <p class="banner-desc">
+          {{ primary.dynamicMessage }} — Desconecta equipos de alto consumo para prevenir daños o cortes eléctricos.
+        </p>
+      </div>
+    </div>
+
+    <div class="banner-actions">
+      <button type="button" class="btn-banner-outline" (click)="openModal(primary)">
+        Ver detalle
+      </button>
+      <button type="button" class="btn-banner-danger" (click)="goToDevices()">
+        Revisar dispositivos
+      </button>
+      <button
+        type="button"
+        class="btn-banner-ack"
+        [disabled]="store.updatingId() === primary.id"
+        (click)="acknowledgeAlert(primary)">
+        Marcar leída
+      </button>
+    </div>
+  </section>
+}
+
+@if (modalOpen() && selectedAlert(); as modalAlert) {
+  <div class="overload-modal-backdrop" (click)="closeModal()" role="dialog" aria-modal="true" aria-labelledby="overload-modal-title">
+    <div class="overload-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header-danger">
+        <div class="modal-icon-circle">
+          <mat-icon>bolt</mat-icon>
+        </div>
+        <div>
+          <span class="modal-kicker">Prevención de sobrecarga · Severidad crítica</span>
+          <h2 id="overload-modal-title" class="modal-title">{{ modalAlert.title }}</h2>
+        </div>
+        <button type="button" class="modal-close-btn" aria-label="Cerrar modal" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-alert-message">{{ modalAlert.dynamicMessage }}</p>
+
+        <div class="modal-details-grid">
+          <div class="detail-box">
+            <span class="detail-label">Dispositivo / Sensor</span>
+            <strong class="detail-value">{{ modalAlert.deviceName }}</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Ubicación</span>
+            <strong class="detail-value">{{ modalAlert.location }}</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Potencia actual</span>
+            <strong class="detail-value danger-text">{{ modalAlert.currentPowerKw | number:'1.2-2' }} kW</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Hora de detección</span>
+            <strong class="detail-value">{{ modalAlert.timestamp }}</strong>
+          </div>
+        </div>
+
+        <div class="prevention-box">
+          <mat-icon>shield</mat-icon>
+          <p>
+            <strong>Acción recomendada:</strong> Apaga o desconecta los equipos de mayor carga desde
+            <em>Dispositivos</em> para evitar disparos térmicos y reducir el pico de demanda.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-secondary" (click)="goToAlerts()">Ver todas las alertas</button>
+        <button type="button" class="btn-modal-ack" (click)="acknowledgeAlert(modalAlert)">Marcar como atendida</button>
+        <button type="button" class="btn-modal-primary" (click)="goToDevices()">Ir a dispositivos</button>
+      </div>
+    </div>
+  </div>
+}
