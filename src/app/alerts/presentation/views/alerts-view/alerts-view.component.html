@@ -1,12 +1,16 @@
 <main class="alerts-container">
 
-  <!-- Header section -->
-  <header class="header-section">
-    <h1>Alertas</h1>
-    <p class="subtitle">Mantente informado sobre tu consumo y recibe notificaciones en tiempo real</p>
+  <header class="header-section header-row">
+    <div>
+      <h1>Alertas</h1>
+      <p class="subtitle">Mantente informado sobre tu consumo y recibe notificaciones en tiempo real</p>
+    </div>
+    <button type="button" class="btn-refresh" (click)="refreshAlerts()" [disabled]="store.loading()">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
   </header>
 
-  <!-- Top summary metrics cards -->
   <section class="summary-cards" aria-label="Resumen de alertas">
     <article class="metric-card">
       <div class="icon-box icon-red">
@@ -53,10 +57,8 @@
     </article>
   </section>
 
-  <!-- Main table container -->
   <section class="main-card">
     <div class="table-header">
-      <!-- Interactive Navigation Tabs -->
       <nav class="tabs-nav" aria-label="Filtro de categorías">
         @for (category of categories; track category) {
           <button
@@ -75,17 +77,17 @@
           [ngModel]="store.selectedSort()"
           (ngModelChange)="onSortChange($event)">
           <option value="recent">Más recientes</option>
+          <option value="severity">Mayor severidad</option>
+          <option value="status">Activas primero</option>
         </select>
       </div>
     </div>
 
-    <!-- Async loading states -->
-    @if (store.loading()) {
+    @if (store.loading() && store.alerts().length === 0) {
       <p class="message" role="status">Cargando alertas...</p>
     } @else if (store.error() && store.alerts().length === 0) {
       <p class="message error-message" role="alert">{{ store.error() }}</p>
     } @else {
-      <!-- Alerts datatable -->
       <div class="table-container">
         <table class="alerts-table">
           <thead>
@@ -105,6 +107,9 @@
                   <span class="type-tag" [ngClass]="getTypeClass(alert.category)">
                     {{ alert.category }}
                   </span>
+                  @if (alert.severity === 'critical') {
+                    <span class="severity-critical-tag">CRITICAL</span>
+                  }
                 </td>
                 <td>
                   <div class="device-cell">
@@ -122,7 +127,17 @@
                   </span>
                 </td>
                 <td class="text-right">
-                  <button class="btn-dots" aria-label="Más opciones">⋮</button>
+                  @if (alert.status === 'Activa' && !alert.read) {
+                    <button
+                      type="button"
+                      class="btn-mark-read"
+                      [disabled]="store.updatingId() === alert.id"
+                      (click)="markAlertAsRead(alert)">
+                      {{ store.updatingId() === alert.id ? 'Guardando...' : 'Marcar leída' }}
+                    </button>
+                  } @else {
+                    <span class="done-label">Atendida</span>
+                  }
                 </td>
               </tr>
             } @empty {
@@ -138,7 +153,6 @@
     }
   </section>
 
-  <!-- Bottom action banners -->
   <section class="banner-cards">
     <article class="banner-card">
       <div class="banner-top">
