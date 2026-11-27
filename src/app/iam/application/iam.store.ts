@@ -4,7 +4,11 @@ import { Observable, tap, throwError } from 'rxjs';
 import { SubscriptionPlan, User } from '../domain/model/user.entity';
 import { SignInCommand } from '../domain/model/sign-in.command';
 import { SignUpCommand } from '../domain/model/sign-up.command';
-import { IamApi } from '../infrastructure/iam-api';
+import {
+  CheckoutSessionResponse,
+  IamApi,
+  SubscriptionResource
+} from '../infrastructure/iam-api';
 import { SignInAssembler } from '../infrastructure/sign-in-assembler';
 import { SignUpAssembler } from '../infrastructure/sign-up-assembler';
 import { saveLocalUserPreferences } from '../infrastructure/user-mapper.util';
@@ -131,6 +135,7 @@ export class IamStore {
 
             this._currentUser.set(merged);
             this.persistSession(merged);
+            this.syncSubscriptionFromBackend();
           }
         },
         error: (err) => {
@@ -164,6 +169,7 @@ export class IamStore {
 
         this._currentUser.set(user);
         this.persistSession(user);
+        this.syncSubscriptionFromBackend();
 
         const targetRoute = user.role === 'admin' ? '/admin' : '/inicio';
         this.router.navigate([targetRoute]).catch((err) => {
@@ -214,6 +220,48 @@ export class IamStore {
   private clearSessionOnly(): void {
     this._currentUser.set(null);
     localStorage.removeItem(this.storageKey);
+  }
+
+  /**
+   * Starts a Stripe Checkout Session for the selected subscription tier (`TS-18` / `US-46`).
+   */
+  startPlanCheckout(plan: SubscriptionPlan): Observable<CheckoutSessionResponse> {
+    return this.iamApi.createCheckoutSession(plan);
+  }
+
+  /**
+   * Confirms a completed Stripe Checkout Session and persists the newly activated plan.
+   */
+  confirmPlanCheckout(sessionId: string): Observable<SubscriptionResource> {
+    return this.iamApi.confirmCheckoutSession(sessionId).pipe(
+      tap((subscription) => {
+        this.applySubscriptionPlan(subscription);
+      })
+    );
+  }
+
+  private syncSubscriptionFromBackend(): void {
+    if (!this._currentUser()?.token) return;
+    this.iamApi.getCurrentSubscription().subscribe({
+      next: (subscription) => this.applySubscriptionPlan(subscription),
+      error: () => {
+        // Ignore silent subscription sync errors if backend billing endpoint is unavailable
+      }
+    });
+  }
+
+  private applySubscriptionPlan(subscription: SubscriptionResource): void {
+    const normalizedPlan = subscription.plan?.toLowerCase() as SubscriptionPlan | undefined;
+    if (!normalizedPlan || !['starter', 'plus', 'pro'].includes(normalizedPlan)) {
+      return;
+    }
+    const current = this._currentUser();
+    if (!current) return;
+
+    const updatedUser: User = { ...current, plan: normalizedPlan };
+    saveLocalUserPreferences(updatedUser.email, { plan: normalizedPlan });
+    this._currentUser.set(updatedUser);
+    this.persistSession(updatedUser);
   }
 
   updatePlan(newPlan: SubscriptionPlan): void {

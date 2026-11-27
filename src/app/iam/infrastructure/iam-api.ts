@@ -20,6 +20,23 @@ export interface MessageResponse {
   message?: string;
 }
 
+export interface SubscriptionResource {
+  userId: number;
+  plan: SubscriptionPlan;
+  planCode: string;
+  status: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
+}
+
+export interface CheckoutSessionResponse {
+  sessionId: string;
+  checkoutUrl: string;
+  plan: SubscriptionPlan;
+  amountCents: number;
+  currency: string;
+}
+
 /**
  * Infrastructure HTTP adapter for the IAM & User Management bounded contexts.
  * Connects Angular application services to the JouleTracker Spring Boot REST API.
@@ -271,6 +288,61 @@ export class IamApi {
         )
       )
     );
+  }
+
+  /**
+   * Retrieves the authenticated user's persisted subscription plan (`GET /api/v1/subscriptions/me`).
+   */
+  getCurrentSubscription(): Observable<SubscriptionResource> {
+    const url = `${this.baseUrl}${environment.subscriptionsEndpointPath}/me`;
+    return this.http.get<SubscriptionResource>(url).pipe(
+      catchError((err) =>
+        throwError(
+          () =>
+            new Error(
+              extractHttpErrorMessage(err, 'Unable to load your active subscription plan.')
+            )
+        )
+      )
+    );
+  }
+
+  /**
+   * Creates a hosted Stripe Checkout Session for a subscription plan (`POST /api/v1/subscriptions/checkout-session`).
+   */
+  createCheckoutSession(plan: SubscriptionPlan): Observable<CheckoutSessionResponse> {
+    const url = `${this.baseUrl}${environment.subscriptionsEndpointPath}/checkout-session`;
+    return this.http
+      .post<CheckoutSessionResponse>(url, { plan: plan.toUpperCase() })
+      .pipe(
+        catchError((err) =>
+          throwError(
+            () =>
+              new Error(
+                extractHttpErrorMessage(err, 'Unable to start Stripe Checkout session.')
+              )
+          )
+        )
+      );
+  }
+
+  /**
+   * Verifies and confirms a completed Stripe Checkout Session (`POST /api/v1/subscriptions/confirm`).
+   */
+  confirmCheckoutSession(sessionId: string): Observable<SubscriptionResource> {
+    const url = `${this.baseUrl}${environment.subscriptionsEndpointPath}/confirm`;
+    return this.http
+      .post<SubscriptionResource>(url, { sessionId: sessionId.trim() })
+      .pipe(
+        catchError((err) =>
+          throwError(
+            () =>
+              new Error(
+                extractHttpErrorMessage(err, 'Unable to confirm subscription payment.')
+              )
+          )
+        )
+      );
   }
 
   updateUserPlan(userId: number, plan: SubscriptionPlan, email?: string): Observable<Partial<User>> {

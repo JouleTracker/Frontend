@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { SubscriptionPlan } from '../../../../iam/domain/model/user.entity';
 
@@ -17,8 +18,6 @@ interface PricingPlan {
   features: string[];
 }
 
-import { TranslatePipe } from '@ngx-translate/core';
-
 @Component({
   selector: 'app-home-view',
   standalone: true,
@@ -26,8 +25,16 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css'
 })
-export class HomeViewComponent {
+export class HomeViewComponent implements OnInit {
   readonly iamStore = inject(IamStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+
+  readonly processingPlan = signal<SubscriptionPlan | null>(null);
+  readonly verifyingCheckout = signal<boolean>(false);
+  readonly checkoutMessage = signal<string | null>(null);
+  readonly checkoutError = signal<string | null>(null);
 
   readonly plans: PricingPlan[] = [
     {
@@ -79,12 +86,75 @@ export class HomeViewComponent {
     }
   ];
 
+  ngOnInit(): void {
+    const checkout = this.route.snapshot.queryParamMap.get('checkout');
+    const sessionId = this.route.snapshot.queryParamMap.get('session_id');
+
+    if (checkout === 'success' && sessionId) {
+      this.confirmCheckoutReturn(sessionId);
+    } else if (checkout === 'cancelled') {
+      this.checkoutError.set(
+        this.translate.instant('HOME.CHECKOUT_CANCELLED') ||
+          'Stripe checkout was cancelled. No charges were made.'
+      );
+      this.clearCheckoutQueryParams();
+    }
+  }
+
   isCurrentPlan(planId: SubscriptionPlan): boolean {
     return this.iamStore.currentPlan() === planId;
   }
 
   onSelectPlan(planId: SubscriptionPlan): void {
-    if (this.isCurrentPlan(planId)) return;
-    this.iamStore.updatePlan(planId);
+    if (this.isCurrentPlan(planId) || this.processingPlan() !== null) return;
+
+    this.checkoutMessage.set(null);
+    this.checkoutError.set(null);
+    this.processingPlan.set(planId);
+
+    this.iamStore.startPlanCheckout(planId).subscribe({
+      next: (session) => {
+        this.processingPlan.set(null);
+        window.location.assign(session.checkoutUrl);
+      },
+      error: (err: Error) => {
+        this.processingPlan.set(null);
+        this.checkoutError.set(
+          err.message ||
+            this.translate.instant('HOME.CHECKOUT_ERROR') ||
+            'Unable to connect to Stripe Checkout right now. Please try again.'
+        );
+      }
+    });
+  }
+
+  private confirmCheckoutReturn(sessionId: string): void {
+    this.verifyingCheckout.set(true);
+    this.checkoutError.set(null);
+
+    this.iamStore.confirmPlanCheckout(sessionId).subscribe({
+      next: (sub) => {
+        this.verifyingCheckout.set(false);
+        const planName = sub.plan.toUpperCase();
+        this.checkoutMessage.set(
+          this.translate.instant('HOME.CHECKOUT_SUCCESS', { plan: planName }) ||
+            `Payment confirmed! Your ${planName} plan is now active.`
+        );
+        this.clearCheckoutQueryParams();
+      },
+      error: (err: Error) => {
+        this.verifyingCheckout.set(false);
+        this.checkoutError.set(
+          err.message ||
+            this.translate.instant('HOME.CHECKOUT_ERROR') ||
+            'Unable to verify payment with Stripe.'
+        );
+        this.clearCheckoutQueryParams();
+      }
+    });
+  }
+
+  private clearCheckoutQueryParams(): void {
+    this.router.navigate(['/inicio'], { replaceUrl: true }).catch(() => {});
   }
 }
