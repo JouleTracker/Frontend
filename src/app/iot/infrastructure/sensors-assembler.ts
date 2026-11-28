@@ -13,6 +13,7 @@ export class SensorAssembler {
       status: resource.status,
       currentPowerKw: resource.currentPowerKw,
       todayKwh: resource.todayKwh,
+      businessAreaId: resource.businessAreaId ?? null,
       assignedDeviceId: resource.assignedDeviceId,
       assignedDeviceName: resource.assignedDeviceName,
       assignedDeviceCategory: resource.assignedDeviceCategory,

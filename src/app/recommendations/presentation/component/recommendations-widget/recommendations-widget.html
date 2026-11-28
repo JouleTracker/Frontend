@@ -12,7 +12,9 @@
       <div class="widget-item">
         <div class="item-info">
           <strong>{{ rec.title }}</strong>
-          <span class="item-saving">{{ rec.potentialSaving }}</span>
+          <span class="item-saving">
+            {{ rec.estimatedSavingKwh }} kWh · S/ {{ rec.estimatedSavingAmount.toFixed(2) }}
+          </span>
         </div>
       </div>
     } @empty {

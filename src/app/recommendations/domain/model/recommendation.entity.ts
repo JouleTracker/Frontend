@@ -1,23 +1,32 @@
-/**
- * Métricas de recomendaciones derivadas únicamente de datos reales de db.json
- * (colecciones `recommendations` y `consumption-summaries` del usuario).
- */
+export type RecommendationCategory = 'SAVING' | 'EFFICIENCY' | 'MAINTENANCE' | 'GENERAL';
+
 export interface RecommendationMetrics {
+  readonly totalEstimatedSavingKwh: number;
+  readonly totalEstimatedSavingAmount: number;
   readonly potentialSavings: string;
   readonly estimatedReduction: string;
   readonly co2Avoided: string;
   readonly activeCount: number;
+  readonly completedCount: number;
 }
 
-/**
- * Recommendation entity: solo los campos reales de la colección `recommendations` de db.json.
- */
 export interface RecommendationItem {
   readonly id: number;
+  readonly userId: number;
   readonly title: string;
   readonly description: string;
-  readonly icon: string;
-  readonly category: string;
-  readonly potentialSaving: string;
-  readonly actionUrl: string;
+  readonly estimatedSavingKwh: number;
+  readonly estimatedSavingAmount: number;
+  readonly category: RecommendationCategory | string;
+  readonly completed: boolean;
+  readonly createdAt: string;
+}
+
+export interface CreateRecommendationPayload {
+  readonly userId: number;
+  readonly title: string;
+  readonly description: string;
+  readonly estimatedSavingKwh: number | null;
+  readonly estimatedSavingAmount: number | null;
+  readonly category: RecommendationCategory;
 }

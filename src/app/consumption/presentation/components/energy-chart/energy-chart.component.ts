@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewC
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { TranslatePipe } from '@ngx-translate/core';
 import { EnergyReading } from '../../../domain/model/energy-reading.entity';
 
 @Component({
   selector: 'app-energy-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, TranslatePipe],
   templateUrl: './energy-chart.component.html',
   styleUrl: './energy-chart.component.css'
 })

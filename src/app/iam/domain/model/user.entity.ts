@@ -29,6 +29,8 @@ export interface UserNotifications {
 export interface User {
   id: number;
   name: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   role?: UserRole | string;
   token?: string;

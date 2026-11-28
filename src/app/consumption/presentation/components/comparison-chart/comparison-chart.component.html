@@ -1,7 +1,36 @@
 <div class="chart-card">
   <div class="chart-header">
-    <h3 class="chart-title">Comparativa de consumo</h3>
-    <span class="chart-unit">kWh</span>
+    <div>
+      <h3 class="chart-title">{{ 'CONSUMPTION.VS_PREVIOUS_PERIOD' | translate }}</h3>
+      <span class="chart-unit">kWh</span>
+      @if (weeklyDeltaPercent !== null) {
+        <span
+          class="weekly-delta-badge"
+          [class.delta-up]="weeklyDeltaPercent > 0"
+          [class.delta-down]="weeklyDeltaPercent <= 0"
+        >
+          {{ weeklyDeltaPercent > 0 ? '+' : '' }}{{ weeklyDeltaPercent }}% {{ 'CONSUMPTION.VS_PREV_WEEK' | translate }}
+        </span>
+      }
+    </div>
+    <div class="view-toggle" role="group" [attr.aria-label]="'CONSUMPTION.VS_PREVIOUS_PERIOD' | translate">
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.active]="viewMode === 'weekly'"
+        (click)="setViewMode('weekly')"
+      >
+        {{ 'CONSUMPTION.WEEKLY_VIEW' | translate }}
+      </button>
+      <button
+        type="button"
+        class="toggle-btn"
+        [class.active]="viewMode === 'period'"
+        (click)="setViewMode('period')"
+      >
+        {{ 'CONSUMPTION.PERIOD_VIEW' | translate }}
+      </button>
+    </div>
   </div>
 
   <div class="chart-container">

@@ -1,9 +1,9 @@
-<header class="mobile-top-bar" aria-label="Encabezado móvil">
+<header class="mobile-top-bar" [attr.aria-label]="'SIDEBAR.MOBILE_HEADER' | translate">
   <button
     type="button"
     class="mobile-menu-btn"
     (click)="toggleMobileDrawer()"
-    aria-label="Abrir menú de navegación">
+    [attr.aria-label]="'SIDEBAR.OPEN_MENU' | translate">
     <mat-icon>menu</mat-icon>
   </button>
 
@@ -16,21 +16,21 @@
   </a>
 
   <!-- Selector de Idioma Minimalista -->
-  <div class="lang-switch-pill" role="group" aria-label="Selector de idioma">
-    <button
-      type="button"
-      class="lang-btn"
-      [class.active]="currentLang() === 'es'"
-      (click)="switchLang('es')">
-      ES
-    </button>
-    <span class="lang-divider">/</span>
+  <div class="lang-switch-pill" role="group" [attr.aria-label]="'SIDEBAR.LANG_SWITCHER' | translate">
     <button
       type="button"
       class="lang-btn"
       [class.active]="currentLang() === 'en'"
       (click)="switchLang('en')">
       EN
+    </button>
+    <span class="lang-divider">/</span>
+    <button
+      type="button"
+      class="lang-btn"
+      [class.active]="currentLang() === 'es'"
+      (click)="switchLang('es')">
+      ES
     </button>
   </div>
 </header>
@@ -45,9 +45,11 @@
 }
 
 <aside
+  #sidebarAside
   class="sidebar"
   [class.drawer-open]="isMobileDrawerOpen()"
-  aria-label="Navegación principal">
+  (keydown.escape)="closeMobileDrawer()"
+  [attr.aria-label]="'SIDEBAR.MAIN_NAV' | translate">
 
   <!-- Cabecera del Drawer en Mobile (Logo + Botón de cerrar) -->
   <div class="drawer-header-mobile">
@@ -62,7 +64,7 @@
       type="button"
       class="drawer-close-btn"
       (click)="closeMobileDrawer()"
-      aria-label="Cerrar menú">
+      [attr.aria-label]="'SIDEBAR.CLOSE_MENU' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -79,21 +81,21 @@
       </a>
 
       <!-- Selector de Idioma Minimalista -->
-      <div class="lang-switch-pill" role="group" aria-label="Selector de idioma">
-        <button
-          type="button"
-          class="lang-btn"
-          [class.active]="currentLang() === 'es'"
-          (click)="switchLang('es')">
-          ES
-        </button>
-        <span class="lang-divider">/</span>
+      <div class="lang-switch-pill" role="group" [attr.aria-label]="'SIDEBAR.LANG_SWITCHER' | translate">
         <button
           type="button"
           class="lang-btn"
           [class.active]="currentLang() === 'en'"
           (click)="switchLang('en')">
           EN
+        </button>
+        <span class="lang-divider">/</span>
+        <button
+          type="button"
+          class="lang-btn"
+          [class.active]="currentLang() === 'es'"
+          (click)="switchLang('es')">
+          ES
         </button>
       </div>
     </div>
@@ -137,6 +139,39 @@
 
   <!-- Perfil de usuario en el pie -->
   <div class="sidebar-footer">
+    <!-- Barra compacta de accesibilidad (A- / A+ y Alto Contraste) -->
+    <div class="sidebar-a11y-bar" role="group" aria-label="Accessibility controls">
+      <div class="a11y-font-group">
+        <button
+          type="button"
+          class="a11y-pill-btn"
+          (click)="decreaseFontSize()"
+          [disabled]="fontScalePercent() <= 85"
+          aria-label="Decrease font size">
+          A-
+        </button>
+        <span class="a11y-scale-label">{{ fontScalePercent() }}%</span>
+        <button
+          type="button"
+          class="a11y-pill-btn"
+          (click)="increaseFontSize()"
+          [disabled]="fontScalePercent() >= 130"
+          aria-label="Increase font size">
+          A+
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="a11y-contrast-btn"
+        [class.active]="highContrast()"
+        [attr.aria-pressed]="highContrast()"
+        (click)="toggleHighContrast()">
+        <mat-icon class="a11y-contrast-icon">contrast</mat-icon>
+        <span>Contraste</span>
+      </button>
+    </div>
+
     <div class="user-card">
       <div class="user-info-wrapper">
         <div class="user-avatar">

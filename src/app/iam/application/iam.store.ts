@@ -4,7 +4,11 @@ import { Observable, tap, throwError } from 'rxjs';
 import { SubscriptionPlan, User } from '../domain/model/user.entity';
 import { SignInCommand } from '../domain/model/sign-in.command';
 import { SignUpCommand } from '../domain/model/sign-up.command';
-import { IamApi } from '../infrastructure/iam-api';
+import {
+  CheckoutSessionResponse,
+  IamApi,
+  SubscriptionResource
+} from '../infrastructure/iam-api';
 import { SignInAssembler } from '../infrastructure/sign-in-assembler';
 import { SignUpAssembler } from '../infrastructure/sign-up-assembler';
 import { saveLocalUserPreferences } from '../infrastructure/user-mapper.util';
@@ -104,13 +108,15 @@ export class IamStore {
               ...session,
               id: freshUser.id ?? session.id,
               name: freshUser.name || session.name,
+              firstName: freshUser.firstName ?? session.firstName,
+              lastName: freshUser.lastName ?? session.lastName,
               email: freshUser.email || session.email,
               role: freshUser.role || session.role,
               verified: freshUser.verified ?? session.verified,
               status: freshUser.status ?? session.status,
               banned: freshUser.banned ?? session.banned,
               plan: freshUser.plan ?? session.plan ?? 'pro',
-              phone: freshUser.phone ?? session.phone,
+              phone: freshUser.phone !== undefined ? freshUser.phone : session.phone,
               home: freshUser.home ?? session.home,
               business: freshUser.business ?? session.business,
               notifications: freshUser.notifications ?? session.notifications,
@@ -129,6 +135,7 @@ export class IamStore {
 
             this._currentUser.set(merged);
             this.persistSession(merged);
+            this.syncSubscriptionFromBackend();
           }
         },
         error: (err) => {
@@ -162,6 +169,7 @@ export class IamStore {
 
         this._currentUser.set(user);
         this.persistSession(user);
+        this.syncSubscriptionFromBackend();
 
         const targetRoute = user.role === 'admin' ? '/admin' : '/inicio';
         this.router.navigate([targetRoute]).catch((err) => {
@@ -214,6 +222,48 @@ export class IamStore {
     localStorage.removeItem(this.storageKey);
   }
 
+  /**
+   * Starts a Stripe Checkout Session for the selected subscription tier (`TS-18` / `US-46`).
+   */
+  startPlanCheckout(plan: SubscriptionPlan): Observable<CheckoutSessionResponse> {
+    return this.iamApi.createCheckoutSession(plan);
+  }
+
+  /**
+   * Confirms a completed Stripe Checkout Session and persists the newly activated plan.
+   */
+  confirmPlanCheckout(sessionId: string): Observable<SubscriptionResource> {
+    return this.iamApi.confirmCheckoutSession(sessionId).pipe(
+      tap((subscription) => {
+        this.applySubscriptionPlan(subscription);
+      })
+    );
+  }
+
+  private syncSubscriptionFromBackend(): void {
+    if (!this._currentUser()?.token) return;
+    this.iamApi.getCurrentSubscription().subscribe({
+      next: (subscription) => this.applySubscriptionPlan(subscription),
+      error: () => {
+        // Ignore silent subscription sync errors if backend billing endpoint is unavailable
+      }
+    });
+  }
+
+  private applySubscriptionPlan(subscription: SubscriptionResource): void {
+    const normalizedPlan = subscription.plan?.toLowerCase() as SubscriptionPlan | undefined;
+    if (!normalizedPlan || !['starter', 'plus', 'pro'].includes(normalizedPlan)) {
+      return;
+    }
+    const current = this._currentUser();
+    if (!current) return;
+
+    const updatedUser: User = { ...current, plan: normalizedPlan };
+    saveLocalUserPreferences(updatedUser.email, { plan: normalizedPlan });
+    this._currentUser.set(updatedUser);
+    this.persistSession(updatedUser);
+  }
+
   updatePlan(newPlan: SubscriptionPlan): void {
     const current = this._currentUser();
     if (!current) return;
@@ -229,6 +279,38 @@ export class IamStore {
         }
       });
     }
+  }
+
+  /**
+   * Persists personal profile edits (`firstName`, `lastName`, `phone`) via `PUT /api/v1/users/{id}` (US-22)
+   * and updates the reactive session state.
+   */
+  updatePersonalProfile(payload: {
+    firstName: string;
+    lastName: string;
+    phone?: string | null;
+  }): Observable<User> {
+    const current = this._currentUser();
+    if (!current?.id) {
+      return throwError(() => new Error('No active user session found.'));
+    }
+
+    return this.iamApi.updatePersonalProfile(current.id, payload).pipe(
+      tap((updated) => {
+        const merged: User = {
+          ...current,
+          name: updated.name,
+          firstName: updated.firstName,
+          lastName: updated.lastName,
+          phone: updated.phone,
+          status: updated.status ?? current.status,
+          verified: updated.verified ?? current.verified
+        };
+        saveLocalUserPreferences(merged.email, { phone: merged.phone });
+        this._currentUser.set(merged);
+        this.persistSession(merged);
+      })
+    );
   }
 
   updateProfile(changes: Partial<User>): void {

@@ -10,6 +10,7 @@ export const environment = {
   alertSummariesEndpointPath: '/api/v1/alert-summaries',
   recommendationsEndpointPath: '/recommendations',
   usersEndpointPath: '/api/v1/users',
+  subscriptionsEndpointPath: '/api/v1/subscriptions',
   loginEndpointPath: '/api/v1/authentication/sign-in',
   registerEndpointPath: '/api/v1/authentication/sign-up',
   forgotPasswordEndpointPath: '/api/v1/authentication/forgot-password',

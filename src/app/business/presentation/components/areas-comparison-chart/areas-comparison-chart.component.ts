@@ -1,7 +1,8 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { TranslateService } from '@ngx-translate/core';
 import { AreaMetrics } from '../../../application/areas.store';
 
 @Component({
@@ -12,6 +13,7 @@ import { AreaMetrics } from '../../../application/areas.store';
   styleUrls: ['./areas-comparison-chart.component.css']
 })
 export class AreasComparisonChartComponent implements OnChanges {
+  private readonly translate = inject(TranslateService);
   @Input() items: AreaMetrics[] = [];
 
   @ViewChild(BaseChartDirective) chartDirective?: BaseChartDirective;
@@ -28,7 +30,11 @@ export class AreasComparisonChartComponent implements OnChanges {
         padding: 10,
         cornerRadius: 8,
         callbacks: {
-          label: (context) => ` Consumo hoy: ${context.parsed.y} kWh`
+          label: (context) => {
+            const raw = this.translate.instant('AREAS.TOOLTIP_TODAY');
+            const label = raw !== 'AREAS.TOOLTIP_TODAY' ? raw : 'Today consumption';
+            return ` ${label}: ${context.parsed.y} kWh`;
+          }
         }
       }
     },

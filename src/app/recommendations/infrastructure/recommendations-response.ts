@@ -1,16 +1,23 @@
 import { BaseResource } from '../../shared/infrastructure/base-response';
 
-/**
- * Forma real de un registro en la colección `recommendations` de db.json.
- */
 export interface RecommendationResource extends BaseResource {
-  userId?: number;
+  userId: number;
   title: string;
   description: string;
-  icon: string;
+  estimatedSavingKwh: number | null;
+  estimatedSavingAmount: number | null;
   category: string;
-  potentialSaving: string;
-  actionUrl: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+export interface CreateRecommendationRequest {
+  userId: number;
+  title: string;
+  description: string;
+  estimatedSavingKwh: number | null;
+  estimatedSavingAmount: number | null;
+  category: string;
 }
 
 export type RecommendationResponse = RecommendationResource[];

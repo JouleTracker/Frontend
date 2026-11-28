@@ -10,7 +10,7 @@ import {
   PlanUpgradeRequiredComponent
 } from '../../../../shared/presentation/components/plan-upgrade-required/plan-upgrade-required';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sensors-view',
@@ -23,6 +23,7 @@ export class SensorsViewComponent {
   private readonly router = inject(Router);
   readonly store = inject(SensorsStore);
   private readonly iamStore = inject(IamStore);
+  private readonly translate = inject(TranslateService);
 
   /** Módulo de sensores bloqueado para el plan Starter */
   readonly canAccessSensors = this.iamStore.canAccessSensors;
@@ -34,10 +35,43 @@ export class SensorsViewComponent {
   readonly sensorLimitLabel = computed(() => {
     const limit = this.sensorLimit();
     const count = this.store.sensorCount();
-    return Number.isFinite(limit) ? `${count} de ${limit}` : `${count} de ilimitados`;
+    return Number.isFinite(limit)
+      ? this.translate.instant('COMMON.LIMITED_COUNT', { count, limit })
+      : this.translate.instant('COMMON.UNLIMITED_COUNT', { count });
   });
 
   readonly filters: string[] = ['Todos', 'Monitoreando', 'Sin asignar', 'En línea'];
+
+  private readonly filterKeyMap: Record<string, string> = {
+    'Todos': 'IOT.FILTER_ALL',
+    'Monitoreando': 'IOT.FILTER_MONITORING',
+    'Sin asignar': 'IOT.FILTER_UNASSIGNED',
+    'En línea': 'IOT.FILTER_ONLINE',
+  };
+
+  private readonly categoryKeyMap: Record<string, string> = {
+    'Hogar': 'DEVICES.CAT_HOME',
+    'Maquinaria': 'DEVICES.CAT_MACHINERY',
+    'Refrigeración': 'DEVICES.CAT_REFRIGERATION',
+    'Climatización': 'DEVICES.CAT_HVAC',
+    'Iluminación': 'DEVICES.CAT_LIGHTING',
+    'Oficina': 'DEVICES.CAT_OFFICE',
+    'Cocina': 'DEVICES.CAT_KITCHEN',
+    'Entretenimiento': 'DEVICES.CAT_ENTERTAINMENT',
+    'Otros': 'DEVICES.CAT_OTHER',
+  };
+
+  getFilterKey(filter: string): string {
+    return this.filterKeyMap[filter] ?? filter;
+  }
+
+  getCategoryKey(cat: string): string {
+    return this.categoryKeyMap[cat] ?? cat;
+  }
+
+  getStatusKey(status: string): string {
+    return status === 'En línea' ? 'COMMON.ONLINE' : 'COMMON.OFFLINE';
+  }
 
   // Modal de confirmación de desvinculación y eliminación
   readonly selectedSensor = signal<Sensor | null>(null);

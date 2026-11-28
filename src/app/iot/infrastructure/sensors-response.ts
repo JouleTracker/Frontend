@@ -9,6 +9,7 @@ export interface SensorResource extends BaseResource {
   currentPowerKw: number;
   todayKwh: number;
   todayCostSoles?: number;
+  businessAreaId?: number | null;
   assignedDeviceId: number | null;
   assignedDeviceName?: string | null;
   assignedDeviceCategory?: string | null;

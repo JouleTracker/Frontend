@@ -38,7 +38,7 @@ export class ConsumptionSummaryAssembler {
       totalConsumptionDiff: resource.totalConsumptionDiff ?? variation,
       totalConsumptionDiffLabel:
         resource.totalConsumptionDiffLabel ??
-        `${variation >= 0 ? '+' : ''}${variation.toFixed(1)}% vs. período anterior`,
+        `${variation >= 0 ? '+' : ''}${variation.toFixed(1)}% vs. previous period`,
       periodConsumption: resource.periodConsumption ?? totalKwh,
       periodConsumptionDiff: resource.periodConsumptionDiff ?? variation,
       currentPower: resource.currentPower ?? resource.averagePowerKw ?? 0,

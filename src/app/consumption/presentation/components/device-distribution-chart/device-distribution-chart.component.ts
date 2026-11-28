@@ -2,12 +2,13 @@ import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DeviceDistribution } from '../../../domain/model/device-distribution.entity';
 
 @Component({
   selector: 'app-device-distribution-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective, TranslatePipe],
   templateUrl: './device-distribution-chart.component.html',
   styleUrl: './device-distribution-chart.component.css'
 })

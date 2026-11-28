@@ -30,7 +30,7 @@ export class AreasApi extends BaseApi {
     return this.http.get<AreaResource[]>(`${this.endpoint}${this.userQuery}`).pipe(
       map((res) => (res ?? []).map((r) => this.assembler.toEntity(r))),
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar áreas.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading areas.')))
       )
     );
   }
@@ -39,7 +39,7 @@ export class AreasApi extends BaseApi {
     return this.http.get<AreaResource>(`${this.endpoint}/${id}${this.userQuery}`).pipe(
       map((res) => this.assembler.toEntity(res)),
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar área.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading area.')))
       )
     );
   }
@@ -50,7 +50,7 @@ export class AreasApi extends BaseApi {
     return this.http.post<AreaResource>(this.endpoint, body).pipe(
       map((res) => this.assembler.toEntity(res)),
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al registrar área.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error registering area.')))
       )
     );
   }
@@ -59,7 +59,7 @@ export class AreasApi extends BaseApi {
     return this.http.patch<AreaResource>(`${this.endpoint}/${id}${this.userQuery}`, changes).pipe(
       map((res) => this.assembler.toEntity(res)),
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al actualizar área.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error updating area.')))
       )
     );
   }
@@ -67,7 +67,7 @@ export class AreasApi extends BaseApi {
   deleteArea(id: number): Observable<void> {
     return this.http.delete<void>(`${this.endpoint}/${id}${this.userQuery}`).pipe(
       catchError((err) =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al eliminar área.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error deleting area.')))
       )
     );
   }

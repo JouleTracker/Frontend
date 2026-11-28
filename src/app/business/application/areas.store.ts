@@ -40,13 +40,30 @@ export class AreasStore {
   readonly areasWithMetrics = computed<AreaMetrics[]>(() => {
     const areasList = this._areas();
     const allDevices = this.devicesStore.devices();
+    const allSensors = this.sensorsStore.sensors();
+
+    const areaIdsByDevice = new Map<number, Set<number>>();
+
+    for (const sensor of allSensors) {
+      if (
+        sensor.assignedDeviceId === null ||
+        sensor.businessAreaId === null
+      ) continue;
+
+      const areaIds =
+        areaIdsByDevice.get(sensor.assignedDeviceId) ??
+        new Set<number>();
+
+      areaIds.add(sensor.businessAreaId);
+      areaIdsByDevice.set(sensor.assignedDeviceId, areaIds);
+    }
 
     return areasList.map((area) => {
-      // Coincidencia por nombre de ubicación (ej. "Cocina", "Sala Principal", "Oficina")
-      const areaNameNorm = area.name.trim().toLowerCase();
-      const areaDevices = allDevices.filter((d) => {
-        const locNorm = d.location.trim().toLowerCase();
-        return locNorm.includes(areaNameNorm) || areaNameNorm.includes(locNorm);
+      // US-32: Match devices using explicit sensor area identifiers.
+      const areaDevices = allDevices.filter(device => {
+        const areaIds = areaIdsByDevice.get(device.id);
+
+        return areaIds?.size === 1 && areaIds.has(area.id);
       });
 
       const deviceCount = areaDevices.length;

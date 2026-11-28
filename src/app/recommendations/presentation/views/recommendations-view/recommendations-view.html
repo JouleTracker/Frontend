@@ -4,7 +4,7 @@
     @if (!iamStore.hasPlusAccess()) {
       <!-- Paywall cuando no tiene Plan Plus o Pro -->
       <app-plan-upgrade-required
-        featureName="Recomendaciones Inteligentes"
+        [featureName]="'PAYWALL.FEATURE_RECOMMENDATIONS' | translate"
         requiredPlan="Plus">
       </app-plan-upgrade-required>
     } @else {
@@ -14,7 +14,13 @@
         <p class="page-subtitle">{{ 'RECOMMENDATIONS.SUBTITLE' | translate }}</p>
       </header>
 
-      <!-- Metric / KPI Cards (derivadas de tus datos reales de db.json) -->
+      @if (store.errorMessage()) {
+        <div class="error-banner" role="alert">
+          {{ store.errorMessage() }}
+        </div>
+      }
+
+      <!-- Metric / KPI Cards -->
       <section class="kpi-grid">
         <!-- 1. Ahorro potencial -->
         <div class="kpi-card">
@@ -49,7 +55,7 @@
             <div class="kpi-combined">
               <strong class="kpi-main-stat">{{ store.metrics().co2Avoided }}</strong>
             </div>
-            <span class="kpi-foot">de CO₂ evitados al mes</span>
+            <span class="kpi-foot">{{ 'RECOMMENDATIONS.CO2_AVOIDED_MONTH' | translate }}</span>
           </div>
         </div>
 
@@ -60,14 +66,14 @@
           </div>
           <div class="kpi-data">
             <strong class="kpi-main-stat">{{ store.metrics().activeCount }}</strong>
-            <span class="kpi-foot">recomendaciones activas</span>
+            <span class="kpi-foot">{{ 'RECOMMENDATIONS.ACTIVE_COUNT_SUB' | translate }}</span>
           </div>
         </div>
       </section>
 
       <!-- Filter & Sort Bar -->
       <div class="filter-row">
-        <nav class="filter-tabs" aria-label="Categorías de recomendaciones">
+        <nav class="filter-tabs" [attr.aria-label]="'RECOMMENDATIONS.TABS_ARIA' | translate">
           @for (cat of categories(); track cat.value) {
             <button
               type="button"
@@ -75,17 +81,17 @@
               [class.active]="store.selectedCategory() === cat.value"
               (click)="onSelectCategory(cat.value)"
             >
-              {{ cat.label }}
+              {{ cat.label | translate }}
             </button>
           }
         </nav>
 
         <div class="sort-box">
-          <span class="sort-caption">Ordenar por</span>
+          <span class="sort-caption">{{ 'RECOMMENDATIONS.SORT_BY' | translate }}</span>
           <div class="select-container">
             <select class="sort-dropdown" [(ngModel)]="selectedSort" (change)="onSortChange($event)">
-              <option value="impact">Mayor impacto</option>
-              <option value="name">Alfabético</option>
+              <option value="impact">{{ 'RECOMMENDATIONS.SORT_IMPACT' | translate }}</option>
+              <option value="name">{{ 'RECOMMENDATIONS.SORT_NAME' | translate }}</option>
             </select>
           </div>
         </div>
@@ -96,7 +102,7 @@
         @for (rec of store.filteredRecommendations(); track rec.id) {
           <article class="rec-card">
             <div class="rec-image-box">
-              <mat-icon class="rec-icon">{{ rec.icon }}</mat-icon>
+              <mat-icon class="rec-icon">bolt</mat-icon>
             </div>
 
             <div class="rec-body">
@@ -104,13 +110,15 @@
               <p class="rec-card-desc">{{ rec.description }}</p>
 
               <div class="rec-pill">
-                <span class="pill-label">{{ rec.category }}</span>
-                <span class="pill-amount">{{ rec.potentialSaving }}</span>
+                <span class="pill-label">{{ getCategoryKey(rec.category) | translate }}</span>
+                <span class="pill-amount">
+                  {{ rec.estimatedSavingKwh }} kWh · S/ {{ rec.estimatedSavingAmount.toFixed(2) }}
+                </span>
               </div>
             </div>
           </article>
         } @empty {
-          <p class="empty-message">No hay recomendaciones disponibles en esta categoría.</p>
+          <p class="empty-message">{{ 'RECOMMENDATIONS.EMPTY' | translate }}</p>
         }
       </section>
     }

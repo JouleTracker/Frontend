@@ -24,17 +24,45 @@ export class ReportsApi {
   private readonly iamStore = inject(IamStore);
   private readonly baseUrl = environment.apiBaseUrl;
 
-  getConsumptionRecords(): Observable<ConsumptionRecord[]> {
+  getConsumptionRecords(from?: string, to?: string): Observable<ConsumptionRecord[]> {
     const userId = this.iamStore.currentUserId();
-    const query = userId ? `?userId=${userId}` : '';
+    const query = this.buildQueryString(userId, from, to);
     return this.http.get<ConsumptionHistoryResource[]>(
       `${this.baseUrl}${environment.consumptionHistoriesEndpointPath}${query}`
     ).pipe(
       map(resources => (resources ?? []).map(r => this.toRecord(r))),
       catchError(err =>
-        throwError(() => new Error(extractHttpErrorMessage(err, 'Error al cargar el historial de consumo.')))
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error loading consumption history.')))
       )
     );
+  }
+
+  exportConsumptionCsv(from?: string, to?: string): Observable<Blob> {
+    const userId = this.iamStore.currentUserId();
+    const query = this.buildQueryString(userId, from, to);
+    return this.http.get(
+      `${this.baseUrl}${environment.consumptionHistoriesEndpointPath}/export${query}`,
+      { responseType: 'blob' }
+    ).pipe(
+      catchError(err =>
+        throwError(() => new Error(extractHttpErrorMessage(err, 'Error exporting consumption CSV.')))
+      )
+    );
+  }
+
+  private buildQueryString(userId?: number | null, from?: string, to?: string): string {
+    const params = new URLSearchParams();
+    if (userId) {
+      params.set('userId', String(userId));
+    }
+    if (from && from.trim()) {
+      params.set('from', from.trim());
+    }
+    if (to && to.trim()) {
+      params.set('to', to.trim());
+    }
+    const serialized = params.toString();
+    return serialized ? `?${serialized}` : '';
   }
 
   private toRecord(resource: ConsumptionHistoryResource): ConsumptionRecord {

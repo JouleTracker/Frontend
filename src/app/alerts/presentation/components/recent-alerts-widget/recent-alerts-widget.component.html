@@ -1,7 +1,7 @@
 <div class="alerts-widget card-container">
   <div class="widget-header">
-    <h3 class="widget-title">Alertas recientes</h3>
-    <a routerLink="/alertas" class="view-all-link">Ver todas</a>
+    <h3 class="widget-title">{{ 'ALERTS.RECENT_TITLE' | translate }}</h3>
+    <a routerLink="/alertas" class="view-all-link">{{ 'ALERTS.VIEW_ALL' | translate }}</a>
   </div>
 
   <div class="alerts-list">
@@ -22,7 +22,7 @@
         <mat-icon class="chevron-icon">chevron_right</mat-icon>
       </div>
     } @empty {
-      <p class="alert-empty">No tienes alertas recientes.</p>
+      <p class="alert-empty">{{ 'ALERTS.NO_RECENT' | translate }}</p>
     }
   </div>
 </div>

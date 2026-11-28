@@ -20,7 +20,7 @@ export class AlertAssembler {
       sensorId: resource.sensorId,
       deviceId: resource.deviceId,
       title: resource.title,
-      description: resource.description || resource.message || 'Sin descripción detallada.',
+      description: resource.description || resource.message || 'No detailed description available.',
       timeAgo: resource.timeAgo || this.formatTimeAgo(resource.timestamp),
       severity,
       actionUrl: resource.actionUrl || '/dispositivos',
@@ -33,17 +33,17 @@ export class AlertAssembler {
   }
 
   private formatTimeAgo(timestamp?: string): string {
-    if (!timestamp) return 'Reciente';
+    if (!timestamp) return 'Just now';
     const date = new Date(timestamp);
-    if (isNaN(date.getTime())) return 'Reciente';
+    if (isNaN(date.getTime())) return 'Just now';
 
     const diffMs = Date.now() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMin / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMin < 60) return `Hace ${Math.max(1, diffMin)} min`;
-    if (diffHours < 24) return `Hace ${diffHours} h`;
-    return `Hace ${diffDays} d`;
+    if (diffMin < 60) return `${Math.max(1, diffMin)} min ago`;
+    if (diffHours < 24) return `${diffHours} h ago`;
+    return `${diffDays} d ago`;
   }
 }

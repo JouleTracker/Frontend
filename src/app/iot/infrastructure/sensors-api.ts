@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import { environment } from '../../../environments/environment';
 import { SensorResource, ApplianceProfileResource, SensorSummaryResource } from './sensors-response';
@@ -36,7 +36,7 @@ export class SensorsApi extends BaseApi {
       `${this.baseUrl}${environment.sensorsEndpointPath}${this.userQuery}`
     ).pipe(
       map(res => this.sensorAssembler.toEntities(res)),
-      catchError(err => throwError(() => new Error('Error al cargar sensores: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading sensors: ' + err.message)))
     );
   }
 
@@ -48,7 +48,7 @@ export class SensorsApi extends BaseApi {
       `${this.baseUrl}${environment.sensorsEndpointPath}/${id}`
     ).pipe(
       map(res => this.sensorAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al cargar sensor: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading sensor: ' + err.message)))
     );
   }
 
@@ -63,20 +63,37 @@ export class SensorsApi extends BaseApi {
       payload
     ).pipe(
       map(res => this.sensorAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al registrar nuevo sensor: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error registering sensor: ' + err.message)))
     );
   }
 
   /**
    * Actualiza parcialmente un sensor (ej. nombre, dispositivo asignado, perfil).
    */
-  updateSensor(id: number, partialSensor: Partial<SensorResource>): Observable<Sensor> {
-    return this.http.patch<SensorResource>(
-      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}`,
-      partialSensor
-    ).pipe(
-      map(res => this.sensorAssembler.toEntity(res)),
-      catchError(err => throwError(() => new Error('Error al actualizar sensor: ' + err.message)))
+  updateSensor(
+    id: number,
+    partialSensor: Partial<SensorResource>
+  ): Observable<Sensor> {
+    const sendUpdate = (payload: Partial<SensorResource>) =>
+      this.http.patch<SensorResource>(
+        `${this.baseUrl}${environment.sensorsEndpointPath}/${id}${this.userQuery}`,
+        payload
+      ).pipe(
+        map(res => this.sensorAssembler.toEntity(res)),
+        catchError(err =>
+          throwError(() => new Error('Error updating sensor: ' + err.message))
+        )
+      );
+
+    if (partialSensor.businessAreaId !== undefined) {
+      return sendUpdate(partialSensor);
+    }
+
+    return this.getSensorById(id).pipe(
+      switchMap(sensor => sendUpdate({
+        ...partialSensor,
+        businessAreaId: sensor.businessAreaId
+      }))
     );
   }
 
@@ -89,7 +106,7 @@ export class SensorsApi extends BaseApi {
       `${this.baseUrl}${environment.applianceProfilesEndpointPath}`
     ).pipe(
       map(res => this.profileAssembler.toEntities(res)),
-      catchError(err => throwError(() => new Error('Error al cargar perfiles de aparatos: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading appliance profiles: ' + err.message)))
     );
   }
 
@@ -104,7 +121,7 @@ export class SensorsApi extends BaseApi {
         const item = Array.isArray(res) ? res[0] : res;
         return item ? this.summaryAssembler.toEntity(item) : null;
       }),
-      catchError(err => throwError(() => new Error('Error al cargar resumen de sensores: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error loading sensor summary: ' + err.message)))
     );
   }
 
@@ -114,9 +131,9 @@ export class SensorsApi extends BaseApi {
    */
   deleteSensor(id: number): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}`
+      `${this.baseUrl}${environment.sensorsEndpointPath}/${id}${this.userQuery}`
     ).pipe(
-      catchError(err => throwError(() => new Error('Error al eliminar sensor: ' + err.message)))
+      catchError(err => throwError(() => new Error('Error deleting sensor: ' + err.message)))
     );
   }
 }

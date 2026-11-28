@@ -33,20 +33,47 @@
           </div>
         </div>
 
-        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form">
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="card-form" novalidate>
           <div class="form-group">
-            <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
-            <input type="text" formControlName="fullName" [placeholder]="'SETTINGS.FULL_NAME_PLACEHOLDER' | translate" />
+            <label>{{ 'SETTINGS.FIRST_NAME' | translate }}</label>
+            <input
+              type="text"
+              formControlName="firstName"
+              [placeholder]="'SETTINGS.FIRST_NAME_PLACEHOLDER' | translate"
+            />
+            @if (profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.FIRST_NAME_REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'SETTINGS.LAST_NAME' | translate }}</label>
+            <input
+              type="text"
+              formControlName="lastName"
+              [placeholder]="'SETTINGS.LAST_NAME_PLACEHOLDER' | translate"
+            />
+            @if (profileForm.get('lastName')?.touched && profileForm.get('lastName')?.invalid) {
+              <span class="field-error">{{ 'SETTINGS.LAST_NAME_REQUIRED' | translate }}</span>
+            }
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
-            <input type="email" formControlName="email" [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate" />
+            <input
+              type="email"
+              formControlName="email"
+              [placeholder]="'SETTINGS.EMAIL_PLACEHOLDER' | translate"
+              readonly
+            />
           </div>
 
           <div class="form-group">
             <label>{{ 'SETTINGS.PHONE' | translate }}</label>
             <input type="tel" formControlName="phone" [placeholder]="'SETTINGS.PHONE_PLACEHOLDER' | translate" />
+            @if (profileForm.get('phone')?.touched && profileForm.get('phone')?.hasError('maxlength')) {
+              <span class="field-error">{{ 'SETTINGS.PHONE_MAX_LENGTH_ERROR' | translate }}</span>
+            }
           </div>
 
           @if (profileMessage()) {
@@ -243,12 +270,34 @@
               </div>
             </div>
 
+            @if (loadingHome()) {
+              <p role="status">{{ 'COMMON.LOADING' | translate }}</p>
+            }
+
+            @if (homeError()) {
+              <p class="form-message error" role="alert">
+                {{ homeError() }}
+              </p>
+              @if (!homeLoaded() && !loadingHome()) {
+                <button type="button" class="btn-primary"
+                  (click)="loadHome()">
+                  {{ 'SETTINGS.HOME_RETRY' | translate }}
+                </button>
+              }
+            }
+
+            @if (homeForm.invalid && homeForm.touched && homeLoaded()) {
+              <p class="field-error">
+                {{ 'SETTINGS.HOME_INVALID' | translate }}
+              </p>
+            }
+
             @if (homeMessage()) {
               <p class="form-message success">{{ homeMessage() }}</p>
             }
 
             <div class="action-btn-row">
-              <button type="submit" class="btn-primary" [disabled]="savingHome()">
+              <button type="submit" class="btn-primary" [disabled]="savingHome() || loadingHome() || !homeLoaded() || homeForm.invalid">
                 {{ savingHome() ? ('SETTINGS.SAVING' | translate) : ('SETTINGS.SAVE_HOME_BTN' | translate) }}
               </button>
             </div>
@@ -325,6 +374,9 @@
         </section>
       }
 
+      <!-- US-26 Monthly consumption threshold -->
+      <app-monthly-consumption-threshold />
+
       <!-- 5. Notifications -->
       <section class="config-card notification-card">
         <div class="card-header">
@@ -348,6 +400,7 @@
             </div>
             <mat-slide-toggle
               color="primary"
+              [disabled]="savingNotifications()"
               [ngModel]="highConsumptionAlerts()"
               (ngModelChange)="highConsumptionAlerts.set($event)">
             </mat-slide-toggle>
@@ -363,6 +416,7 @@
             </div>
             <mat-slide-toggle
               color="primary"
+              [disabled]="savingNotifications()"
               [ngModel]="maintenanceReminders()"
               (ngModelChange)="maintenanceReminders.set($event)">
             </mat-slide-toggle>
@@ -378,19 +432,84 @@
             </div>
             <mat-slide-toggle
               color="primary"
+              [disabled]="savingNotifications()"
               [ngModel]="personalizedTips()"
               (ngModelChange)="personalizedTips.set($event)">
             </mat-slide-toggle>
           </div>
+          <div class="notification-item">
+            <div class="notif-info">
+              <mat-icon class="notif-item-icon">mail_outline</mat-icon>
+              <div>
+                <strong class="notif-title">
+                  {{ 'SETTINGS.NOTIF_EMAIL' | translate }}
+                </strong>
+                <p class="notif-desc">
+                  {{ 'SETTINGS.NOTIF_EMAIL_DESC' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <mat-slide-toggle
+              color="primary"
+              [disabled]="!notificationsLoaded() || savingNotifications()"
+              [ngModel]="emailEnabled()"
+              (ngModelChange)="emailEnabled.set($event)"
+              [attr.aria-label]="'SETTINGS.NOTIF_EMAIL' | translate">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="notification-item">
+            <div class="notif-info">
+              <mat-icon class="notif-item-icon">chat</mat-icon>
+              <div>
+                <strong class="notif-title">
+                  {{ 'SETTINGS.NOTIF_WHATSAPP' | translate }}
+                </strong>
+                <p class="notif-desc">
+                  {{ 'SETTINGS.NOTIF_WHATSAPP_DESC' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <mat-slide-toggle
+              color="primary"
+              [disabled]="!notificationsLoaded() || savingNotifications()"
+              [ngModel]="whatsappEnabled()"
+              (ngModelChange)="whatsappEnabled.set($event)"
+              [attr.aria-label]="'SETTINGS.NOTIF_WHATSAPP' | translate">
+            </mat-slide-toggle>
+          </div>
         </div>
+
+        @if (loadingNotifications()) {
+          <p role="status">{{ 'COMMON.LOADING' | translate }}</p>
+        }
+
+        @if (notificationsError()) {
+          <p class="form-message error" role="alert">
+            {{ notificationsError() }}
+          </p>
+
+          @if (!notificationsLoaded() && !loadingNotifications()) {
+            <button type="button" class="btn-primary"
+              (click)="loadNotifications()">
+              {{ 'SETTINGS.HOME_RETRY' | translate }}
+            </button>
+          }
+        }
 
         @if (notificationsMessage()) {
           <p class="form-message success">{{ notificationsMessage() }}</p>
         }
 
         <div class="action-btn-row">
-          <button type="button" class="btn-primary" (click)="saveNotifications()">
-            {{ 'SETTINGS.SAVE_PREFERENCES_BTN' | translate }}
+          <button type="button" class="btn-primary"
+            [disabled]="!notificationsLoaded() || loadingNotifications() || savingNotifications()"
+            (click)="saveNotifications()">
+            {{ savingNotifications()
+              ? ('SETTINGS.SAVING' | translate)
+              : ('SETTINGS.SAVE_PREFERENCES_BTN' | translate) }}
           </button>
         </div>
       </section>

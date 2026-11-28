@@ -11,6 +11,7 @@ export interface SensorProps {
   status: SensorNetworkStatus;
   currentPowerKw: number;
   todayKwh: number;
+  businessAreaId?: number | null;
   assignedDeviceId?: number | null;
   assignedDeviceName?: string | null;
   assignedDeviceCategory?: string | null;
@@ -32,6 +33,7 @@ export class Sensor implements BaseEntity {
   readonly status: SensorNetworkStatus;
   readonly currentPowerKw: number;
   readonly todayKwh: number;
+  readonly businessAreaId: number | null;
   readonly assignedDeviceId: number | null;
   readonly assignedDeviceName: string | null;
   readonly assignedDeviceCategory: string | null;
@@ -48,6 +50,7 @@ export class Sensor implements BaseEntity {
     this.status = props.status;
     this.currentPowerKw = props.currentPowerKw;
     this.todayKwh = props.todayKwh;
+    this.businessAreaId = props.businessAreaId ?? null;
     this.assignedDeviceId = props.assignedDeviceId ?? null;
     this.assignedDeviceName = props.assignedDeviceName ?? null;
     this.assignedDeviceCategory = props.assignedDeviceCategory ?? null;
