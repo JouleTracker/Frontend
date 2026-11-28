@@ -96,7 +96,8 @@
     </div>
     <div class="col-third">
       <app-comparison-chart
-        [items]="store.comparativeConsumptions()">
+        [items]="store.comparativeConsumptions()"
+        [histories]="store.consumptionHistories()">
       </app-comparison-chart>
     </div>
     <div class="col-third">

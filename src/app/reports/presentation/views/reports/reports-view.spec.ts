@@ -55,4 +55,45 @@ describe('ReportsStore', () => {
     expect(store.applyCustomRange('', '')).toBe(false);
     expect(store.error()).toContain('both dates');
   });
+
+  it('genera CSV desde los registros filtrados y ejecuta exportCsv / exportPdf', () => {
+    let exportedRange: { from?: string; to?: string } = {};
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        ReportsStore,
+        {
+          provide: ReportsApi,
+          useValue: {
+            getConsumptionRecords: () => of(records),
+            exportConsumptionCsv: (from?: string, to?: string) => {
+              exportedRange = { from, to };
+              return of(new Blob(['date,consumptionKwh\n'], { type: 'text/csv' }));
+            },
+          },
+        },
+        {
+          provide: IamStore,
+          useValue: { historyDaysLimit: signal(30), currentPlan: signal('plus') },
+        },
+      ],
+    });
+
+    const store = TestBed.inject(ReportsStore);
+    store.loadInitialData();
+
+    const csv = store.buildCsvFromFiltered();
+    expect(csv).toContain('date,consumptionKwh,estimatedCostPen');
+    expect(csv).toContain('2026-10-01,4.00,2.80');
+    expect(csv).toContain('2026-10-03,20.00,14.00');
+
+    store.exportCsv();
+    expect(exportedRange.from).toBe('2026-10-01');
+    expect(exportedRange.to).toBe('2026-10-03');
+    expect(store.isExporting()).toBe(false);
+
+    const html = store.buildPrintableReportHtml();
+    expect(html).toContain('JouleTracker — Consumption Report');
+    expect(html).toContain('2026-10-01');
+  });
 });
