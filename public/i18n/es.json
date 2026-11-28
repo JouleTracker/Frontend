@@ -1,18 +1,18 @@
 {
   "THRESHOLD": {
-      "TITLE": "Umbral mensual de consumo",
-      "SUBTITLE": "Configura tu límite energético mensual.",
-      "MONTHLY_LIMIT": "Límite mensual",
-      "CURRENT_CONSUMPTION": "Consumo actual",
-      "REMAINING": "Consumo restante",
-      "PROGRESS": "Consumo del límite mensual",
-      "REACHED": "Has alcanzado el límite mensual de consumo.",
-      "NOT_CONFIGURED": "Todavía no tienes un límite mensual configurado.",
-      "INVALID": "Ingresa un límite positivo con hasta tres decimales.",
-      "SAVE": "Guardar límite",
-      "SAVED": "Límite mensual guardado correctamente.",
-      "LOAD_ERROR": "No se pudo cargar el consumo mensual.",
-      "SAVE_ERROR": "No se pudo guardar el límite mensual."
+    "TITLE": "Umbral mensual de consumo",
+    "SUBTITLE": "Configura tu límite energético mensual.",
+    "MONTHLY_LIMIT": "Límite mensual",
+    "CURRENT_CONSUMPTION": "Consumo actual",
+    "REMAINING": "Consumo restante",
+    "PROGRESS": "Consumo del límite mensual",
+    "REACHED": "Has alcanzado el límite mensual de consumo.",
+    "NOT_CONFIGURED": "Todavía no tienes un límite mensual configurado.",
+    "INVALID": "Ingresa un límite positivo con hasta tres decimales.",
+    "SAVE": "Guardar límite",
+    "SAVED": "Límite mensual guardado correctamente.",
+    "LOAD_ERROR": "No se pudo cargar el consumo mensual.",
+    "SAVE_ERROR": "No se pudo guardar el límite mensual."
   },
   "SIDEBAR": {
     "HOME": "Inicio",
@@ -164,7 +164,11 @@
     "STATUS_NORMAL": "Normal",
     "STATUS_HIGH": "Alto",
     "EMISSIONS_THIS_MONTH": "de CO₂ este mes",
-    "DEVICE_FALLBACK": "Dispositivo {{index}}"
+    "DEVICE_FALLBACK": "Dispositivo {{index}}",
+    "PERIOD_VIEW": "Por período",
+    "WEEKLY_VIEW": "Semanal",
+    "WEEK_PREFIX": "S",
+    "VS_PREV_WEEK": "vs. sem. ant."
   },
   "DEVICES": {
     "TITLE": "Dispositivos",
@@ -461,7 +465,9 @@
     "COL_COST": "Costo estimado",
     "ERR_LOAD": "No se pudieron cargar los registros de consumo.",
     "ERR_DATES_REQUIRED": "Por favor ingresa ambas fechas.",
-    "ERR_DATE_ORDER": "La fecha inicial no puede ser posterior a la fecha final."
+    "ERR_DATE_ORDER": "La fecha inicial no puede ser posterior a la fecha final.",
+    "EXPORT_PDF": "Exportar PDF",
+    "EXPORTING": "Exportando..."
   },
   "RECOMMENDATIONS": {
     "TITLE": "Recomendaciones",
@@ -863,7 +869,9 @@
     "TOAST_ALERT_SENT": "Alerta enviada exitosamente.",
     "TOAST_ALERT_ERROR": "No se pudo enviar la alerta. Inténtalo nuevamente.",
     "TOAST_REC_SENT": "Recomendación enviada exitosamente.",
-    "TOAST_REC_ERROR": "No se pudo enviar la recomendación. Inténtalo nuevamente."
+    "TOAST_REC_ERROR": "No se pudo enviar la recomendación. Inténtalo nuevamente.",
+    "FIELD_BROADCAST": "Difundir a todos los usuarios activos",
+    "BROADCAST_HINT": "Al activar esta opción, la alerta se enviará globalmente a todas las cuentas activas."
   },
   "AREAS": {
     "RECIPIENTS_LABEL": "Destinatarios de alertas críticas",

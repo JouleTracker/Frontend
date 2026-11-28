@@ -1,18 +1,18 @@
 {
   "THRESHOLD": {
-      "TITLE": "Monthly consumption threshold",
-      "SUBTITLE": "Configure your monthly energy limit.",
-      "MONTHLY_LIMIT": "Monthly limit",
-      "CURRENT_CONSUMPTION": "Current consumption",
-      "REMAINING": "Remaining consumption",
-      "PROGRESS": "Monthly limit usage",
-      "REACHED": "You have reached your monthly consumption limit.",
-      "NOT_CONFIGURED": "You have not configured a monthly limit yet.",
-      "INVALID": "Enter a positive limit with up to three decimal places.",
-      "SAVE": "Save limit",
-      "SAVED": "Monthly limit saved successfully.",
-      "LOAD_ERROR": "Unable to load monthly consumption.",
-      "SAVE_ERROR": "Unable to save the monthly limit."
+    "TITLE": "Monthly consumption threshold",
+    "SUBTITLE": "Configure your monthly energy limit.",
+    "MONTHLY_LIMIT": "Monthly limit",
+    "CURRENT_CONSUMPTION": "Current consumption",
+    "REMAINING": "Remaining consumption",
+    "PROGRESS": "Monthly limit usage",
+    "REACHED": "You have reached your monthly consumption limit.",
+    "NOT_CONFIGURED": "You have not configured a monthly limit yet.",
+    "INVALID": "Enter a positive limit with up to three decimal places.",
+    "SAVE": "Save limit",
+    "SAVED": "Monthly limit saved successfully.",
+    "LOAD_ERROR": "Unable to load monthly consumption.",
+    "SAVE_ERROR": "Unable to save the monthly limit."
   },
   "SIDEBAR": {
     "HOME": "Home",
@@ -164,7 +164,11 @@
     "STATUS_NORMAL": "Normal",
     "STATUS_HIGH": "High",
     "EMISSIONS_THIS_MONTH": "of CO₂ this month",
-    "DEVICE_FALLBACK": "Device {{index}}"
+    "DEVICE_FALLBACK": "Device {{index}}",
+    "PERIOD_VIEW": "By period",
+    "WEEKLY_VIEW": "Weekly",
+    "WEEK_PREFIX": "W",
+    "VS_PREV_WEEK": "vs. prev. week"
   },
   "DEVICES": {
     "TITLE": "Devices",
@@ -461,7 +465,9 @@
     "COL_COST": "Estimated cost",
     "ERR_LOAD": "Could not load consumption records.",
     "ERR_DATES_REQUIRED": "Please enter both dates.",
-    "ERR_DATE_ORDER": "Start date cannot be later than end date."
+    "ERR_DATE_ORDER": "Start date cannot be later than end date.",
+    "EXPORT_PDF": "Export PDF",
+    "EXPORTING": "Exporting..."
   },
   "RECOMMENDATIONS": {
     "TITLE": "Recommendations",
@@ -863,7 +869,9 @@
     "TOAST_ALERT_SENT": "Alert sent successfully.",
     "TOAST_ALERT_ERROR": "Unable to send alert. Please try again.",
     "TOAST_REC_SENT": "Recommendation sent successfully.",
-    "TOAST_REC_ERROR": "Unable to send recommendation. Please try again."
+    "TOAST_REC_ERROR": "Unable to send recommendation. Please try again.",
+    "FIELD_BROADCAST": "Broadcast to all active users",
+    "BROADCAST_HINT": "When enabled, sends this alert globally to every active non-admin account."
   },
   "AREAS": {
     "RECIPIENTS_LABEL": "Critical alert recipients",

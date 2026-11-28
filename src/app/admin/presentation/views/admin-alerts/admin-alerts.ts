@@ -31,6 +31,7 @@ export class AdminAlertsComponent implements OnInit {
 
   form = {
     userId: 1,
+    broadcast: false,
     title: '',
     severity: 'warning',
     description: ''
@@ -47,22 +48,19 @@ export class AdminAlertsComponent implements OnInit {
 
   submit(): void {
     const payload = {
-      userId: Number(this.form.userId),
+      userId: this.form.broadcast ? null : Number(this.form.userId),
+      broadcast: this.form.broadcast,
       title: this.form.title,
       description: this.form.description,
       message: this.form.description,
       severity: this.form.severity,
-      status: 'Activa',
-      timeAgo: 'Reciente',
-      actionUrl: '/consumo',
-      timestamp: new Date().toISOString(),
-      read: false
+      actionUrl: '/consumo'
     };
 
     this.http.post(`${this.baseUrl}${environment.alertsEndpointPath}`, payload).subscribe({
       next: () => {
         this.toastIsError = false;
-        this.toastMsg = this.t('ADMIN.TOAST_ALERT_SENT', 'Alerta enviada exitosamente.');
+        this.toastMsg = this.t('ADMIN.TOAST_ALERT_SENT', 'Alert sent successfully.');
         this.form.title = '';
         this.form.description = '';
         setTimeout(() => (this.toastMsg = null), 3500);
@@ -71,7 +69,7 @@ export class AdminAlertsComponent implements OnInit {
         this.toastIsError = true;
         const fallback = this.t(
           'ADMIN.TOAST_ALERT_ERROR',
-          'No se pudo enviar la alerta. Inténtalo nuevamente.'
+          'Could not send the alert. Please try again.'
         );
         this.toastMsg = extractHttpErrorMessage(err, fallback);
         setTimeout(() => {

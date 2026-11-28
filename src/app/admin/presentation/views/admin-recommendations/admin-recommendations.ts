@@ -7,6 +7,7 @@ import { environment } from '../../../../../environments/environment';
 import { User } from '../../../../iam/domain/model/user.entity';
 import { IamApi } from '../../../../iam/infrastructure/iam-api';
 import { extractHttpErrorMessage } from '../../../../shared/infrastructure/http-error.util';
+import { ELECTRICITY_TARIFF_PER_KWH } from '../../../../shared/domain/model/energy-calculation.constants';
 
 /**
  * Administrative recommendations view allowing admins to send targeted
@@ -47,18 +48,20 @@ export class AdminRecommendationsComponent implements OnInit {
   }
 
   submit(): void {
+    const kwh = Number(this.form.estimatedSavingsKwh) || 0;
     const payload = {
       userId: Number(this.form.userId),
       title: this.form.title,
       description: this.form.description,
-      estimatedSavingsKwh: Number(this.form.estimatedSavingsKwh),
+      estimatedSavingKwh: kwh,
+      estimatedSavingAmount: Number((kwh * ELECTRICITY_TARIFF_PER_KWH).toFixed(2)),
       category: this.form.category
     };
 
     this.http.post(`${this.baseUrl}${environment.recommendationsEndpointPath}`, payload).subscribe({
       next: () => {
         this.toastIsError = false;
-        this.toastMsg = this.t('ADMIN.TOAST_REC_SENT', 'Recomendación enviada exitosamente.');
+        this.toastMsg = this.t('ADMIN.TOAST_REC_SENT', 'Recommendation sent successfully.');
         this.form.title = '';
         this.form.description = '';
         setTimeout(() => (this.toastMsg = null), 3500);
@@ -67,7 +70,7 @@ export class AdminRecommendationsComponent implements OnInit {
         this.toastIsError = true;
         const fallback = this.t(
           'ADMIN.TOAST_REC_ERROR',
-          'No se pudo enviar la recomendación. Inténtalo nuevamente.'
+          'Could not send the recommendation. Please try again.'
         );
         this.toastMsg = extractHttpErrorMessage(err, fallback);
         setTimeout(() => {

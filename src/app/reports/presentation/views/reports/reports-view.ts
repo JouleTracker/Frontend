@@ -29,6 +29,7 @@ export class ReportsViewComponent implements OnInit {
   readonly average = this.store.average;
   readonly peak = this.store.peak;
   readonly error = this.store.error;
+  readonly isExporting = this.store.isExporting;
 
   /** Límite de días de historial según el plan (Starter 7, Plus 30, Pro ilimitado) */
   readonly historyLimitDays = this.store.historyLimitDays;
@@ -109,5 +110,13 @@ export class ReportsViewComponent implements OnInit {
   reset(): void {
     this.period = '7';
     this.applyPresetGmt5(7);
+  }
+
+  exportCsv(): void {
+    this.store.exportCsv();
+  }
+
+  exportPdf(): void {
+    this.store.exportPdf();
   }
 }
